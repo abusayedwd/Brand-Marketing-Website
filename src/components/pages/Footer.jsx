@@ -6,9 +6,9 @@ import React from "react";
 const Footer = () => {
   return (
     <footer
-      className="bg-cover bg-center text-white py-12 px-4 md:px-8"
+      className="bg-cover bg-center py-12 px-4 md:px-8"
       style={{
-        backgroundImage: "url('/images/bg.png')", // Replace with your background image
+        backgroundImage: "url('/images/bannerbg.png')", // Replace with your background image
       }}
     >
       <div className=" container grid grid-cols-1 md:grid-cols-4 gap-8">

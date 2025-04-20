@@ -1,5 +1,3 @@
- 
-
 "use client";
 
 import url from "@/redux/api/baseUrl";
@@ -13,7 +11,7 @@ import {
 } from "@ant-design/icons";
 import { Avatar, Button, Dropdown, Form, Input, Modal } from "antd";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
@@ -24,63 +22,57 @@ const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // For Change Password Modal
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false); // For Logout Confirmation Modal
   const [isModalVisible, setIsModalVisible] = useState(false);
+  
   // Open and close modals
   const openPasswordModal = () => setIsModalOpen(true);
   const closePasswordModal = () => setIsModalOpen(false);
   const openLogoutModal = () => setIsLogoutModalOpen(true);
   const closeLogoutModal = () => setIsLogoutModalOpen(false);
  
-  const router = useRouter()
-  const {data: user} = useLogedUserQuery()
-  // console.log(user)
- 
+  const router = useRouter();
+  const pathname = usePathname(); // Get current pathname to determine active route
+  const {data: user} = useLogedUserQuery();
   
-    const role = user?.data?.attributes?.user?.role;
-    // console.log(role)
+  const role = user?.data?.attributes?.user?.role;
+  const [changePasswordd, {isLoading}] = useChangPasswordMutation();
 
-    const [changePasswordd, {isLoading}] = useChangPasswordMutation()
+  // Menu items array for navigation
+  const menuItems = [
+    { title: "Home", path: "/" },
+    { title: "Influencer", path: "/influencer" },
+    { title: "Service", path: "/service" },
+    { title: "Pricing", path: "/pricing" },
+  ];
 
-
-    const handleLogout = () => {
-      console.log("Logging out...");
+  const handleLogout = () => {
+    console.log("Logging out...");
   
-      // Remove user session data
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+    // Remove user session data
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
   
-      closeLogoutModal();  
-      setTimeout(() => {
-        window.location.href = "/";
+    closeLogoutModal();  
+    setTimeout(() => {
+      window.location.href = "/";
     }, 500);
-  
-     
   };
-  
-  
-
-
 
   const changePassword = async (values) => {
     const { confirmPassword, ...ChangePassword } = values;
     console.log("Form Values: ", ChangePassword);
-     try{
+    try{
       const res = await changePasswordd(ChangePassword).unwrap();
-       console.log(res);
-       if(res?.code == 200){
+      console.log(res);
+      if(res?.code == 200){
         toast.success(res?.message)
         closePasswordModal(true)
         router.push('/')
-
-       }
-     }catch(error){
-       console.log(error)
-        setError(error?.data?.message)
-     }
+      }
+    } catch(error) {
+      console.log(error)
+      setError(error?.data?.message)
+    }
   };
-
-
-
-
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -94,7 +86,6 @@ const Navbar = () => {
     setIsModalVisible(false);
   };
 
-
   return (
     <div>
       <nav className="bg-[#222F55] text-white py-4">
@@ -103,96 +94,124 @@ const Navbar = () => {
           {/* Logo */}
           <div className="text-2xl font-bold text-green-400">
             <Link href="/"><img className="md:w-full w-48" src="/images/logo.png" alt="Logo"/></Link>
-            
           </div>
-         {/* <ThemeToggle/> */}
+          
+          {/* Centered Navigation Menu */}
+          <div className="hidden md:flex items-center space-x-8">
+            {menuItems.map((item) => (
+              <Link 
+                key={item.path} 
+                href={item.path}
+                className={`text-lg font-medium hover:text-green-400 transition-colors ${
+                  pathname === item.path ? "text-green-400 border-b-2 border-green-400 pb-1" : ""
+                }`}
+              >
+                {item.title}
+              </Link>
+            ))}
+          </div>
+
+          {/* Mobile Menu */}
+          <div className="md:hidden flex flex-grow justify-center space-x-4">
+            {menuItems.map((item) => (
+              <Link 
+                key={item.path} 
+                href={item.path}
+                className={`text-sm hover:text-green-400 transition-colors ${
+                  pathname === item.path ? "text-green-400 border-b border-green-400" : ""
+                }`}
+              >
+                {item.title}
+              </Link>
+            ))}
+          </div>
+
           {/* Buttons */}
           <div className="flex items-center md:gap-3 gap-1">
-  {user ? (
-    <div>
-      <Dropdown
-        className="px-2"
-        menu={{
-          items: [
-            {
-              key: "1",
-              label: (
-                <Link href="/profile" className="hover:!text-white">
-                  Profile
-                </Link>
-              ),
-              className: "hover:!bg-[#101625]",
-            },
-            ...(user?.data?.attributes?.user?.role === "landlord"
-              ? [
-                  {
-                    key: "2",
-                    label: (
-                      <Link href="/myproperty" className="hover:!text-white">
-                        My Property
-                      </Link>
-                    ),
-                    className: "hover:!bg-[#101625]",
-                  },
-                ]
-              : []),
-            {
-              key: "3",
-              label: (
-                <Link href="/messages" className="hover:!text-white">
-                  Message
-                </Link>
-              ),
-              className: "hover:!bg-[#101625]",
-            },
-            {
-              key: "4",
-              label: (
-                <span
-                  onClick={openPasswordModal}
-                  className="hover:!text-white cursor-pointer"
+            {user ? (
+              <div>
+                <Dropdown
+                  className="px-2"
+                  menu={{
+                    items: [
+                      {
+                        key: "1",
+                        label: (
+                          <Link href="/profile" className="hover:!text-white">
+                            Profile
+                          </Link>
+                        ),
+                        className: "hover:!bg-[#101625]",
+                      },
+                      ...(user?.data?.attributes?.user?.role === "landlord"
+                        ? [
+                            {
+                              key: "2",
+                              label: (
+                                <Link href="/myproperty" className="hover:!text-white">
+                                  My Property
+                                </Link>
+                              ),
+                              className: "hover:!bg-[#101625]",
+                            },
+                          ]
+                        : []),
+                      {
+                        key: "3",
+                        label: (
+                          <Link href="/messages" className="hover:!text-white">
+                            Message
+                          </Link>
+                        ),
+                        className: "hover:!bg-[#101625]",
+                      },
+                      {
+                        key: "4",
+                        label: (
+                          <span
+                            onClick={openPasswordModal}
+                            className="hover:!text-white cursor-pointer"
+                          >
+                            Change Password
+                          </span>
+                        ),
+                        className: "hover:!bg-[#101625]",
+                      },
+                      {
+                        key: "5",
+                        label: (
+                          <span
+                            onClick={openLogoutModal}
+                            className="hover:!text-white cursor-pointer"
+                          >
+                            Logout
+                          </span>
+                        ),
+                        className: "hover:!bg-[#101625]",
+                      },
+                    ],
+                  }}
+                  trigger={["click"]}
                 >
-                  Change Password
-                </span>
-              ),
-              className: "hover:!bg-[#101625]",
-            },
-            {
-              key: "5",
-              label: (
-                <span
-                  onClick={openLogoutModal}
-                  className="hover:!text-white cursor-pointer"
-                >
-                  Logout
-                </span>
-              ),
-              className: "hover:!bg-[#101625]",
-            },
-          ],
-        }}
-        trigger={["click"]}
-      >
-        <a className="flex items-center text-white cursor-pointer">
-          <Avatar
-            src={url + user?.data?.attributes?.user?.image?.url}
-            className="mr-2 h-[52px] w-[52px]"
-          />
-          {user?.data?.attributes?.user?.fullName} <DownOutlined className="ml-1" />
-        </a>
-      </Dropdown>
-    </div>
-  ) : (
-    <div>
-      <Link href="/auth/login">
-        <Button className="bg-transparent text-white border-white hover:bg-white hover:text-blue-900">
-          Log In
-        </Button>
-      </Link>
-    </div>
-  )}
-</div>
-
+                  <a className="flex items-center text-white cursor-pointer">
+                    <Avatar
+                      src={url + user?.data?.attributes?.user?.image?.url}
+                      className="mr-2 h-[52px] w-[52px]"
+                    />
+                    {user?.data?.attributes?.user?.fullName} <DownOutlined className="ml-1" />
+                  </a>
+                </Dropdown>
+              </div>
+            ) : (
+              <div>
+                <Link href="/auth/login">
+                  <Button className="bg-transparent text-white border-white hover:bg-white hover:text-blue-900">
+                    Log In
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Change Password Modal */}
@@ -347,4 +366,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
- 
