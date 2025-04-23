@@ -116,7 +116,7 @@ export default function InfluencersPage() {
   }
 
   return (
-    <div className={`container mx-auto py-12 px-4 ${loaded ? "fade-in" : ""}`}>
+    <div className={`md:container mx-auto py-12 px-4 ${loaded ? "fade-in" : ""}`}>
       <ScrollReveal>
         <Row gutter={[32, 32]} className="mb-12">
           <Col xs={24} md={12}>

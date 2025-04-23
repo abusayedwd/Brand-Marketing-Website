@@ -58,7 +58,7 @@ export default function TestimonialsGrid() {
 
   return (
     <div className={`bg-blue-50 py-16 transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
-      <div className="container mx-auto px-4 ">
+      <div className="md:container mx-auto px-4 ">
         <motion.div 
           className="mb-12"
           initial={{ opacity: 0, y: -20 }}

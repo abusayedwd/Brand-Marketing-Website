@@ -1,11 +1,10 @@
- 
-import Profile from '@/components/information/Profile';
+import TransactionList from '@/components/Dashbord/component/Transaction';
 import React from 'react';
 
 const page = () => {
     return (
         <div>
-             <Profile />
+              <TransactionList />
         </div>
     );
 };

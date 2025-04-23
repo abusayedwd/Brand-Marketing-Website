@@ -1,11 +1,10 @@
- 
-import Profile from '@/components/information/Profile';
+import PaymentRequestList from '@/components/Dashbord/component/Payment';
 import React from 'react';
 
 const page = () => {
     return (
         <div>
-             <Profile />
+            <PaymentRequestList />
         </div>
     );
 };

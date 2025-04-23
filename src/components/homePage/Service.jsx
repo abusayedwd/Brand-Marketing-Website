@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { Button } from 'antd';
 import { ArrowRightOutlined } from '@ant-design/icons';
@@ -35,7 +37,7 @@ export default function Service() {
 
   return (
     <div className="bg-gray-50 py-16 overflow-hidden">
-      <div className="container mx-auto px-4">
+      <div className="md:container mx-auto px-4">
         <div 
           className={`text-blue-500 font-medium mb-3 transform transition-all duration-700 ${
             animated ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
@@ -93,7 +95,7 @@ export default function Service() {
                 <img 
                   src={service.image} 
                   alt={service.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  className="w-full h-full object-center transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-30 transition-opacity duration-300">
                   <div className="p-4 text-white absolute bottom-0 left-0">

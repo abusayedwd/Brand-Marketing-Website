@@ -1,11 +1,10 @@
- 
-import Profile from '@/components/information/Profile';
+import EditCampaign from '@/components/Dashbord/component/campaign/EditCampaign';
 import React from 'react';
 
 const page = () => {
     return (
         <div>
-             <Profile />
+            <EditCampaign />
         </div>
     );
 };

@@ -1,11 +1,10 @@
- 
-import Profile from '@/components/information/Profile';
+import InfluencersList from '@/components/Dashbord/influencerList/InfluencerList';
 import React from 'react';
 
 const page = () => {
     return (
         <div>
-             <Profile />
+             <InfluencersList />
         </div>
     );
 };

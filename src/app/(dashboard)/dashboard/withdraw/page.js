@@ -1,11 +1,10 @@
- 
-import Profile from '@/components/information/Profile';
+import WithdrawRequestList from '@/components/Dashbord/component/WithdrawRequest';
 import React from 'react';
 
 const page = () => {
     return (
         <div>
-             <Profile />
+             <WithdrawRequestList />
         </div>
     );
 };

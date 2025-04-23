@@ -8,15 +8,19 @@ module.exports = {
   darkMode: 'class',
   theme: {
     screens: {
-      sm: "360px",
-      md: "768px",
-      lg: "992px",
-      xl: "1200px",
-      xxl: "1620px",
+      sm: "360px", // Mobile
+      md: "768px", // Tablets
+      lg: "992px", // Laptops
+      xl: "1200px", // Desktops
+      xxl: "1620px", // Extra-large screens
     },
     container: {
       center: true,
-      padding: "2rem",
+      padding: {
+        DEFAULT: '2rem', // Padding for larger screens
+        sm: '1rem', // Padding for small devices (mobile)
+        md: '2rem', // Padding for medium devices (tablets)
+      },
     },
     extend: {
       backgroundColor: {
@@ -32,7 +36,6 @@ module.exports = {
         primary: "#00BF63",
         secondary: "#E6F9EF",
         textGray: "#494949",
-     
       },
     },
   },

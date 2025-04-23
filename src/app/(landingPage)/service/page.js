@@ -1,11 +1,10 @@
- 
-import Profile from '@/components/information/Profile';
+import Service from '@/components/homePage/Service';
 import React from 'react';
 
 const page = () => {
     return (
         <div>
-             <Profile />
+             <Service />
         </div>
     );
 };

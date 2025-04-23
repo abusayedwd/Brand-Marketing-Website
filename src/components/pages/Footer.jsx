@@ -6,19 +6,19 @@ import React from "react";
 const Footer = () => {
   return (
     <footer
-      className="bg-cover bg-center py-12 px-4 md:px-8"
+      className="bg-cover bg-center  py-12 px-4 md:px-8"
       style={{
         backgroundImage: "url('/images/bannerbg.png')", // Replace with your background image
       }}
     >
-      <div className=" container grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className=" container text-black grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* Column 1: Logo and About Info */}
         <div>
             <div className="my-4">
 
         <img src="/images/logo.png" alt="" /> 
             </div>
-          <p className="text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-black">
             Welcome to Your Next Home, a platform designed to make finding or
             listing properties simple and hassle-free. We connect landlords with
             tenants and buyers, offering a seamless experience for browsing or
@@ -33,12 +33,12 @@ const Footer = () => {
 
         {/* Column 2: Explore Links */}
         <div className="md:ml-20">
-          <h3 className="text-lg font-semibold text-green-400 mb-4">Explore</h3>
+          <h3 className="text-lg font-semibold text-[#0178EE] mb-4">Explore</h3>
           <ul className="space-y-2">
             <li>
               <a
                 href="/"
-                className="text-sm text-gray-300 hover:text-white transition-colors"
+                className="text-sm  hover:text-white transition-colors"
               >
                 Home
               </a>
@@ -46,7 +46,7 @@ const Footer = () => {
             <li>
               <Link
                 href="/aboutus"
-                className="text-sm text-gray-300 hover:text-white transition-colors"
+                className="text-sm  hover:text-white transition-colors"
               >
                 About Us
               </Link>
@@ -54,7 +54,7 @@ const Footer = () => {
             <li>
               <a
                 href="/contact-us"
-                className="text-sm text-gray-300 hover:text-white transition-colors"
+                className="text-sm  hover:text-white transition-colors"
               >
                 Contact Us
               </a>
@@ -64,14 +64,14 @@ const Footer = () => {
 
         {/* Column 3: Utility Links */}
         <div>
-          <h3 className="text-lg font-semibold text-green-400 mb-4">
+          <h3 className="text-lg font-semibold text-[#0178EE] mb-4">
             Utility Pages
           </h3>
           <ul className="space-y-2">
             <li>
               <Link
                 href="/privacy"
-                className="text-sm text-gray-300 hover:text-white transition-colors"
+                className="text-sm  hover:text-white transition-colors"
               >
                 Privacy Policy
               </Link>
@@ -79,7 +79,7 @@ const Footer = () => {
             <li>
               <Link
                 href="/terms"
-                className="text-sm text-gray-300 hover:text-white transition-colors"
+                className="text-sm  hover:text-white transition-colors"
               >
                 Terms of Use
               </Link>
@@ -89,15 +89,15 @@ const Footer = () => {
 
         {/* Column 4: Contact Info */}
         <div>
-          <h3 className="text-lg font-semibold text-green-400 mb-4">
+          <h3 className="text-lg font-semibold text-[#0178EE] mb-4">
             Get In Touch
           </h3>
           <ul className="space-y-2">
             <li>
-              <p className="text-sm text-gray-300">paerdu@gmail.com</p>
+              <p className="text-sm ">paerdu@gmail.com</p>
             </li>
             <li>
-              <p className="text-sm text-gray-300">(009) 555 678 90</p>
+              <p className="text-sm ">(009) 555 678 90</p>
             </li>
           </ul>
         </div>

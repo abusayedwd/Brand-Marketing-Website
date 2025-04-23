@@ -4,7 +4,7 @@ import React from 'react';
 export default function WhyChooseUs() {
   return (
     <div className="bg-white min-h-screen p-8 md:py-20">
-      <div className=" container mx-auto flex flex-col md:flex-row gap-8">
+      <div className=" md:container mx-auto flex flex-col md:flex-row gap-8">
         {/* Left Content Column */}
         <div className="w-full md:w-1/2 flex flex-col justify-center">
           <h2 className="text-3xl font-bold mb-4 text-blue-900">
@@ -89,7 +89,7 @@ export default function WhyChooseUs() {
         </div>
         
         {/* Right Image Column */}
-        <div className="w-full md:w-1/2 relative ml-24">
+        <div className="w-full md:w-1/2 relative md:ml-24">
           <div className="relative h-full  flex items-center justify-center">
             <div className="rounded-bl-3xl rounded-br-3xl overflow-hidden">
               <img

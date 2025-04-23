@@ -1,11 +1,11 @@
- 
-import Profile from '@/components/information/Profile';
+
+import CreateCampaign from '@/components/Dashbord/component/campaign/CreateCampaign';
 import React from 'react';
 
 const page = () => {
     return (
         <div>
-             <Profile />
+             <CreateCampaign />
         </div>
     );
 };
