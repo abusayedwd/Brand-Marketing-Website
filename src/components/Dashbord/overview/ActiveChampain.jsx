@@ -56,7 +56,8 @@ const ActiveCampaigns = () => {
         <button className="bg-blue-50 text-blue-600 px-4 py-1 rounded-md hover:bg-blue-100 transition">
           Show All
         </button>
-      </div>
+      </div> 
+      
       
       {mounted && (
         <Swiper

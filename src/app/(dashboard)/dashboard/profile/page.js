@@ -1,4 +1,6 @@
  
+ 
+ 
 import Profile from '@/components/information/Profile';
 import React from 'react';
 

@@ -415,7 +415,7 @@ const Navbar = () => {
   // Menu items array for navigation
   const menuItems = [
     { title: "Home", path: "/" },
-    { title: "Influencer", path: "/influencer" },
+    { title: "Content Creator", path: "/influencer" },
     { title: "Service", path: "/service" },
     { title: "Pricing", path: "/pricing" },
   ];
@@ -454,7 +454,7 @@ const Navbar = () => {
     }
   };
 
-  const user = true; // Simulating a logged-in user
+  const user = false; // Simulating a logged-in user
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -470,7 +470,7 @@ const Navbar = () => {
 
   return (
     <div>
-      <nav className="bg-[#222F55] text-white py-4">
+      <nav className="">
         <Toaster />
         <div className="md:container mx-auto flex items-center justify-between px-4">
           {/* Logo */}
@@ -482,9 +482,10 @@ const Navbar = () => {
           <div className="md:hidden flex items-center">
             <button 
               onClick={toggleMobileMenu}
-              className="text-white focus:outline-none"
+              className="  focus:outline-none"
             >
               <MenuOutlined style={{ fontSize: '24px' }} />
+             
             </button>
             
           </div>
@@ -509,25 +510,36 @@ const Navbar = () => {
             {user ? (
               <Button 
                 onClick={handleDashboardClick}
-                className="bg-green-500 hover:bg-green-600 text-white font-medium px-4 py-2 rounded-md"
+                style={{
+                  background: 'linear-gradient(to right, #3b82f6, #22c55e)',
+                  border: '1px solid white',
+                  color: 'white',
+                }}
               >
                 Dashboard
               </Button>
             ) : (
               <div>
                 <Link href="/auth/login">
-                  <Button className="bg-transparent text-white border-white hover:bg-white hover:text-blue-900">
-                    Log In
-                  </Button>
+                <Button
+  style={{
+    background: 'linear-gradient(to right, #3b82f6, #22c55e)',
+    border: '1px solid white',
+    color: 'white',
+  }}
+>
+  Log In
+</Button>
                 </Link>
               </div>
             )}
           </div>
+
         </div>
 
         {/* Mobile Menu - Shows when hamburger is clicked */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-[#1a243f] py-4 px-4 mt-2">
+          <div className="md:hidden bg-white text-black font-medium py-4 px-4 mt-2">
             {/* Mobile Navigation Links */}
             <div className="flex flex-col space-y-3">
               {menuItems.map((item) => (
@@ -535,7 +547,7 @@ const Navbar = () => {
                   key={item.path} 
                   href={item.path}
                   className={`text-lg hover:text-green-400 transition-colors ${
-                    pathname === item.path ? "text-green-400 border-l-4 border-green-400 pl-2" : "pl-2"
+                    pathname === item.path ? "text-green-800 border-l-4 border-green-800 pl-2" : "pl-2"
                   }`}
                 >
                   {item.title}

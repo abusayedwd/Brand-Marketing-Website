@@ -196,7 +196,7 @@ export default function DashboardHeader({ collapsed}) {
     console.log('Logging out...');
     // Example: Clear localStorage, cookies, etc.
     // localStorage.removeItem('token');
-    window.location.href = '/login';
+    window.location.href = '/';
   };
 
   // Password change handler
@@ -217,6 +217,8 @@ export default function DashboardHeader({ collapsed}) {
     // For now, just close the modal
     closePasswordModal();
   };
+
+
 
   // User dropdown menu items
   const userMenuItems = [

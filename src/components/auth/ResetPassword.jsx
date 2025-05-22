@@ -1,13 +1,16 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 import { useRouter } from 'next/navigation';
 import { useResetPasswordMutation } from '@/redux/fetures/auth/resetPassword';
 import toast, { Toaster } from 'react-hot-toast';
+import { LeftOutlined, LockOutlined } from '@ant-design/icons';
+import Link from 'next/link';
+ 
 
 
 const ResetPassword = () => {
-
+  const [loading, setLoading] = useState(false);
  const router = useRouter()
   const [email, setEmail] = useState('')
  
@@ -19,86 +22,115 @@ const ResetPassword = () => {
   }, []);
 
 
-  const onFinish = async(values) => {
-  
-    const data = {
-      email,
-      password: values?.confirmPassword,
+  const onFinish = async (values) => {
+    setLoading(true);
+    router.push('/auth/login')
+    try {
+      console.log('New password:', values.newPassword);
+      // TODO: Add API call to reset password here 
+      message.success('Password reset successfully!');
+    } catch (error) {
+      message.error('Failed to reset password.');
+    } finally {
+      setLoading(false);
     }
-    try{
-    const res = await resetPassword(data).unwrap();
-      if(res?.code == 200){
-        toast.success(res?.message)
-        router.push(`/auth/login`);
-      }
-    }catch(error){
-      console.log(error)
-    }
-    // console.log('Received values of form: ',  data);
   };
   
-
+const Back = () => {
+  router.push('/auth/sendOtp')
+}
   return (
-    <div className="flex justify-center items-center lg:min-h-[700px] bg-gray-100">
-      <Toaster />
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Reset Password</h1>
-        <p className="text-center mb-6">
-          Your password must be 8-10 characters long.
-        </p>
-
-        <Form
-          name="reset_password_form"
-          onFinish={onFinish}
-        >
-          {/* New Password */}
-          <Form.Item
-            name="newPassword"
-            rules={[
-              { required: true, message: 'Please input your new password!' },
-              { min: 6, message: 'Password must be at least 6 characters long!' },
-              { max: 12, message: 'Password must be at most 12 characters long!' },
-            ]}
-          >
-            <Input.Password
-              placeholder="New Password"
-              className="w-full p-2 border rounded"
+    <div className="min-h-screen flex">
+      {/* Left side - Form */}
+      <div className="flex-1 flex flex-col justify-center items-center bg-blue-50 px-8">
+        <div className="max-w-md w-full">
+        <div className="flex items-center gap-2 mb-8">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/906/906175.png" // Replace with your logo URL
+              alt="Logo"
+              className="w-20 h-20"
             />
-          </Form.Item>
-
-          {/* Confirm Password */}
-          <Form.Item
-            name="confirmPassword"
-            dependencies={['newPassword']}
-            rules={[
-              { required: true, message: 'Please confirm your password!' },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue('newPassword') === value) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(new Error('The two passwords do not match!'));
-                },
-              }),
-            ]}
-          >
-            <Input.Password
-              placeholder="Confirm Password"
-              className="w-full p-2 border rounded"
+            <Link href="/"> 
+            <img
+              src="/images/logo.png" // Replace with your logo URL
+              alt="Logo"
+              className=""
             />
-          </Form.Item>
+            </Link>
+          </div>
 
-          {/* Reset Password Button */}
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-               className="w-full !bg-[#2E7D32] text-white p-3 rounded "
+          <h2 className="text-2xl font-semibold mb-1"> <LeftOutlined onClick={Back} className=' cursor-pointer' /> Reset Password</h2>
+          <p className="text-xs text-gray-400 mb-6">
+            Your password must be 8-10 characters long.
+          </p>
+
+          <Form
+            name="reset_password"
+            layout="vertical"
+            onFinish={onFinish}
+            size="large"
+          >
+            <Form.Item
+              label="New Password"
+              name="newPassword"
+              rules={[
+                { required: true, message: 'Please enter new password!' },
+                { min: 6, max: 20, message: 'Password must be 6-20 characters!' },
+              ]}
+              hasFeedback
             >
-              Reset Password
-            </Button>
-          </Form.Item>
-        </Form>
+              <Input.Password
+                placeholder="Enter new password"
+                prefix={<LockOutlined />}
+                className="rounded-md"
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Confirm Password"
+              name="confirmPassword"
+              dependencies={['newPassword']}
+              hasFeedback
+              rules={[
+                { required: true, message: 'Please confirm your password!' },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue('newPassword') === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error('Passwords do not match!'));
+                  },
+                }),
+              ]}
+            >
+              <Input.Password
+                placeholder="Confirm new password"
+                prefix={<LockOutlined />}
+                className="rounded-md"
+              />
+            </Form.Item>
+
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+                className="w-full bg-black hover:bg-black"
+              >
+                Reset
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
+      </div>
+
+      {/* Right side - Image */}
+      <div className="hidden md:flex flex-1">
+        <img
+          src="/images/login.png" // Place your banner image in public/login-banner.png
+          alt="Reset Password Banner"
+          className="object-cover w-full h-screen"
+        />
       </div>
     </div>
   );

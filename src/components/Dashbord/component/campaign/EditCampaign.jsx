@@ -14,7 +14,7 @@ const EditCampaign = ({ campaignId }) => {
   const [budget, setBudget] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [influencers, setInfluencers] = useState([]);
+  const [Influencers, setInfluencers] = useState([]);
   const [file, setFile] = useState(null);
 
   const router = useRouter();
@@ -30,7 +30,7 @@ const EditCampaign = ({ campaignId }) => {
         setBudget(data.budget);
         setStartDate(data.startDate ? new Date(data.startDate) : null);
         setEndDate(data.endDate ? new Date(data.endDate) : null);
-        setInfluencers(data.influencers);
+        setInfluencers(data.Influencers);
         setFile(data.file);
       })
       .catch((err) => message.error('Failed to fetch campaign data.'));
@@ -54,7 +54,7 @@ const EditCampaign = ({ campaignId }) => {
       budget,
       startDate,
       endDate,
-      influencers,
+      Influencers,
       file,
     };
 
@@ -132,9 +132,9 @@ const EditCampaign = ({ campaignId }) => {
           <label className="w-1/3">Assign Influencers:</label>
           <Input
             className="w-2/3"
-            value={influencers.join(', ')}
+            value={Influencers.join(', ')}
             onChange={(e) => setInfluencers(e.target.value.split(','))}
-            placeholder="Search influencers"
+            placeholder="Search Influencers"
           />
         </div>
 
@@ -152,7 +152,7 @@ const EditCampaign = ({ campaignId }) => {
 
         <div className="flex justify-between">
           <div className="w-1/2">
-            <label className="block">Add Influencers by Their Social Group:</label>
+            <label className="block">Add Influencersby Their Social Group:</label>
             <div className="flex space-x-4">
               <input type="checkbox" id="youtube" />
               <label htmlFor="youtube">YouTube</label>
@@ -168,7 +168,7 @@ const EditCampaign = ({ campaignId }) => {
           <div className="w-1/2">
             <div className="border p-4 rounded-md">
               <h2 className="text-xl font-semibold">Payment Summary</h2>
-              <p className="text-sm">Influencer Selected: {influencers.length}</p>
+              <p className="text-sm">Influencer Selected: {Influencers.length}</p>
               <p className="text-sm">Total Amount: ${budget}</p>
             </div>
           </div>

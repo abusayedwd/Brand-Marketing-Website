@@ -142,7 +142,7 @@ export default function Sidebar() {
     {
       key: "/dashboard/influencerlist",
       icon: <UserOutlined />,
-      label: "Influencer List",
+      label: "Content Creator",
       path: "/dashboard/influencerlist",
     },
     {

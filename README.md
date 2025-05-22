@@ -16,7 +16,7 @@ bun dev
 # Influencer Marketing Platform
 
 ## Overview
-The Influencer Marketing Platform connects influencers and brand owners to streamline collaboration. The platform allows influencers to manage their profiles, accept brand collaboration invitations, and create promotional content. Brand owners can send invitations, review, and approve influencer content for campaigns.
+The Influencer Marketing Platform connects Influencersand brand owners to streamline collaboration. The platform allows Influencersto manage their profiles, accept brand collaboration invitations, and create promotional content. Brand owners can send invitations, review, and approve influencer content for campaigns.
 
 ## Features
 - Influencers:

@@ -49,7 +49,7 @@ export default function InfluencersPage() {
 
   const categories = ["Technology", "Sports", "Fashion", "Food", "Music", "skin care", "Eco friendly"]
 
-  const influencers = [
+  const Influencers= [
     {
       id: 1,
       name: "Sophia Bennett",
@@ -94,9 +94,9 @@ export default function InfluencersPage() {
     },
   ]
 
-  const filteredInfluencers = activeCategory
-    ? influencers.filter((influencer) => influencer.category === activeCategory)
-    : influencers
+  const filteredInfluencers= activeCategory
+    ? Influencers.filter((influencer) => influencer.category === activeCategory)
+    : Influencers
 
   // Hover animations for card
   const cardHoverVariants = {
@@ -121,14 +121,14 @@ export default function InfluencersPage() {
         <Row gutter={[32, 32]} className="mb-12">
           <Col xs={24} md={12}>
             <Title level={2} style={{ color: "#003366" }}>
-              Find the best influencers to help your business
+              Find the best Content Creator to help your business
             </Title>
           </Col>
           <Col xs={24} md={12}>
             <Paragraph>
-              An influencer marketing website connects brands with influencers to promote products. Influencers create
+              An Content Creator marketing website connects brands with Content Creator to promote products. Content Creator create
               profiles, receive campaign invitations, and share promotional content, while brands approve and track
-              influencer performance.
+              Content Creator performance.
             </Paragraph>
           </Col>
         </Row>

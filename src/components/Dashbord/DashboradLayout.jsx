@@ -362,7 +362,7 @@ const DashboardLayout = ( {children} ) => {
       key: "/dashboard/profile",
       icon: <UserOutlined />,
       label: "Influencerlist",
-      path: "/dashboard/influencerlist",
+      path: "/dashboard/influencerlistgg",
     },
     {
       key: "/dashboard/properties",

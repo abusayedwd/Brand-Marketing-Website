@@ -15,7 +15,7 @@ export default function HowItWorks() {
                 <SearchOutlined className="text-blue-500 text-xl mr-3" />
                 <div>
                   <div className="text-blue-600 font-medium">Step 1</div>
-                  <div className="text-gray-800 font-bold">Find a influencer</div>
+                  <div className="text-gray-800 font-bold">Find a Content Creator</div>
                 </div>
               </div>
             </div>
@@ -66,8 +66,8 @@ export default function HowItWorks() {
             </h2>
             
             <p className="text-gray-700 mb-8">
-              An influencer marketing website connects brands with influencers to
-              promote products. Influencers create profiles, receive campaign
+              An influencer marketing website connects brands with  Content Creator to
+              promote products. Content Creator create profiles, receive campaign
               invitations, and share promotional content, while brands approve and
               track influencer performance.
             </p>

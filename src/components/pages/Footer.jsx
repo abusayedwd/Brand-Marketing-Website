@@ -6,33 +6,34 @@ import React from "react";
 const Footer = () => {
   return (
     <footer
-      className="bg-cover bg-center  py-12 px-4 md:px-8"
+      className="bg-cover bg-center  py-16 px-4 md:px-8"
       style={{
         backgroundImage: "url('/images/bannerbg.png')", // Replace with your background image
       }}
     >
       <div className=" container text-black grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* Column 1: Logo and About Info */}
-        <div>
+        <div className="md:col-span-2">
             <div className="my-4">
 
-        <img src="/images/logo.png" alt="" /> 
+        <img src="/images/logo.png" alt="" className="h-16" /> 
             </div>
-          <p className="text-sm leading-relaxed text-black">
-            Welcome to Your Next Home, a platform designed to make finding or
-            listing properties simple and hassle-free. We connect landlords with
-            tenants and buyers, offering a seamless experience for browsing or
-            showcasing properties.
-          </p>
-          <p className="text-sm mt-4">
-            Whether you’re searching for your dream home or looking to rent or
-            sell a property, Your Next Home is your trusted partner in making it
-            happen. Discover your next space with us today!
-          </p>
+
+            <div> 
+  <p class="text-sm leading-relaxed text-black">
+    Welcome to **Brivio**, an innovative platform designed to help businesses elevate their brands through authentic content and impactful promotional campaigns. We connect businesses with top-tier content creators, making it easy to generate high-quality content tailored to your brand’s unique voice.
+  </p>
+  <p class="text-sm mt-4">
+    Whether you’re looking to create engaging blog posts, social media content, or launch strategic marketing campaigns, **Brivio** is your trusted partner in creating powerful and effective content. Let us help you build the future of your brand.
+  </p>
+</div>
+
+
+
         </div>
 
         {/* Column 2: Explore Links */}
-        <div className="md:ml-20">
+        <div className="md:ml-20 ">
           <h3 className="text-lg font-semibold text-[#0178EE] mb-4">Explore</h3>
           <ul className="space-y-2">
             <li>
@@ -59,15 +60,6 @@ const Footer = () => {
                 Contact Us
               </a>
             </li>
-          </ul>
-        </div>
-
-        {/* Column 3: Utility Links */}
-        <div>
-          <h3 className="text-lg font-semibold text-[#0178EE] mb-4">
-            Utility Pages
-          </h3>
-          <ul className="space-y-2">
             <li>
               <Link
                 href="/privacy"
@@ -86,6 +78,9 @@ const Footer = () => {
             </li>
           </ul>
         </div>
+
+  
+ 
 
         {/* Column 4: Contact Info */}
         <div>

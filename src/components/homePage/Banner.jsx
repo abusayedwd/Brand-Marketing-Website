@@ -23,7 +23,7 @@
 //           {/* Left side - Text content */}
 //           <div className="space-y-6">
 //             <p className="text-white font-medium tracking-wide uppercase text-sm">
-//               GO TO YOUR INFLUENCER PLATFORM
+//               GO TO YOUR CONTENT CREATOR PLATFORM
 //             </p>
 
 //             <h1 className="text-4xl md:text-5xl font-bold text-[#003165]">
@@ -145,7 +145,7 @@
 //                 src="/images/banner3.png"
 //                 width={180}
 //                 height={190}
-//                 alt="Influencer with phone"
+//                 alt="Content Creator with phone"
 //                 className=" rounded-b-lg object-cover h-48 animate-bounce"
 //               />
 //             </Card>
@@ -225,10 +225,10 @@ const Banner = () => {
           {/* Left side - Text content */}
           <div className="space-y-4 md:space-y-6">
             <p className="text-white font-medium tracking-wide uppercase text-xs sm:text-sm">
-              GO TO YOUR INFLUENCER PLATFORM
+              GO TO YOUR CONTENT CREATOR PLATFORM
             </p>
 
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#003165]">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#060C8C]">
               <span className="block mb-2">Connecting Your</span>
               <span className="block mb-2">Brand With The</span>
               <span className="block">Right Voices</span>
@@ -357,7 +357,7 @@ const Banner = () => {
                   src="/images/banner3.png"
                   width={180}
                   height={190}
-                  alt="Influencer with phone"
+                  alt="Content Creator with phone"
                   className="rounded-b-lg object-cover h-48"
                 />
               </Card>
@@ -386,7 +386,7 @@ const Banner = () => {
                   </div>
                   <div className="text-sm font-semibold text-blue-900">
                     1000+ <br />
-                    Popular influence
+                    Content Creator
                   </div>
                 </div>
               </Card>
@@ -442,7 +442,7 @@ const Banner = () => {
                     src="/images/banner3.png"
                     width={120}
                     height={120}
-                    alt="Influencer with phone"
+                    alt="Content Creator with phone"
                     className="rounded-lg object-cover w-full h-32"
                   />
                 </Card>

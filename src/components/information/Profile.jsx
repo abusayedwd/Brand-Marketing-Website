@@ -1,23 +1,22 @@
 "use client";
-
 import React, { useState } from "react";
 import { Button, Input, Modal, Form, Image, Space, Upload } from "antd";
 import { LuImagePlus } from "react-icons/lu";
 import { useRouter } from "next/navigation";
 import { useLogedUserQuery } from "@/redux/fetures/user/logedUser";
 import url from "@/redux/api/baseUrl";
- 
+
+
 const Profile = () => {
-    const [fileList, setFileList] = useState([]); 
-    const [imageUrl, setImageUrl] = useState(); 
-    const router = useRouter();
+  const [fileList, setFileList] = useState([]);
+  const [imageUrl, setImageUrl] = useState();
+  const router = useRouter();
 
+  const profileImage = "/images/user4.jpg";
 
-      const {data: profile} = useLogedUserQuery()
-      // console.log(user)
-      const user = profile?.data?.attributes?.user
-      console.log(user)
-
+  const { data: profile } = useLogedUserQuery();
+  const user = profile?.data?.attributes?.user;
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
 
@@ -39,36 +38,27 @@ const Profile = () => {
   };
 
   const handleEditProfile = () => {
-    router.push("/profile/editProfile"); // Navigate to the edit profile page
+    router.push("/dashboard/profile/editProfile");
   };
 
   return (
     <div className="md:w-[70%] mx-auto md:py-24 px-4 md:px-8">
-      {/* Page Title */}
       <h1 className="text-3xl md:text-4xl mt-5 font-bold text-green-700 text-center md:mb-8">
         My Profile
       </h1>
 
-      {/* Profile Card */}
       <div className="bg-white shadow-md py-10 rounded-lg p-6">
         <div className="flex flex-col md:flex-row items-center gap-6">
-          {/* Profile Picture */}
           <Space size={12}>
-      <Image
-        width={200}
-        src={url + user?.image?.url}
-        placeholder={
-          <Image
-            preview={false}
-            src="/images/user4.jpg"
-            width={200}
-          />
-        }
-      />
-   
-    </Space>
+            <Image
+              width={200}
+              src={profileImage}
+              placeholder={
+                <Image preview={false} src="/images/user4.jpg" width={200} />
+              }
+            />
+          </Space>
 
-          {/* Profile Details */}
           <div className="flex-1">
             <h2 className="text-xl font-semibold text-gray-800">{user?.fullName}</h2>
             <p className="text-gray-600">{user?.email}</p>
@@ -82,22 +72,14 @@ const Profile = () => {
                   className="bg-gray-100 border-gray-300 rounded-md"
                 />
               </div>
-              {/* <div>
-                <label className="text-sm text-gray-500">District</label>
+              <div>
+                <label className="text-sm text-gray-500">Address</label>
                 <Input
-                  value={user?.distric}
+                  value={user?.address}
                   readOnly
                   className="bg-gray-100 border-gray-300 rounded-md"
                 />
-              </div> */}
-              {/* <div>
-                <label className="text-sm text-gray-500">City</label>
-                <Input
-                  value={user?.city}
-                  readOnly
-                  className="bg-gray-100 border-gray-300 rounded-md"
-                />
-              </div> */}
+              </div>
               <div>
                 <label className="text-sm text-gray-500">Phone Number</label>
                 <Input
@@ -106,24 +88,36 @@ const Profile = () => {
                   className="bg-gray-100 border-gray-300 rounded-md"
                 />
               </div>
+              <div>
+                <label className="text-sm text-gray-500">Date of Birth</label>
+                <Input
+                  value={user?.dateOfBirth}
+                  readOnly
+                  className="bg-gray-100 border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="text-sm text-gray-500">Social Platforms</label>
+                <Input
+                  value={user?.socialPlatforms?.join(", ")}
+                  readOnly
+                  className="bg-gray-100 border-gray-300 rounded-md"
+                />
+              </div>
             </div>
           </div>
 
-          {/* Edit Profile Button */}
-         
+          <div className="text-right">
+            <Button
+              type="primary"
+              className="!bg-green-500 mt-6 hover:!bg-green-400 text-white"
+              onClick={handleEditProfile}
+            >
+              Edit profile
+            </Button>
+          </div>
         </div>
-        <div className="text-right">
-
-<Button
-  type="primary"
-  className="!bg-green-500 mt-6 hover:!bg-green-400 text-white"
-  onClick={handleEditProfile}
->
-  Edit profile
-</Button>
-</div>
       </div>
- 
     </div>
   );
 };

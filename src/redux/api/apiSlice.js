@@ -4,7 +4,7 @@ export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
   
-    baseUrl: "http://10.0.80.210:3040/v1", 
+    baseUrl: "https://s3000.sobhoy.com", 
     // baseUrl: "https://api.mynexthome.ng/v1",
     prepareHeaders: (headers, { getState }) => {
       const token = localStorage.getItem("token");

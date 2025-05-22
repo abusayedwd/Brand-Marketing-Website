@@ -12,7 +12,7 @@ export default function WhyChooseUs() {
           </h2>
           
           <p className="text-gray-700 mb-8">
-            Choose us for our expertise in connecting top-tier influencers with
+            Choose us for our expertise in connecting top-tier Content Creatorwith
             brands. We deliver tailored campaigns that drive engagement, results,
             and brand growth.
           </p>
@@ -33,7 +33,7 @@ export default function WhyChooseUs() {
                 </h4>
                 <p className="text-gray-600">
                   Promote your brand's products by leveraging the power of
-                  influencers, creating authentic, engaging campaigns that
+                  Content Creator, creating authentic, engaging campaigns that
                   resonate with the right audience and drive measurable
                   results.
                 </p>
@@ -57,7 +57,7 @@ export default function WhyChooseUs() {
                 </h4>
                 <p className="text-gray-600">
                   Promote your brand's products by leveraging the power of
-                  influencers, creating authentic, engaging campaigns that
+                  Content Creator, creating authentic, engaging campaigns that
                   resonate with the right audience and drive measurable
                   results.
                 </p>
@@ -79,7 +79,7 @@ export default function WhyChooseUs() {
                 </h4>
                 <p className="text-gray-600">
                   Promote your brand's products by leveraging the power of
-                  influencers, creating authentic, engaging campaigns that
+                  Content Creator, creating authentic, engaging campaigns that
                   resonate with the right audience and drive measurable
                   results.
                 </p>

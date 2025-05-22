@@ -138,59 +138,52 @@ const PricingSection = () => {
 
   const plans = [
     {
-      name: 'Basic',
-      description: 'Build for individual user/need With strong to build for leaders.',
-      price: 'Free',
+      name: 'Abonnement Starter',
+      description: 'Pour les petits créateurs de contenu. Idéal si tu débutes et que tu veux gagner en visibilité auprès des marques.',
+      price: '29,99EUR/mois',
       features: [
-        'Up time Company: August 2020 and Week',
-        '50 Results Per Search',
-        '1 Member Certificate: Week',
-        '5 Most Actions Exam Back',
-        'Free Shipping Discount',
-        'Unlimited Projects',
-        'Forget Access to our design system',
-        'Create Internet-of-Thome on displays'
+        'Accès à toutes les offres disponibles',
+        'Profil optimisé dans l\'algorithme de mise en relation',
+        'Recommandations personnalisées de collaborations',
+        'Statistiques de performance de base'
       ],
-      highlight: false
+      highlight: false,
+      image: '/mnt/data/579e741b-900c-47f1-b4fb-0b4e5e094d1a.png'
     },
     {
-      name: 'Professional',
-      description: 'Build for individual who need more advanced features and...',
-      price: '$29',
+      name: 'Abonnement Pro',
+      description: 'Pour les créateurs de contenu populaires. Pour ceux qui souhaitent monétiser efficacement leur audience.',
+      price: '99,99EUR/mois',
       features: [
-        'Under Thea',
-        'Expand & Collection Exclusive',
-        'Get Card Discount',
-        'Headache Widgets',
-        'Find him All',
-        'Insert Access to our design system',
-        'Create Internet-of-Thome on displays'
+        'Accès prioritaire aux campagnes premium',
+        'Statistiques avancées et analyse de performance',
+        'Mise en avant sur la page d\'accueil',
+        'Service client dédié',
+        'Certification Brivio Pro'
       ],
-      highlight: true
+      highlight: true,
+      image: '/mnt/data/579e741b-900c-47f1-b4fb-0b4e5e094d1a.png'
     },
     {
-      name: 'Enterprise',
-      description: 'Build for business with needed permissions over more steps...',
-      price: '$99',
+      name: 'Abonnement Marques',
+      description: 'Pour les entreprises et marques qui souhaitent lancer leurs campagnes.',
+      price: '129,99EUR/mois',
       features: [
-        'Remove Brewing',
-        'Access to XOon Hero Gate Images',
-        'Upload custom icons and fonts',
-        'Unlimited Spring',
-        'View graphics & video in up to 4k',
-        'Unlimited Projects',
-        'Insert Access to our design system',
-        'Create Internet-of-Thome on displays'
+        'Création et publication de campagnes illimitées',
+        'Accès à une base d\'influenceurs qualifiés',
+        'Statistiques détaillées des campagnes',
+        'Outils de gestion et de suivi des collaborations',
+        'Assistance personnalisée pour le recrutement d\'influenceurs'
       ],
-      highlight: false
+      highlight: false,
+      image: '/mnt/data/579e741b-900c-47f1-b4fb-0b4e5e094d1a.png'
     }
   ];
-
   return (
     <div className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16" data-aos="fade-up">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Powerful features for powerful creators</h1>
+          <h1 className="text-4xl font-bold text-[#00008B] mb-4">Powerful features for powerful creators</h1>
           <p className="text-xl text-gray-600">Choose a plan that's right for you.</p>
           <div className="mt-8 h-1 bg-gradient-to-r from-transparent via-gray-300 to-transparent w-1/2 mx-auto" />
         </div>

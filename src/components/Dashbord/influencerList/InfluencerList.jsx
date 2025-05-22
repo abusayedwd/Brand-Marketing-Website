@@ -2,7 +2,7 @@ import Link from "next/link";
 import React from "react";
 
 const InfluencersList = () => {
-  const influencers = [
+  const Influencers= [
     { id: 1, name: "Madiha Qureshi", email: "madiha1@gmail.com", followers: 1200 },
     { id: 2, name: "Madiha Qureshi", email: "madiha2@gmail.com", followers: 1300 },
     { id: 3, name: "Madiha Qureshi", email: "madiha3@gmail.com", followers: 1500 },
@@ -13,7 +13,7 @@ const InfluencersList = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-xl font-semibold mb-4">All Influencers List</h2>
+      <h2 className="text-xl font-semibold mb-4">All Content Creator List</h2>
       <table className="min-w-full bg-white">
         <thead className="bg-gray-800 text-white">
           <tr>
@@ -25,7 +25,7 @@ const InfluencersList = () => {
           </tr>
         </thead>
         <tbody>
-          {influencers.map((influencer, index) => (
+          {Influencers.map((influencer, index) => (
             <tr key={influencer.id} className="border-b hover:bg-gray-100">
               <td className="py-2 px-4">{index + 1}</td>
               <td className="py-2 px-4">{influencer.name}</td>

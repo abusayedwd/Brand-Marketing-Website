@@ -15,7 +15,7 @@ const CardComponent = () => {
           <div className="text-4xl text-blue-500 mb-4">
             <FaUser />
           </div>
-          <div className="text-sm text-gray-500">Total Influencer</div>
+          <div className="text-sm text-gray-500">Total Content Creator</div>
           <div className="text-xl font-semibold text-gray-800">5000+</div>
         </div>
       </Card>
