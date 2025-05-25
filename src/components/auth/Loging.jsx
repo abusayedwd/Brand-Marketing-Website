@@ -99,18 +99,41 @@
 
 // export default LoginPage;
 "use client"
-import React from "react";
+import React, { useState } from "react";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input } from "antd";
 import Link from "next/link";
+import { useLoginMutation } from "@/redux/fetures/auth/login";
+import toast, { Toaster } from "react-hot-toast";
 
 const LoginPage = () => {
-  const onFinish = (values) => {
-    console.log("Received values:", values);
+const [error, setError] = useState('')
+  const [logingData, {isLoading}] = useLoginMutation()
+  const onFinish = async (values) => {
+    const { remember, ...cleanValues } = values;
+    console.log(cleanValues)
+    try {
+      const res = await logingData(cleanValues).unwrap();
+      console.log(res);
+
+      if (res?.code === 200) {
+          toast.success(res?.message);
+          localStorage.setItem("token", res?.data?.attributes?.tokens?.access?.token);
+          localStorage.setItem("user", JSON.stringify(res?.data));
+
+          // Force reload and redirect to root
+          setTimeout(() => {
+              window.location.href = "/";
+          }, 500);
+      }
+  } catch (error) {
+      setError(error?.data?.message || "An unexpected error occurred. Please try again.");
+  }
   };
 
   return (
     <div className="min-h-screen flex">
+      <Toaster />
       {/* Left side: Login form */}
       <div className="flex-1 flex flex-col justify-center items-center bg-blue-50 px-8">
         <div className="max-w-md w-full">
@@ -178,7 +201,7 @@ const LoginPage = () => {
               </Link>
              </div>
           
-
+         <p>{error}</p>
             <Form.Item>
               <Button
                 type="primary"

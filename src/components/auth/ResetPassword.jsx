@@ -2,10 +2,11 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, message } from 'antd';
 import { useRouter } from 'next/navigation';
-import { useResetPasswordMutation } from '@/redux/fetures/auth/resetPassword';
+ 
 import toast, { Toaster } from 'react-hot-toast';
 import { LeftOutlined, LockOutlined } from '@ant-design/icons';
 import Link from 'next/link';
+import { useResetPasswordMutation } from '@/redux/fetures/auth/resetPassword';
  
 
 
@@ -23,17 +24,22 @@ const ResetPassword = () => {
 
 
   const onFinish = async (values) => {
+    const data = {
+      email,
+      password: values?.confirmPassword,
+    }
+    console.log(data)
     setLoading(true);
     router.push('/auth/login')
-    try {
-      console.log('New password:', values.newPassword);
-      // TODO: Add API call to reset password here 
-      message.success('Password reset successfully!');
-    } catch (error) {
-      message.error('Failed to reset password.');
-    } finally {
-      setLoading(false);
-    }
+    try{
+      const res = await resetPassword(data).unwrap();
+        if(res?.code == 200){
+          toast.success(res?.message)
+          router.push(`/auth/login`);
+        }
+      }catch(error){
+        console.log(error)
+      }
   };
   
 const Back = () => {

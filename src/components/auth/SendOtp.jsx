@@ -125,6 +125,7 @@
  "use client"
 
  
+ 
 import { useVerifyEmailMutation } from '@/redux/fetures/auth/varifyEmail';
 import { LeftOutlined } from '@ant-design/icons';
 import Link from 'next/link';
@@ -162,30 +163,31 @@ const SendOtp = () => {
   const resendOtp = () => {
     console.log('clicked')
   }
+
   const handleOtp = async () => {
  console.log(data)
- router.push(`/auth/resetPassword?email=${email}`)
-  //   try {
-  //     const res = await verifyOtp(data).unwrap();
-  //     console.log(res);
+ 
+    try {
+      const res = await verifyOtp(data).unwrap();
+      console.log(res);
   
-  //     if (res?.code === 200) {
-  //         toast.success(res?.message);
+      if (res?.code === 200) {
+          toast.success(res?.message);
   
-  //         if (path === "/auth/singup") {
+          if (path === "/auth/singup") {
             
-  //             router.push(`/auth/login`);
-  //         } else if (path === "/auth/forgotPassword") {
-  //           router.push(`/auth/resetPassword?email=${email}`);
-  //         } else {
-  //             // Add any other default navigation or actions if needed
-  //         }
-  //     }
-  // } catch (error) {
-  //     console.log(error);
-  //     setEror(error?.data?.message)
-  //     // setError(error?.data?.message);
-  // } 
+              router.push(`/auth/login`);
+          } else if (path === "/auth/forgotPassword") {
+            router.push(`/auth/resetPassword?email=${email}`);
+          } else {
+              // Add any other default navigation or actions if needed
+          }
+      }
+  } catch (error) {
+      console.log(error);
+      setEror(error?.data?.message)
+      // setError(error?.data?.message);
+  } 
    
   };
 
