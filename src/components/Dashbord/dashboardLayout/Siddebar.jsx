@@ -101,12 +101,16 @@ import {
 } from '@ant-design/icons';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useLogedUserQuery } from '@/redux/fetures/user/logedUser';
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
 
+  const {data: user} = useLogedUserQuery();
+  const userRole = user?.data?.attributes?.role
+  console.log(userRole)
   // Handle responsive behavior
   useEffect(() => {
     const handleResize = () => {

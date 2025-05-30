@@ -169,6 +169,10 @@ import {
   EyeInvisibleOutlined
 } from '@ant-design/icons';
 import { Header } from 'antd/es/layout/layout';
+import { useLogedUserQuery } from '@/redux/fetures/user/logedUser';
+import url from '@/redux/api/baseUrl';
+import { useChangPasswordMutation } from '@/redux/fetures/auth/changePassword';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function DashboardHeader({ collapsed}) {
   // State for modals and mobile menu
@@ -176,6 +180,9 @@ export default function DashboardHeader({ collapsed}) {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+    const {data: user} = useLogedUserQuery();
+  console.log(user?.data?.attributes)
+  const [changePasswordd] = useChangPasswordMutation()
   // Modal handlers
   const openPasswordModal = () => setIsPasswordModalOpen(true);
   const closePasswordModal = () => setIsPasswordModalOpen(false);
@@ -195,27 +202,27 @@ export default function DashboardHeader({ collapsed}) {
     // Add your logout logic here
     console.log('Logging out...');
     // Example: Clear localStorage, cookies, etc.
-    // localStorage.removeItem('token');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     window.location.href = '/';
   };
 
   // Password change handler
-  const changePassword = (values) => {
-    console.log('Changing password with values:', values);
-    // Implement your API call to change password here
-    // Example: 
-    // api.changePassword(values)
-    //   .then(() => {
-    //     message.success('Password changed successfully!');
-    //     closePasswordModal();
-    //   })
-    //   .catch(err => {
-    //     message.error('Failed to change password');
-    //     console.error(err);
-    //   });
-    
-    // For now, just close the modal
-    closePasswordModal();
+ const changePassword = async (values) => {
+    const { confirmPassword, ...ChangePassword } = values;
+    console.log("Form Values: ", ChangePassword);
+    try{
+      const res = await changePasswordd(ChangePassword).unwrap();
+      console.log(res);
+      if(res?.code == 200){
+        toast.success(res?.message)
+        closePasswordModal(true)
+        router.push('/')
+      }
+    } catch(error) {
+      console.log(error)
+      setError(error?.data?.message)
+    }
   };
 
 
@@ -244,6 +251,7 @@ export default function DashboardHeader({ collapsed}) {
 
   return (
     <div className=''>
+      <Toaster />
       <Header
         className="p-0 h-24 bg-[#c7c8c9] shadow-md flex items-center justify-between sticky top-0 z-50"
         style={{
@@ -265,8 +273,15 @@ export default function DashboardHeader({ collapsed}) {
           />
          
         
-         
-          <h1 className="text-lg font-bold ml-4">Dashboard</h1>
+         <div>
+          <h1 className="text-lg font-bold ml-4">
+            Dashboard <br /> 
+            <span className='text-orange-400'>role: {user?.data?.attributes?.role}</span>
+            </h1>
+       
+
+         </div>
+          
         </div>
        
         {/* User profile */}
@@ -277,8 +292,8 @@ export default function DashboardHeader({ collapsed}) {
     trigger={["click"]}
   >
     <div className="flex items-center cursor-pointer">
-      <Avatar src="/images/model2.png" className='h-12 w-12' icon={<UserOutlined />} />
-      <span className="ml-2 hidden sm:inline">John Doe</span>
+      <Avatar src={url + user?.data?.attributes?.image?.url} className='h-12 w-12' icon={<UserOutlined />} />
+      <span className="ml-2 hidden sm:inline">{user?.data?.attributes?.fullName}</span>
     </div>
   </Dropdown>
 </div>
