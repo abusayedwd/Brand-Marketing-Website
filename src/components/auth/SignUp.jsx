@@ -405,7 +405,7 @@ export default function SignUpPage() {
 
   // Influencer states
   const [socialMediaList, setSocialMediaList] = useState([
-    { platform: "facebook", url: "" },
+    { platform: "facebook", url: "", followers: "" },
   ]);
   const [interestsList, setInterestsList] = useState([""]);
 
@@ -538,12 +538,13 @@ export default function SignUpPage() {
             onFinish={onFinish}
             size="large"
             key={role}
+            className=""
           >
             {/* Common fields */}
             <div className="md:flex gap-4">
               <Form.Item
                 label="Full Name"
-                className="w-full"
+                className="md:w-full"
                 name="fullName"
                 rules={[{ required: true, message: "Please enter full name!" }]}
               >
@@ -639,6 +640,7 @@ export default function SignUpPage() {
                 </div>
 
                 <div className="md:flex gap-4">
+{/* 
                   <div className="w-full">
                     <label className="block mb-1 font-medium text-gray-700">
                       Social Media Profiles
@@ -670,7 +672,9 @@ export default function SignUpPage() {
                           onChange={(e) =>
                             updateSocialMedia(idx, "url", e.target.value)
                           }
-                          style={{ width: "calc(100% - 180px)" }}
+                          // style={{ width: "280px" }}
+                          className=" md:w-[570px] w-[280px]"
+
                         />
                         {socialMediaList.length > 1 && (
                           <Button
@@ -686,11 +690,67 @@ export default function SignUpPage() {
                     <Button
                       type="dashed"
                       onClick={addSocialMedia}
-                      className="w-full"
+                      className=""
                     >
                       + Add Social Media Profile
                     </Button>
-                  </div>
+                  </div> */}
+
+                  <div className="w-full">
+  <label className="block mb-1 font-medium text-gray-700">
+    Social Media Profiles
+  </label>
+  {socialMediaList.map((item, idx) => (
+    <Space
+      key={idx}
+      style={{ display: "flex", marginBottom: 8 }}
+      align="start"
+      wrap
+    >
+      <Select
+        value={item.platform}
+        onChange={(val) => updateSocialMedia(idx, "platform", val)}
+        style={{ width: 140 }}
+        options={[
+          { label: "Facebook", value: "facebook" },
+          { label: "Instagram", value: "instagram" },
+          { label: "TikTok", value: "tiktok" },
+          { label: "YouTube", value: "youtube" },
+          { label: "Twitter", value: "twitter" },
+          { label: "LinkedIn", value: "linkedin" },
+          { label: "Snapchat", value: "snapchat" },
+        ]}
+      />
+      <Input
+        placeholder="Enter profile URL"
+        value={item.url}
+        onChange={(e) => updateSocialMedia(idx, "url", e.target.value)}
+        className="md:w-[350px] w-[160px]"
+        allowClear
+      />
+      <Input
+        placeholder="Followers"
+        value={item.followers}
+        onChange={(e) => updateSocialMedia(idx, "followers", e.target.value)}
+        className="md:w-[150px] w-[100px]"
+        allowClear
+        type="text"
+        min={0}
+      />
+      {socialMediaList.length > 1 && (
+        <Button danger onClick={() => removeSocialMedia(idx)} type="text">
+          Remove
+        </Button>
+      )}
+    </Space>
+  ))}
+  <Button type="dashed" onClick={addSocialMedia} className="mt-2 w-full">
+    + Add Social Media Profile
+  </Button>
+</div>
+
+
+
                 </div>
 
                 <div className="mt-6">
@@ -932,7 +992,7 @@ export default function SignUpPage() {
         <img
           src="/images/login.png"
           alt="Signup Banner"
-          className="object-cover w-full h-screen"
+          className="object-cover w-full h-[1300px]"
         />
       </div>
     </div>

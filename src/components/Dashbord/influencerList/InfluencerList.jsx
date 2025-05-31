@@ -1,7 +1,11 @@
+import { useGetUsersQuery } from "@/redux/fetures/user/getUsers";
 import Link from "next/link";
 import React from "react";
 
 const InfluencersList = () => {
+
+
+
   const Influencers= [
     { id: 1, name: "Madiha Qureshi", email: "madiha1@gmail.com", followers: 1200 },
     { id: 2, name: "Madiha Qureshi", email: "madiha2@gmail.com", followers: 1300 },

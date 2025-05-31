@@ -4,7 +4,7 @@ const { apiSlice } = require("@/redux/api/apiSlice");
 const getUsers = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getUsers: builder.query({
-            query: () => `/users/getAllUsers`,
+            query: () => `/users`,
             providesTags: [{type: "Profile"}]
         })
 

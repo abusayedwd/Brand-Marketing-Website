@@ -6,6 +6,7 @@ import Link from "next/link"
 import { ArrowRightOutlined, FacebookOutlined, InstagramOutlined, YoutubeOutlined } from "@ant-design/icons"
 import { Button, Card, Typography, Row, Col, Avatar } from "antd"
 import { motion, useInView, useAnimation, delay } from "framer-motion" // Import additional hooks
+import { useGetUsersQuery } from "@/redux/fetures/user/getUsers"
 
 const { Title, Paragraph, Text } = Typography
 
@@ -42,6 +43,9 @@ function ScrollReveal({ children, threshold = 0.1 }) {
 export default function InfluencersPage() {
   const [activeCategory, setActiveCategory] = useState(null)
   const [loaded, setLoaded] = useState(false)
+
+    const {data: influencers, } = useGetUsersQuery()
+  console.log(influencers)
 
   useEffect(() => {
     setLoaded(true)
