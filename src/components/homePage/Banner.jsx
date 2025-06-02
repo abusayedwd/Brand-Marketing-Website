@@ -194,11 +194,34 @@
 import { Input, Button, Card } from "antd";
 import { SearchOutlined, HeartFilled, UserOutlined } from "@ant-design/icons";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-const Banner = () => {
+const Banner = ({onSearch}) => {
+  const [searchValue, setSearchValue] = useState("");
+
+  // When input changes
+  const handleInputChange = (e) => {
+    setSearchValue(e.target.value);
+  };
+
+  // When Search button clicked
+  const handleSearch = () => {
+    console.log("Search for:", searchValue);
+    onSearch(searchValue)
+    // You can trigger your search API call or filter logic here
+  };
+
+  // When popular platform button clicked
+  const handlePopularClick = (platform) => {
+    console.log("Popular platform clicked:", platform);
+    setSearchValue(platform);
+    onSearch(platform);
+    // Optionally, trigger search/filter immediately here as well
+  };
+
+
 
     useEffect(() => {
         AOS.init({
@@ -207,6 +230,7 @@ const Banner = () => {
           once: true, // whether animation should happen only once or every time
         });
       }, []);
+
       
 
 
@@ -223,7 +247,8 @@ const Banner = () => {
       <div className="md:container mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           {/* Left side - Text content */}
-          <div className="space-y-4 md:space-y-6">
+
+          {/* <div className="space-y-4 md:space-y-6">
             <p className="text-white font-medium tracking-wide uppercase text-xs sm:text-sm">
               GO TO YOUR CONTENT CREATOR PLATFORM
             </p>
@@ -291,7 +316,77 @@ const Banner = () => {
                 </div>
               </div>
             </div>
+          </div> */}
+           <div className="space-y-4 md:space-y-6">
+      <p className="text-white font-medium tracking-wide uppercase text-xs sm:text-sm">
+        GO TO YOUR CONTENT CREATOR PLATFORM
+      </p>
+
+      <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#060C8C]">
+        <span className="block mb-2">Connecting Your</span>
+        <span className="block mb-2">Brand With The</span>
+        <span className="block">Right Voices</span>
+      </h1>
+
+      <div className="relative h-2">
+        <div className="absolute w-36 md:w-48 h-1 bg-gradient-to-r from-orange-300 to-orange-200 rounded-full"></div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-2">
+        <Input
+          placeholder="Search by name & profession"
+          prefix={<SearchOutlined style={{ color: "#9ca3af" }} />}
+          className="py-2 rounded-md text-gray-700"
+          style={{
+            height: "44px",
+            background: "linear-gradient(to right, #F4F7FC, #91939629)",
+            border: "none",
+          }}
+          value={searchValue}
+          onChange={handleInputChange}
+          onPressEnter={handleSearch} // optional: search on Enter key
+        />
+        <Button
+          type="primary"
+          className="py-2 rounded-md text-white"
+          style={{
+            height: "44px",
+            background: "linear-gradient(to right, #3b82f6, #22c55e)",
+          }}
+          onClick={handleSearch}
+        >
+          Search
+        </Button>
+      </div>
+
+      <div className="pt-2 md:pt-4">
+        <div className="flex flex-wrap items-center gap-2 md:gap-3">
+          <span className="text-gray-800 text-sm md:text-base font-medium">
+            Popular search by
+          </span>
+          <div className="flex flex-wrap gap-2">
+            {["TikTok", "Facebook", "Instagram", "YouTube", "Snapchat", "Twitter"].map(
+              (platform) => (
+                <Button
+                  key={platform}
+                  shape="round"
+                  className="bg-transparent border border-gray-300 text-xs md:text-sm"
+                  style={{
+                    borderRadius: "30px",
+                    padding: "4px 12px",
+                    background: "linear-gradient(to right, #F4F7FC, #91939629)",
+                  }}
+                  onClick={() => handlePopularClick(platform)}
+                >
+                  {platform}
+                </Button>
+              )
+            )}
           </div>
+        </div>
+      </div>
+    </div>
+
 
           {/* Right side - Image cards */}
           <div className="relative h-[300px] sm:h-[400px] md:h-[500px] mt-8 lg:mt-0">

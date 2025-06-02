@@ -2,7 +2,6 @@
 
 
 
-
 // "use client";
 // import React, { useState, useEffect } from "react";
 // import { 
@@ -38,6 +37,8 @@
 //   const router = useRouter();
 //   const { data: profile } = useLogedUserQuery();
 //   const user = profile?.data?.attributes;
+//   const id = user?.id 
+//   // console.log(id)
 
 //   const [updateUser, {isLoading}] = useUpdateUserMutation()
 
@@ -66,13 +67,17 @@
 //         setImageUrl(`${url}${user.image.url}`);
 //       }
 
-//       // Set social media
-//       if (user.socialMedia?.length > 0) {
-//         setSocialMediaInputs(user.socialMedia);
+//       // Set social media for influencers
+//       if (user.role === 'influencer' && user.socialMedia?.length > 0) {
+//         setSocialMediaInputs(user.socialMedia.map(social => ({
+//           platform: social.platform,
+//           url: social.url,
+//           followers: social.followers || ""
+//         })));
 //       }
 
 //       // Set interests for influencers
-//       if (user.interests?.length > 0) {
+//       if (user.role === 'influencer' && user.interests?.length > 0) {
 //         setInterestTags(user.interests);
 //       }
 //     }
@@ -113,19 +118,85 @@
 //     setInterestTags(interestTags.filter(tag => tag !== tagToRemove));
 //   };
 
-//   const handleFormSubmit = (values) => {
-//     const formData = {
-//       ...values,
-//       dateOfBirth: values.dateOfBirth ? values.dateOfBirth.toISOString() : null,
-//       socialMedia: socialMediaInputs.filter(social => social.platform && social.url),
-//       interests: interestTags,
-//       image: fileList[0]?.originFileObj || null,
-//     };
-    
-//     console.log("Updated Profile Data:", formData);
-//     message.success("Profile updated successfully!");
-//     // Here you would typically make an API call to update the profile
-//     // router.push("/dashboard/profile");
+//   const handleFormSubmit = async (values) => {
+//     try {
+//       // Create FormData for file upload
+//       const formData = new FormData();
+      
+//       // Common fields for both roles
+//       const commonFields = ['fullName', 'userName', 'email', 'phoneNumber', 'address'];
+      
+//       // Role-specific fields
+//       const influencerFields = ['bio'];
+//       const brandFields = ['companyName', 'industry', 'website', 'companyDescription', 'previousExperience'];
+      
+//       // Add common fields
+//       commonFields.forEach(key => {
+//         if (values[key] !== undefined && values[key] !== null && values[key] !== '') {
+//           formData.append(key, values[key]);
+//         }
+//       });
+
+//       // Add date of birth if exists
+//       if (values.dateOfBirth) {
+//         formData.append('dateOfBirth', values.dateOfBirth.toISOString());
+//       }
+
+//       // Add role-specific fields
+//       if (user?.role === 'influencer') {
+//         // Add influencer-specific fields
+//         influencerFields.forEach(key => {
+//           if (values[key] !== undefined && values[key] !== null) {
+//             formData.append(key, values[key]);
+//           }
+//         });
+
+//         // Add social media for influencers
+//         if (socialMediaInputs.length > 0) {
+//           const validSocialMedia = socialMediaInputs.filter(social => 
+//             social.platform && social.url && social.platform.trim() && social.url.trim()
+//           );
+//           if (validSocialMedia.length > 0) {
+//             formData.append('socialMedia', JSON.stringify(validSocialMedia));
+//           }
+//         }
+
+//         // Add interests for influencers
+//         if (interestTags.length > 0) {
+//           formData.append('interests', JSON.stringify(interestTags));
+//         }
+//       } else if (user?.role === 'brand') {
+//         // Add brand-specific fields
+//         brandFields.forEach(key => {
+//           if (values[key] !== undefined && values[key] !== null) {
+//             formData.append(key, values[key]);
+//           }
+//         });
+
+//         // Clear influencer-specific fields for brands
+//         formData.append('bio', '');
+//         formData.append('socialMedia', JSON.stringify([]));
+//         formData.append('interests', JSON.stringify([]));
+//       }
+
+//       // Add image file if exists
+//       if (fileList[0]?.originFileObj) {
+//         formData.append('image', fileList[0].originFileObj);
+//       }
+
+//       // Call the update mutation
+//       const response = await updateUser({formData, id}).unwrap();
+//       console.log('Update response:', response);
+      
+//       message.success("Profile updated successfully!");
+      
+//       // Redirect to profile page after successful update
+//       router.push("/dashboard/profile");
+      
+//     } catch (error) {
+//       console.error("Update failed:", error);
+//       message.error(error?.data?.message || "Failed to update profile. Please try again.");
+//     }
 //   };
 
 //   const renderInfluencerFields = () => (
@@ -294,7 +365,7 @@
 //   return (
 //     <div className="md:w-[70%] mx-auto md:py-24 px-4 md:px-8">
 //       <h1 className="text-3xl md:text-4xl mt-5 font-bold text-green-700 text-center md:mb-8">
-//         Edit Profile
+//         Edit {user?.role === 'influencer' ? 'Influencer' : 'Brand'} Profile
 //       </h1>
 
 //       <div className="bg-white shadow-md py-10 rounded-lg p-6">
@@ -397,9 +468,10 @@
 //             <Button 
 //               type="primary" 
 //               htmlType="submit"
+//               loading={isLoading}
 //               className="!bg-green-500 hover:!bg-green-400 px-8"
 //             >
-//               Save Changes
+//               {isLoading ? "Saving..." : "Save Changes"}
 //             </Button>
 //           </div>
 //         </Form>
@@ -413,17 +485,17 @@
 
 "use client";
 import React, { useState, useEffect } from "react";
-import { 
-  Button, 
-  Input, 
-  Form, 
-  Image, 
-  Upload, 
-  DatePicker, 
-  Select, 
+import {
+  Button,
+  Input,
+  Form,
+  Image,
+  Upload,
+  DatePicker,
+  Select,
   Tag,
   message,
-  Space
+  Space,
 } from "antd";
 import { LuImagePlus, LuX } from "react-icons/lu";
 import { useRouter } from "next/navigation";
@@ -437,21 +509,23 @@ const { TextArea } = Input;
 
 const EditProfile = () => {
   const [form] = Form.useForm();
+  const router = useRouter();
+
+  const { data: profile } = useLogedUserQuery();
+  const user = profile?.data?.attributes;
+  const id = user?.id;
+
+  const [updateUser, { isLoading }] = useUpdateUserMutation();
+
   const [fileList, setFileList] = useState([]);
   const [imageUrl, setImageUrl] = useState("");
   const [socialMediaInputs, setSocialMediaInputs] = useState([]);
   const [interestTags, setInterestTags] = useState([]);
   const [newInterest, setNewInterest] = useState("");
-  
-  const router = useRouter();
-  const { data: profile } = useLogedUserQuery();
-  const user = profile?.data?.attributes;
-
-  const [updateUser, {isLoading}] = useUpdateUserMutation()
 
   useEffect(() => {
     if (user) {
-      // Set initial form values
+      // Initialize form fields
       form.setFieldsValue({
         fullName: user.fullName,
         userName: user.userName,
@@ -459,9 +533,7 @@ const EditProfile = () => {
         phoneNumber: user.phoneNumber,
         address: user.address,
         dateOfBirth: user.dateOfBirth ? dayjs(user.dateOfBirth) : null,
-        // Influencer fields
         bio: user.bio || "",
-        // Brand fields
         companyName: user.companyName || "",
         industry: user.industry || "",
         website: user.website || "",
@@ -469,23 +541,27 @@ const EditProfile = () => {
         previousExperience: user.previousExperience || "",
       });
 
-      // Set profile image
-      if (user.image?.url) {
-        setImageUrl(`${url}${user.image.url}`);
-      }
+      // Set profile image url
+      if (user.image?.url) setImageUrl(`${url}${user.image.url}`);
 
       // Set social media for influencers
-      if (user.role === 'influencer' && user.socialMedia?.length > 0) {
-        setSocialMediaInputs(user.socialMedia.map(social => ({
-          platform: social.platform,
-          url: social.url,
-          followers: social.followers || ""
-        })));
+      if (user.role === "influencer" && user.socialMedia?.length) {
+        setSocialMediaInputs(
+          user.socialMedia.map((s) => ({
+            platform: s.platform,
+            url: s.url,
+            followers: s.followers || "",
+          }))
+        );
+      } else {
+        setSocialMediaInputs([{ platform: "", url: "", followers: "" }]);
       }
 
       // Set interests for influencers
-      if (user.role === 'influencer' && user.interests?.length > 0) {
+      if (user.role === "influencer" && user.interests?.length) {
         setInterestTags(user.interests);
+      } else {
+        setInterestTags([]);
       }
     }
   }, [user, form]);
@@ -499,149 +575,99 @@ const EditProfile = () => {
     }
   };
 
-  const addSocialMedia = () => {
+  // Social media handlers
+  const addSocialMedia = () =>
     setSocialMediaInputs([...socialMediaInputs, { platform: "", url: "", followers: "" }]);
-  };
-
-  const removeSocialMedia = (index) => {
-    const newInputs = socialMediaInputs.filter((_, i) => i !== index);
-    setSocialMediaInputs(newInputs);
-  };
-
+  const removeSocialMedia = (index) =>
+    setSocialMediaInputs(socialMediaInputs.filter((_, i) => i !== index));
   const updateSocialMedia = (index, field, value) => {
     const newInputs = [...socialMediaInputs];
     newInputs[index][field] = value;
     setSocialMediaInputs(newInputs);
   };
 
+  // Interests handlers
   const addInterest = () => {
     if (newInterest.trim() && !interestTags.includes(newInterest.trim())) {
       setInterestTags([...interestTags, newInterest.trim()]);
       setNewInterest("");
     }
   };
+  const removeInterest = (tag) => setInterestTags(interestTags.filter((t) => t !== tag));
 
-  const removeInterest = (tagToRemove) => {
-    setInterestTags(interestTags.filter(tag => tag !== tagToRemove));
-  };
-
+  // Form submit handler
   const handleFormSubmit = async (values) => {
+    console.log(values)
     try {
-      // Create FormData for file upload
+      
       const formData = new FormData();
-      
-      // Common fields for both roles
-      const commonFields = ['fullName', 'userName', 'email', 'phoneNumber', 'address'];
-      
-      // Role-specific fields
-      const influencerFields = ['bio'];
-      const brandFields = ['companyName', 'industry', 'website', 'companyDescription', 'previousExperience'];
-      
-      // Add common fields
-      commonFields.forEach(key => {
-        if (values[key] !== undefined && values[key] !== null && values[key] !== '') {
-          formData.append(key, values[key]);
-        }
+
+      // Append common fields
+      ["fullName", "userName", "phoneNumber", "address"].forEach((key) => {
+        if (values[key]) formData.append(key, values[key]);
       });
 
-      // Add date of birth if exists
       if (values.dateOfBirth) {
-        formData.append('dateOfBirth', values.dateOfBirth.toISOString());
+        formData.append("dateOfBirth", values.dateOfBirth.toISOString());
       }
 
-      // Add role-specific fields
-      if (user?.role === 'influencer') {
-        // Add influencer-specific fields
-        influencerFields.forEach(key => {
-          if (values[key] !== undefined && values[key] !== null) {
-            formData.append(key, values[key]);
-          }
-        });
+      // Append email (usually readonly but included for completeness)
+      if (values.email) formData.append("email", values.email);
 
-        // Add social media for influencers
-        if (socialMediaInputs.length > 0) {
-          const validSocialMedia = socialMediaInputs.filter(social => 
-            social.platform && social.url && social.platform.trim() && social.url.trim()
-          );
-          if (validSocialMedia.length > 0) {
-            formData.append('socialMedia', JSON.stringify(validSocialMedia));
+      // Append role specific fields
+      if (user.role === "influencer") {
+        formData.append("bio", values.bio || "");
+        formData.append("socialMedia", JSON.stringify(socialMediaInputs));
+        formData.append("interests", JSON.stringify(interestTags));
+      } else if (user.role === "brand") {
+        ["companyName", "industry", "website", "companyDescription", "previousExperience"].forEach(
+          (key) => {
+            if (values[key]) formData.append(key, values[key]);
           }
-        }
-
-        // Add interests for influencers
-        if (interestTags.length > 0) {
-          formData.append('interests', JSON.stringify(interestTags));
-        }
-      } else if (user?.role === 'brand') {
-        // Add brand-specific fields
-        brandFields.forEach(key => {
-          if (values[key] !== undefined && values[key] !== null) {
-            formData.append(key, values[key]);
-          }
-        });
-
-        // Clear influencer-specific fields for brands
-        formData.append('bio', '');
-        formData.append('socialMedia', JSON.stringify([]));
-        formData.append('interests', JSON.stringify([]));
+        );
+        // Clear influencer-only fields
+        formData.append("bio", "");
+        formData.append("socialMedia", JSON.stringify([]));
+        formData.append("interests", JSON.stringify([]));
       }
 
-      // Add image file if exists
+      // Append image file if selected
       if (fileList[0]?.originFileObj) {
-        formData.append('image', fileList[0].originFileObj);
+        formData.append("image", fileList[0].originFileObj);
       }
 
-      // Call the update mutation
-      const response = await updateUser(formData).unwrap();
-      console.log('Update response:', response);
-      
+      // Call API update
+      const response = await updateUser({ formData, id }).unwrap();
       message.success("Profile updated successfully!");
-      
-      // Redirect to profile page after successful update
       router.push("/dashboard/profile");
-      
     } catch (error) {
-      console.error("Update failed:", error);
-      message.error(error?.data?.message || "Failed to update profile. Please try again.");
+      message.error(error?.data?.message || "Failed to update profile.");
     }
   };
 
+  // Render influencer fields
   const renderInfluencerFields = () => (
     <>
-      <Form.Item
-        label="Bio"
-        name="bio"
-        rules={[{ required: false }]}
-      >
-        <TextArea 
-          rows={4} 
-          placeholder="Tell us about yourself..."
-          className="rounded-md"
-        />
+      <Form.Item label="Bio" name="bio">
+        <TextArea rows={4} placeholder="Tell us about yourself" />
       </Form.Item>
 
       <Form.Item label="Interests">
-        <div className="space-y-3">
-          <div className="flex gap-2">
+        <div className="space-y-2">
+          <Space>
             <Input
+              placeholder="Add interest"
               value={newInterest}
               onChange={(e) => setNewInterest(e.target.value)}
-              placeholder="Add an interest"
               onPressEnter={addInterest}
-              className="flex-1"
             />
-            <Button onClick={addInterest} type="dashed">
+            <Button type="dashed" onClick={addInterest}>
               Add
             </Button>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {interestTags.map((tag, index) => (
-              <Tag
-                key={index}
-                closable
-                onClose={() => removeInterest(tag)}
-                color="green"
-              >
+          </Space>
+          <div>
+            {interestTags.map((tag) => (
+              <Tag closable onClose={() => removeInterest(tag)} key={tag}>
                 {tag}
               </Tag>
             ))}
@@ -649,55 +675,51 @@ const EditProfile = () => {
         </div>
       </Form.Item>
 
-      <Form.Item label="Social Media Platforms">
-        <div className="space-y-3">
-          {socialMediaInputs.map((social, index) => (
-            <div key={index} className="flex gap-2 items-end">
-              <div className="flex-1">
-                <Select
-                  placeholder="Platform"
-                  value={social.platform}
-                  onChange={(value) => updateSocialMedia(index, 'platform', value)}
-                  className="w-full"
-                >
-                  <Option value="facebook">Facebook</Option>
-                  <Option value="instagram">Instagram</Option>
-                  <Option value="twitter">Twitter</Option>
-                  <Option value="youtube">YouTube</Option>
-                  <Option value="tiktok">TikTok</Option>
-                  <Option value="linkedin">LinkedIn</Option>
-                </Select>
-              </div>
-              <div className="flex-1">
-                <Input
-                  placeholder="Profile URL"
-                  value={social.url}
-                  onChange={(e) => updateSocialMedia(index, 'url', e.target.value)}
-                />
-              </div>
-              <div className="flex-1">
-                <Input
-                  placeholder="Followers (e.g., 10k)"
-                  value={social.followers}
-                  onChange={(e) => updateSocialMedia(index, 'followers', e.target.value)}
-                />
-              </div>
-              <Button
-                type="text"
-                danger
-                icon={<LuX />}
-                onClick={() => removeSocialMedia(index)}
-              />
-            </div>
-          ))}
-          <Button type="dashed" onClick={addSocialMedia} block>
-            Add Social Media Platform
-          </Button>
-        </div>
+      <Form.Item label="Social Media Profiles">
+        {socialMediaInputs.map((social, idx) => (
+          <Space key={idx} align="start" className="mb-2" wrap>
+            <Select
+              value={social.platform}
+              onChange={(val) => updateSocialMedia(idx, "platform", val)}
+              placeholder="Platform"
+              style={{ width: 140 }}
+            >
+              <Option value="facebook">Facebook</Option>
+              <Option value="instagram">Instagram</Option>
+              <Option value="twitter">Twitter</Option>
+              <Option value="youtube">YouTube</Option>
+              <Option value="tiktok">TikTok</Option>
+              <Option value="linkedin">LinkedIn</Option>
+            </Select>
+            <Input
+              placeholder="Profile URL"
+              value={social.url}
+              onChange={(e) => updateSocialMedia(idx, "url", e.target.value)}
+              style={{ width: 300 }}
+            />
+            <Input
+              placeholder="Followers"
+              value={social.followers}
+              onChange={(e) => updateSocialMedia(idx, "followers", e.target.value)}
+              style={{ width: 150 }}
+              type="number"
+              min={0}
+            />
+            {socialMediaInputs.length > 1 && (
+              <Button danger type="text" onClick={() => removeSocialMedia(idx)}>
+                Remove
+              </Button>
+            )}
+          </Space>
+        ))}
+        <Button type="dashed" onClick={addSocialMedia} block>
+          Add Social Media Profile
+        </Button>
       </Form.Item>
     </>
   );
 
+  // Render brand fields
   const renderBrandFields = () => (
     <>
       <Form.Item
@@ -705,7 +727,7 @@ const EditProfile = () => {
         name="companyName"
         rules={[{ required: true, message: "Please enter company name" }]}
       >
-        <Input placeholder="Enter company name" className="rounded-md" />
+        <Input placeholder="Company Name" />
       </Form.Item>
 
       <Form.Item
@@ -713,7 +735,7 @@ const EditProfile = () => {
         name="industry"
         rules={[{ required: true, message: "Please select industry" }]}
       >
-        <Select placeholder="Select industry" className="rounded-md">
+        <Select placeholder="Select Industry">
           <Option value="Technology">Technology</Option>
           <Option value="Healthcare">Healthcare</Option>
           <Option value="Finance">Finance</Option>
@@ -729,9 +751,9 @@ const EditProfile = () => {
       <Form.Item
         label="Website"
         name="website"
-        rules={[{ type: 'url', message: 'Please enter a valid URL' }]}
+        rules={[{ type: "url", message: "Please enter a valid URL" }]}
       >
-        <Input placeholder="https://yourwebsite.com" className="rounded-md" />
+        <Input placeholder="https://yourwebsite.com" />
       </Form.Item>
 
       <Form.Item
@@ -739,24 +761,15 @@ const EditProfile = () => {
         name="companyDescription"
         rules={[{ required: true, message: "Please enter company description" }]}
       >
-        <TextArea 
-          rows={4} 
-          placeholder="Describe your company and what you do..."
-          className="rounded-md"
-        />
+        <TextArea rows={4} placeholder="Describe your company" />
       </Form.Item>
 
       <Form.Item
-        label="Previous Experience with Influencer Marketing"
+        label="Previous Experience"
         name="previousExperience"
-        rules={[{ required: true, message: "Please select your experience level" }]}
+        rules={[{ required: true, message: "Please enter previous experience" }]}
       >
-        <Select placeholder="Select experience level" className="rounded-md">
-          <Option value="none">No previous experience</Option>
-          <Option value="limited">Limited experience (1-5 campaigns)</Option>
-          <Option value="moderate">Moderate experience (6-20 campaigns)</Option>
-          <Option value="extensive">Extensive experience (20+ campaigns)</Option>
-        </Select>
+        <Input placeholder="Previous experience with influencer marketing" />
       </Form.Item>
     </>
   );
@@ -772,25 +785,20 @@ const EditProfile = () => {
   return (
     <div className="md:w-[70%] mx-auto md:py-24 px-4 md:px-8">
       <h1 className="text-3xl md:text-4xl mt-5 font-bold text-green-700 text-center md:mb-8">
-        Edit {user?.role === 'influencer' ? 'Influencer' : 'Brand'} Profile
+        Edit {user.role === "influencer" ? "Influencer" : "Brand"} Profile
       </h1>
 
       <div className="bg-white shadow-md py-10 rounded-lg p-6">
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleFormSubmit}
-          className="space-y-4"
-        >
-          {/* Profile Image Upload */}
+        <Form form={form} layout="vertical" onFinish={handleFormSubmit}>
+          {/* Profile Picture Upload */}
           <Form.Item label="Profile Picture">
-            <div className="flex items-center gap-4">
+            <Space align="center" size="middle">
               <Image
                 width={120}
                 height={120}
                 src={imageUrl || "/images/user4.jpg"}
-                className="rounded-full object-cover"
                 alt="Profile"
+                className="rounded-full object-cover"
               />
               <Upload
                 listType="picture"
@@ -802,7 +810,7 @@ const EditProfile = () => {
               >
                 <Button icon={<LuImagePlus />}>Upload New Photo</Button>
               </Upload>
-            </div>
+            </Space>
           </Form.Item>
 
           {/* Common Fields */}
@@ -810,75 +818,43 @@ const EditProfile = () => {
             <Form.Item
               label="Full Name"
               name="fullName"
-              rules={[{ required: true, message: "Please enter your full name" }]}
+              rules={[{ required: true, message: "Please enter full name" }]}
             >
-              <Input placeholder="Enter full name" className="rounded-md" />
+              <Input />
             </Form.Item>
-
             <Form.Item
               label="Username"
               name="userName"
               rules={[{ required: true, message: "Please enter username" }]}
             >
-              <Input placeholder="Enter username" className="rounded-md" />
+              <Input />
             </Form.Item>
-
-            <Form.Item
-              label="Email"
-              name="email"
-              rules={[
-                { required: true, message: "Please enter email" },
-                { type: "email", message: "Please enter valid email" }
-              ]}
-            >
-              <Input placeholder="Enter email" className="rounded-md" disabled />
+            <Form.Item label="Email" name="email">
+              <Input disabled />
             </Form.Item>
-
             <Form.Item
               label="Phone Number"
               name="phoneNumber"
               rules={[{ required: true, message: "Please enter phone number" }]}
             >
-              <Input placeholder="Enter phone number" className="rounded-md" />
+              <Input />
             </Form.Item>
-
-            <Form.Item
-              label="Address"
-              name="address"
-            >
-              <Input placeholder="Enter address" className="rounded-md" />
+            <Form.Item label="Address" name="address">
+              <Input />
             </Form.Item>
-
-            <Form.Item
-              label="Date of Birth"
-              name="dateOfBirth"
-            >
-              <DatePicker
-                className="w-full rounded-md"
-                placeholder="Select date of birth"
-                format="DD/MM/YYYY"
-              />
+            <Form.Item label="Date of Birth" name="dateOfBirth">
+              <DatePicker format="DD/MM/YYYY" />
             </Form.Item>
           </div>
 
-          {/* Role-specific fields */}
-          {user?.role === 'influencer' ? renderInfluencerFields() : renderBrandFields()}
+          {/* Role specific fields */}
+          {user.role === "influencer" ? renderInfluencerFields() : renderBrandFields()}
 
-          {/* Action Buttons */}
-          <div className="flex gap-4 justify-end pt-6">
-            <Button 
-              onClick={() => router.push("/dashboard/profile")}
-              className="px-8"
-            >
-              Cancel
-            </Button>
-            <Button 
-              type="primary" 
-              htmlType="submit"
-              loading={isLoading}
-              className="!bg-green-500 hover:!bg-green-400 px-8"
-            >
-              {isLoading ? "Saving..." : "Save Changes"}
+          {/* Buttons */}
+          <div className="flex justify-end gap-4 pt-6">
+            <Button onClick={() => router.push("/dashboard/profile")}>Cancel</Button>
+            <Button onClick={handleFormSubmit} type="primary" htmlType="submit" loading={isLoading}>
+              Save Changes
             </Button>
           </div>
         </Form>

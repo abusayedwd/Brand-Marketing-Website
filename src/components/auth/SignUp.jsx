@@ -712,13 +712,12 @@ export default function SignUpPage() {
         onChange={(val) => updateSocialMedia(idx, "platform", val)}
         style={{ width: 140 }}
         options={[
-          { label: "Facebook", value: "facebook" },
-          { label: "Instagram", value: "instagram" },
-          { label: "TikTok", value: "tiktok" },
-          { label: "YouTube", value: "youtube" },
-          { label: "Twitter", value: "twitter" },
-          { label: "LinkedIn", value: "linkedin" },
-          { label: "Snapchat", value: "snapchat" },
+          { label: "Facebook", value: "Facebook" },
+          { label: "Instagram", value: "Instagram" },
+          { label: "TikTok", value: "TikTok" },
+          { label: "YouTube", value: "YouTube" },
+          { label: "Twitter", value: "Twitter" }, 
+          { label: "Snapchat", value: "Snapchat" },
         ]}
       />
       <Input

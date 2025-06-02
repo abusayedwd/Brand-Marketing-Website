@@ -2,6 +2,7 @@
 
 "use client";
  
+import AllInfluencer from "@/components/homePage/AllInfluencer";
 import Banner from "@/components/homePage/Banner";
 import InfluencersPage from "@/components/homePage/Influencer";
 import BrivoMarquee from "@/components/homePage/MarqueeLogo";
@@ -14,16 +15,23 @@ import React, { useState } from "react";
  
 
 export default function Home() {
-  // const [searchCriteria, setSearchCriteria] = useState(null);
+  const [searchCriteria, setSearchCriteria] = useState(null);
 
-  // const handleSearch = (criteria) => {
-  //   setSearchCriteria(criteria);
-  // };
+  const handleSearch = (platform) => {
+    setSearchCriteria(platform);
+  };
 
   return (
     <div>
     
-       <Banner />
+           {/* Banner Component */}
+      <Banner onSearch={handleSearch} />
+
+      {/* Conditionally render AllProperty if searchCriteria exists */}
+      {searchCriteria && <AllInfluencer searchCriteria={searchCriteria} />}
+
+        {!searchCriteria && (
+        <>
        <BrivoMarquee />
        <Service />
        <InfluencersPage />
@@ -32,7 +40,8 @@ export default function Home() {
        <TestimonialsGrid />
        <PricingSection />
 
-
+ </>
+      )}
     
       
     </div>

@@ -46,12 +46,28 @@ export default function InfluencersPage() {
 
     const {data: influencers, } = useGetUsersQuery()
   console.log(influencers)
-
+console.log(activeCategory)
   useEffect(() => {
     setLoaded(true)
   }, [])
 
-  const categories = ["Technology", "Sports", "Fashion", "Food", "Music", "skin care", "Eco friendly"]
+   const categories = [
+  "Fashion & Style",
+  "Beauty & Cosmetics",
+  "Food & Cooking",
+  "Travel & Adventure",
+  "Fitness & Health",
+  "Technology & Gadgets",
+  "Gaming",
+  "Music & Entertainment",
+  "Art & Design",
+  "Business & Finance",
+  "Education & Learning",
+  "Parenting & Family",
+  "Sports",
+  "Home & Garden",
+  "Photography"
+];
 
   const Influencers= [
     {
