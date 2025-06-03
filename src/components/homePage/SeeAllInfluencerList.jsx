@@ -431,7 +431,7 @@ function ScrollReveal({ children, threshold = 0.1 }) {
   )
 }
 
-export default function InfluencersPage() {
+export default function SeeAllInfluencerList() {
   const [activeCategory, setActiveCategory] = useState(null)
   const [loaded, setLoaded] = useState(false)
 
@@ -599,15 +599,7 @@ export default function InfluencersPage() {
               </Button>
             </motion.div>
           ))}
-          <motion.div
-            className="ml-auto"
-            whileHover={{ x: 5 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Link href="/influencer" className="flex items-center text-blue-600 font-medium hover-link">
-              See all <ArrowRightOutlined style={{ marginLeft: 4 }} />
-            </Link>
-          </motion.div>
+        
         </div>
       </ScrollReveal>
 

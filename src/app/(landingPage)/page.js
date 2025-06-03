@@ -5,6 +5,7 @@
 import AllInfluencer from "@/components/homePage/AllInfluencer";
 import Banner from "@/components/homePage/Banner";
 import InfluencersPage from "@/components/homePage/Influencer";
+import InfluencerSinglePage from "@/components/homePage/InfluencerDetailsPage";
 import BrivoMarquee from "@/components/homePage/MarqueeLogo";
 import PricingSection from "@/components/homePage/PricingPlan";
 import Service from "@/components/homePage/Service";
@@ -35,6 +36,7 @@ export default function Home() {
        <BrivoMarquee />
        <Service />
        <InfluencersPage />
+       {/* <InfluencerSinglePage /> */}
        <HowItWorks />
        <WhyChooseUs />
        <TestimonialsGrid />

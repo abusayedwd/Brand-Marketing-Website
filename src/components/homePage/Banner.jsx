@@ -198,7 +198,7 @@ import { useEffect, useState } from "react";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-const Banner = ({onSearch}) => {
+const Banner = ({ onSearch }) => {
   const [searchValue, setSearchValue] = useState("");
 
   // When input changes
@@ -209,16 +209,16 @@ const Banner = ({onSearch}) => {
   // When Search button clicked
   const handleSearch = () => {
     console.log("Search for:", searchValue);
-    onSearch(searchValue)
-    // You can trigger your search API call or filter logic here
+    // Send both searchValue and platform (null here)
+    onSearch({ searchValue, platform: "" });
   };
 
   // When popular platform button clicked
   const handlePopularClick = (platform) => {
     console.log("Popular platform clicked:", platform);
-    setSearchValue(platform);
-    onSearch(platform);
-    // Optionally, trigger search/filter immediately here as well
+    // setSearchValue(platform);
+    // Send both values, here platform is clicked
+    onSearch({ searchValue: searchValue, platform });
   };
 
 
