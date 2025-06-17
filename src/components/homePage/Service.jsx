@@ -152,7 +152,7 @@ export default function Service() {
     },
     {
       title: "Professional Content Creation",
-      image: "/images/service_3.png",
+      image: "/images/content.jpg",
       description: "Create high-quality assets for your marketing campaigns with expert creators."
     },
     {
@@ -212,11 +212,11 @@ export default function Service() {
               }`}
               style={{ transitionDelay: `${300 + (index * 100)}ms` }}
             >
-              <div className="h-56 relative overflow-hidden">
+              <div className="h-64 relative overflow-hidden">
                 <img 
                   src={service.image} 
                   alt={service.title}
-                  className="w-full h-full object-center transition-transform duration-700 group-hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-30 transition-opacity duration-300">
                   <div className="p-4 text-white absolute bottom-0 left-0">
@@ -232,7 +232,7 @@ export default function Service() {
                 <Button 
                   type="primary" 
                   ghost 
-                  className="self-start border-white text-white hover:bg-white hover:text-blue-600 transform transition-all duration-500 delay-150 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100"
+                  className="self-end border-white text-white hover:bg-white hover:text-blue-600 transform transition-all duration-500 delay-150 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100"
                 >
                   Learn more
                 </Button>

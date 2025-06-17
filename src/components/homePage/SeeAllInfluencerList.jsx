@@ -643,9 +643,12 @@ export default function SeeAllInfluencerList() {
                           whileHover={{ opacity: 1 }}
                           className="absolute inset-0 bg-blue-500 bg-opacity-10 rounded-full flex items-center justify-center"
                         >
+                            <Link href={`/influencer/${influencer.id}`}>
+                            
                           <div className="bg-white bg-opacity-80 px-2 py-1 rounded text-xs font-bold text-blue-500">
                             View Profile
                           </div>
+                            </Link>
                         </motion.div>
                       </motion.div>
                       

@@ -476,7 +476,7 @@ export default function InfluencersPage() {
   }
 
   // Map API data to component structure
-  const influencers = influencersResponse?.data?.attributes?.results?.map(influencer => ({
+  const influencers = influencersResponse?.data?.attributes?.results?.slice(0,3)?.map(influencer => ({
     id: influencer.id,
     name: influencer.fullName,
     userName: influencer.userName,
@@ -651,9 +651,12 @@ export default function InfluencersPage() {
                           whileHover={{ opacity: 1 }}
                           className="absolute inset-0 bg-blue-500 bg-opacity-10 rounded-full flex items-center justify-center"
                         >
+                            <Link href={`/influencer/${influencer.id}`}>
+                            
                           <div className="bg-white bg-opacity-80 px-2 py-1 rounded text-xs font-bold text-blue-500">
                             View Profile
                           </div>
+                            </Link>
                         </motion.div>
                       </motion.div>
                       

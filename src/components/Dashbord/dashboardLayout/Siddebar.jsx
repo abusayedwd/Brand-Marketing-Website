@@ -1,16 +1,31 @@
-// "use client";
 
+
+
+ 
+// "use client";
 // import { useState, useEffect } from 'react';
 // import { Menu } from 'antd';
-// import { HomeOutlined, UserOutlined, SettingOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+// import { 
+//   HomeOutlined, 
+//   UserOutlined, 
+//   AppstoreAddOutlined, 
+//   WalletOutlined, 
+//   FileSearchOutlined, 
+//   MenuFoldOutlined, 
+//   MenuUnfoldOutlined 
+// } from '@ant-design/icons';
 // import Link from 'next/link';
 // import { usePathname } from 'next/navigation';
+// import { useLogedUserQuery } from '@/redux/fetures/user/logedUser';
 
 // export default function Sidebar() {
 //   const [collapsed, setCollapsed] = useState(false);
 //   const [isMobile, setIsMobile] = useState(false);
 //   const pathname = usePathname();
 
+//   const {data: user} = useLogedUserQuery();
+//   const userRole = user?.data?.attributes?.role
+//   console.log(userRole)
 //   // Handle responsive behavior
 //   useEffect(() => {
 //     const handleResize = () => {
@@ -44,23 +59,47 @@
 //       path: "/dashboard",
 //     },
 //     {
-//       key: "/dashboard/profile",
+//       key: "/dashboard/influencerlist",
 //       icon: <UserOutlined />,
-//       label: "Influencerlist",
-//       path: "/influencerlist",
+//       label: "Content Creator",
+//       path: "/dashboard/influencerlist",
 //     },
 //     {
-//       key: "/dashboard/settings",
-//       icon: <SettingOutlined />,
-//       label: "Settings",
-//       path: "/dashboard/settings",
+//       key: "/dashboard/campaigns",
+//       icon: <AppstoreAddOutlined />,
+//       label: "Campaigns",
+//       path: "/dashboard/campaigns",
+//     },
+//     {
+//       key: "/dashboard/payment",
+//       icon: <WalletOutlined />,
+//       label: "Payment",
+//       path: "/dashboard/payment",
+//     },
+//     {
+//       key: "/dashboard/withdraw",
+//       icon: <FileSearchOutlined />,
+//       label: "Withdraw Request",
+//       path: "/dashboard/withdraw",
+//     },
+//     {
+//       key: "/dashboard/transaction",
+//       icon: <FileSearchOutlined />,
+//       label: "Transactions",
+//       path: "/dashboard/transaction",
 //     },
 //   ];
 
+//   const logo = "/images/logo.png"; // Path to your logo image
+
 //   return (
-//     <div className={`${collapsed ? 'w-20' : 'w-64'} transition-all duration-300 h-full bg-white shadow-md`}>
+//     <div className={`${collapsed ? 'w-20' : 'w-52'} transition-all duration-300 h-full shadow-md`}>
 //       <div className="flex justify-between items-center p-4">
-//         <div className={`text-xl font-bold ${collapsed ? 'hidden' : 'block'}`}>Your App Name</div>
+//         <div className={`text-xl font-bold ${collapsed ? 'hidden' : 'block'}`}>
+//           <Link href="/" className="flex items-center">
+//             <img src={logo} alt="App Logo" className="w-24" /> {/* App logo */}
+//           </Link>
+//         </div>
 //         <button 
 //           onClick={toggleCollapsed} 
 //           className="p-2 rounded-md hover:bg-gray-100"
@@ -69,15 +108,16 @@
 //         </button>
 //       </div>
 //       <Menu 
-//         mode="inline" 
+//         mode={collapsed ? "vertical" : "inline"}  // Switch mode based on collapsed state
 //         selectedKeys={[pathname]}
 //         inlineCollapsed={collapsed}
+       
+       
+ 
 //       >
 //         {menuItems.map((item) => (
 //           <Menu.Item key={item.key} icon={item.icon}>
-//             <Link href={item.path}>
-//               {item.label}
-//             </Link>
+//             <Link href={item.path}>{item.label}</Link>
 //           </Menu.Item>
 //         ))}
 //       </Menu>
@@ -86,7 +126,7 @@
 // }
 
 
- 
+
 "use client";
 import { useState, useEffect } from 'react';
 import { Menu } from 'antd';
@@ -109,8 +149,8 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   const {data: user} = useLogedUserQuery();
-  const userRole = user?.data?.attributes?.role
-  console.log(userRole)
+  const userRole = user?.data?.attributes?.role;
+
   // Handle responsive behavior
   useEffect(() => {
     const handleResize = () => {
@@ -136,6 +176,7 @@ export default function Sidebar() {
     setCollapsed(!collapsed);
   };
 
+  // Filter menu items based on the user role
   const menuItems = [
     {
       key: "/dashboard",
@@ -143,36 +184,41 @@ export default function Sidebar() {
       label: "Dashboard",
       path: "/dashboard",
     },
-    {
+    // Conditionally hide "Content Creator" menu item for certain roles
+    ...(userRole !== "influencer" && userRole !== "content creator" ? [{
       key: "/dashboard/influencerlist",
       icon: <UserOutlined />,
       label: "Content Creator",
       path: "/dashboard/influencerlist",
-    },
+    }] : []),
     {
       key: "/dashboard/campaigns",
       icon: <AppstoreAddOutlined />,
       label: "Campaigns",
       path: "/dashboard/campaigns",
     },
-    {
+    // Conditionally hide the "Payment" menu item for certain roles
+    ...(userRole !== "influencer" && userRole !== "content creator" ? [{
       key: "/dashboard/payment",
       icon: <WalletOutlined />,
       label: "Payment",
       path: "/dashboard/payment",
-    },
-    {
-      key: "/dashboard/withdraw",
-      icon: <FileSearchOutlined />,
-      label: "Withdraw Request",
-      path: "/dashboard/withdraw",
-    },
-    {
-      key: "/dashboard/transaction",
-      icon: <FileSearchOutlined />,
-      label: "Transactions",
-      path: "/dashboard/transaction",
-    },
+    }] : []),
+    // Conditionally hide the "Withdraw" and "Transactions" for the "brand" role
+    ...(userRole !== "brand" ? [
+      {
+        key: "/dashboard/withdraw",
+        icon: <FileSearchOutlined />,
+        label: "Withdraw Request",
+        path: "/dashboard/withdraw",
+      },
+      {
+        key: "/dashboard/transaction",
+        icon: <FileSearchOutlined />,
+        label: "Transactions",
+        path: "/dashboard/transaction",
+      }
+    ] : []),
   ];
 
   const logo = "/images/logo.png"; // Path to your logo image
@@ -196,9 +242,6 @@ export default function Sidebar() {
         mode={collapsed ? "vertical" : "inline"}  // Switch mode based on collapsed state
         selectedKeys={[pathname]}
         inlineCollapsed={collapsed}
-       
-       
- 
       >
         {menuItems.map((item) => (
           <Menu.Item key={item.key} icon={item.icon}>
