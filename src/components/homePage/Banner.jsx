@@ -415,7 +415,7 @@ const Banner = ({ onSearch }) => {
                     width={180}
                     height={150}
                     alt="Satisfied user"
-                    className="rounded-lg object-cover md:h-52 h-40 animate-bounce"
+                    className="rounded-lg object-cover md:h-52 h-40"
                   />
                 </div>
               </Card>
@@ -471,7 +471,7 @@ const Banner = ({ onSearch }) => {
                       width={140}
                       height={140}
                       alt="Profile"
-                      className="h-40 animate-bounce"
+                      className="h-40"
                     />
                   </div>
                 </div>
