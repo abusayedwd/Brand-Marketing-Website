@@ -405,8 +405,9 @@ export default function SignUpPage() {
 
   // Influencer states
   const [socialMediaList, setSocialMediaList] = useState([
-    { platform: "facebook", url: "", followers: "" },
+    { platform: "Facebook", url: "", followers: "" },
   ]);
+  console.log(socialMediaList)
   const [interestsList, setInterestsList] = useState([""]);
 
   // Brand states - removed targetAudienceList and productCategoriesList
@@ -449,7 +450,7 @@ export default function SignUpPage() {
   const onRoleChange = (e) => {
     setRole(e.target.value);
     // Reset all dynamic lists
-    setSocialMediaList([{ platform: "facebook", url: "" }]);
+    setSocialMediaList([{ platform: "Facebook", url: "" }]);
     setInterestsList([""]);
   };
 
@@ -460,6 +461,7 @@ export default function SignUpPage() {
       ...valuess,
       role,
     };
+    console.log(finalData)
 
     // Add role-specific data
     if (role === "influencer") {

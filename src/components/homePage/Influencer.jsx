@@ -394,10 +394,13 @@
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { ArrowRightOutlined, FacebookOutlined, InstagramOutlined, YoutubeOutlined, TwitterOutlined } from "@ant-design/icons"
-import { Button, Card, Typography, Row, Col, Avatar, Spin, Empty } from "antd"
+import { Button, Card, Typography, Row, Col, Avatar, Spin, Empty, Modal } from "antd"
 import { motion, useInView, useAnimation } from "framer-motion"
 import { useGetInfluencersQuery } from "@/redux/fetures/user/influencers"
 import url from "@/redux/api/baseUrl"
+import { useLogedUserQuery } from "@/redux/fetures/user/logedUser"
+import { CustomButton } from "../customComponent/Button"
+import { LoginModal } from "../customComponent/LoginModal"
 
 const { Title, Paragraph, Text } = Typography
 
@@ -434,6 +437,43 @@ function ScrollReveal({ children, threshold = 0.1 }) {
 export default function InfluencersPage() {
   const [activeCategory, setActiveCategory] = useState(null)
   const [loaded, setLoaded] = useState(false)
+
+  const { data: loggedUser} = useLogedUserQuery()
+  console.log(loggedUser)
+
+  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
+
+ const handleViewDetails = () => {
+    if (loggedUser) {
+      // User is logged in, navigate to details page
+      // This will be handled by the Link component
+      return;
+    } else {
+      // User is not logged in, show login modal
+      setIsLoginModalVisible(true);
+    }
+  };
+
+  const handleLoginModalClose = () => {
+    setIsLoginModalVisible(false);
+  };
+
+  const handleLogin = () => {
+    // Implement your login logic here
+    // This could redirect to login page or handle login in modal
+    console.log('Redirect to login or handle login');
+    setIsLoginModalVisible(false);
+  };
+
+
+
+
+
+
+
+
+
+  
 
   const { data: influencersResponse, isLoading, error } = useGetInfluencersQuery({ 
     interests: activeCategory || "",
@@ -842,12 +882,38 @@ export default function InfluencersPage() {
                         whileTap={{ scale: 0.95 }}
                         style={{ width: "100%" }}
                       >
+
+{/*                         
                         <Link href={`/influencer/${influencer.id}`}>
                         
                         <Button type="primary" block className="connect-button">
                           View Details {influencer.name.split(' ')[0]}
                         </Button>
-                        </Link>
+                        </Link> */}
+
+{loggedUser ? (
+        <Link href={`/influencer/${influencer.id}`}>
+          <CustomButton variant="primary" size="large">
+            View Details {influencer.name.split(' ')[0]}
+          </CustomButton>
+        </Link>
+      ) : (
+        <CustomButton 
+          variant="primary" 
+          size="large"
+          onClick={handleViewDetails}
+        >
+          View Details {influencer.name.split(' ')[0]}
+        </CustomButton>
+      )}
+
+      <LoginModal
+        isVisible={isLoginModalVisible}
+        onClose={handleLoginModalClose}
+        onLogin={handleLogin}
+      />
+
+
                       </motion.div>
                     </div>
                   </MotionCard>
