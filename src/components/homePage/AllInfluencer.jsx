@@ -572,6 +572,9 @@ import { Button, Card, Typography, Row, Col, Avatar, Input, Empty } from "antd"
 import { motion, useInView, useAnimation } from "framer-motion"
 import { useGetInfluencersQuery } from "@/redux/fetures/user/influencers"
 import url from "@/redux/api/baseUrl"
+import { useLogedUserQuery } from "@/redux/fetures/user/logedUser"
+import { CustomButton } from "../customComponent/Button"
+import { LoginModal } from "../customComponent/LoginModal"
  
 const { Title, Paragraph, Text } = Typography
 const { Search } = Input
@@ -622,6 +625,35 @@ export default function AllInfluencer({ searchCriteria }) {
   });
 
   console.log("API Response:", influencersResponse)
+
+  const { data: loggedUser} = useLogedUserQuery()
+  const isSubscribed = loggedUser?.data?.attributes?.isSubscribe;
+  // console.log(loggedUser)
+
+  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
+
+ const handleViewDetails = () => {
+    if (loggedUser) {
+      // User is logged in, navigate to details page
+      // This will be handled by the Link component
+      return;
+    } else {
+      // User is not logged in, show login modal
+      setIsLoginModalVisible(true);
+    }
+  };
+
+  const handleLoginModalClose = () => {
+    setIsLoginModalVisible(false);
+  };
+
+  const handleLogin = () => {
+    // Implement your login logic here
+    // This could redirect to login page or handle login in modal
+    console.log('Redirect to login or handle login');
+    setIsLoginModalVisible(false);
+  };
+
   
   useEffect(() => {
     setLoaded(true)
@@ -1064,12 +1096,35 @@ export default function AllInfluencer({ searchCriteria }) {
                         whileTap={{ scale: 0.95 }}
                         style={{ width: "100%" }}
                       >
-                         <Link href={`/influencer/${influencer.id}`}>
-                        
-                        <Button type="primary" block className="connect-button">
-                          View Details {influencer.name.split(' ')[0]}
-                        </Button>
-                        </Link>
+
+
+                        {loggedUser && isSubscribed === true ? (
+    <Link href={`/influencer/${influencer.id}`}>
+      <CustomButton variant="primary" size="large">
+        View Details {influencer.name.split(' ')[0]}
+      </CustomButton>
+    </Link>
+  ) : (
+    <>
+      <CustomButton 
+        variant="primary" 
+        size="large"
+        onClick={() => setIsLoginModalVisible(true)} // This will open the modal
+      >
+        View Details {influencer.name.split(' ')[0]}
+      </CustomButton>
+
+      {/* Modal for login or subscription when not logged in or not subscribed */}
+      <LoginModal
+        isVisible={isLoginModalVisible}
+        onClose={() => setIsLoginModalVisible(false)}
+        onLogin={handleLogin}
+        isSubscribed={isSubscribed}
+        isLoggedIn={loggedUser}
+      />
+    </>
+  )}
+
                       </motion.div>
                     </div>
                   </MotionCard>

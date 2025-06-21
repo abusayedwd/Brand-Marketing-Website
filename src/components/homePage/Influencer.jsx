@@ -439,7 +439,8 @@ export default function InfluencersPage() {
   const [loaded, setLoaded] = useState(false)
 
   const { data: loggedUser} = useLogedUserQuery()
-  console.log(loggedUser)
+  const isSubscribed = loggedUser?.data?.attributes?.isSubscribe;
+  // console.log(loggedUser)
 
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
 
@@ -891,27 +892,32 @@ export default function InfluencersPage() {
                         </Button>
                         </Link> */}
 
-{loggedUser ? (
-        <Link href={`/influencer/${influencer.id}`}>
-          <CustomButton variant="primary" size="large">
-            View Details {influencer.name.split(' ')[0]}
-          </CustomButton>
-        </Link>
-      ) : (
-        <CustomButton 
-          variant="primary" 
-          size="large"
-          onClick={handleViewDetails}
-        >
-          View Details {influencer.name.split(' ')[0]}
-        </CustomButton>
-      )}
+  {loggedUser && isSubscribed === true ? (
+    <Link href={`/influencer/${influencer.id}`}>
+      <CustomButton variant="primary" size="large">
+        View Details {influencer.name.split(' ')[0]}
+      </CustomButton>
+    </Link>
+  ) : (
+    <>
+      <CustomButton 
+        variant="primary" 
+        size="large"
+        onClick={() => setIsLoginModalVisible(true)} // This will open the modal
+      >
+        View Details {influencer.name.split(' ')[0]}
+      </CustomButton>
 
+      {/* Modal for login or subscription when not logged in or not subscribed */}
       <LoginModal
         isVisible={isLoginModalVisible}
-        onClose={handleLoginModalClose}
+        onClose={() => setIsLoginModalVisible(false)}
         onLogin={handleLogin}
+        isSubscribed={isSubscribed}
+        isLoggedIn={loggedUser}
       />
+    </>
+  )}
 
 
                       </motion.div>
