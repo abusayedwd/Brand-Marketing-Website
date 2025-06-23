@@ -126,6 +126,8 @@ import { Card, Button } from 'antd';
 import { useEffect } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { usePaymentMutation } from '@/redux/fetures/payment/payment';
+import { useRouter } from 'next/navigation';
 
 const PricingSection = () => {
   useEffect(() => {
@@ -140,7 +142,7 @@ const PricingSection = () => {
     {
       name: 'Abonnement Starter',
       description: 'Pour les petits créateurs de contenu. Idéal si tu débutes et que tu veux gagner en visibilité auprès des marques.',
-      price: '29,99EUR/mois',
+      price: '29.99EUR/mois',
       features: [
         'Accès à toutes les offres disponibles',
         'Profil optimisé dans l\'algorithme de mise en relation',
@@ -153,7 +155,7 @@ const PricingSection = () => {
     {
       name: 'Abonnement Pro',
       description: 'Pour les créateurs de contenu populaires. Pour ceux qui souhaitent monétiser efficacement leur audience.',
-      price: '99,99EUR/mois',
+      price: '99.99EUR/mois',
       features: [
         'Accès prioritaire aux campagnes premium',
         'Statistiques avancées et analyse de performance',
@@ -167,7 +169,7 @@ const PricingSection = () => {
     {
       name: 'Abonnement Marques',
       description: 'Pour les entreprises et marques qui souhaitent lancer leurs campagnes.',
-      price: '129,99EUR/mois',
+      price: '129.99EUR/mois',
       features: [
         'Création et publication de campagnes illimitées',
         'Accès à une base d\'influenceurs qualifiés',
@@ -179,6 +181,35 @@ const PricingSection = () => {
       image: '/mnt/data/579e741b-900c-47f1-b4fb-0b4e5e094d1a.png'
     }
   ];
+
+  const [payment, {isLoading, isError}] = usePaymentMutation()
+  const roqute = useRouter();
+  // Function to handle the button click
+  const handleButtonClick = async (planName, planPrice) => {
+    // Extract numeric price value (using regex to remove non-numeric characters)
+    const priceNumber = parseFloat(planPrice.replace(/[^0-9.-]+/g, ""));
+    const duration = '1 month';   
+   
+    const data = {
+      planName: planName,
+      price: priceNumber,
+      duration: duration
+    }
+    console.log('Button clicked for plan:', data);
+    try {
+      const response = await payment(data).unwrap();
+      console.log('Payment response:', response);
+      if(response.statusCode === 201){
+        window.open(response.url, '_blank'); // Redirect to success page
+      }
+      // Handle successful payment response here (e.g., redirect to a success page)
+    } catch (error) {
+      console.error('Payment error:', error);
+      // Handle error response here (e.g., show an error message)
+    }
+      
+  };
+
   return (
     <div className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="max-w-7xl mx-auto">
@@ -228,6 +259,7 @@ const PricingSection = () => {
                       type={plan.highlight ? 'primary' : 'default'}
                       size="large"
                       className={`w-full ${plan.highlight ? 'bg-blue-600' : ''}`}
+                      onClick={() => handleButtonClick(plan.name, plan.price)}  // Add the click handler
                     >
                       Get Started Now
                     </Button>
