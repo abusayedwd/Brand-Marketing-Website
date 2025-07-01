@@ -128,6 +128,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { usePaymentMutation } from '@/redux/fetures/payment/payment';
 import { useRouter } from 'next/navigation';
+import { useLogedUserQuery } from '@/redux/fetures/user/logedUser';
 
 const PricingSection = () => {
   useEffect(() => {
@@ -137,6 +138,9 @@ const PricingSection = () => {
       easing: 'ease-out'
     });
   }, []);
+
+ const {data: loggedUser} = useLogedUserQuery()
+ console.log(loggedUser)
 
   const plans = [
     {

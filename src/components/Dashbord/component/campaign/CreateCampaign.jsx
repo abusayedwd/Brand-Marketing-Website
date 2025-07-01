@@ -648,6 +648,7 @@ import {
   StarOutlined,
   CheckCircleOutlined
 } from '@ant-design/icons';
+import { useCreateCampaignMutation } from '@/redux/fetures/campaign/createCampaign';
 
 const { TextArea } = Input;
 const { Title, Text } = Typography;
@@ -670,6 +671,9 @@ const CampaignCreator = () => {
 
   const [totalAmount, setTotalAmount] = useState(0);
   const [fileList, setFileList] = useState([]);
+
+ const [createCampaign, {isLoading}] = useCreateCampaignMutation()
+
 
   const socialPlatforms = [
     { 
