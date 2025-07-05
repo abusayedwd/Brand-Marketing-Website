@@ -5,7 +5,7 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
   
     baseUrl: "https://sayed3050.sobhoy.com/v1", 
-    // baseUrl: "https://api.mynexthome.ng/v1",
+    
     prepareHeaders: (headers, { getState }) => {
       const token = localStorage.getItem("token");
       // console.log("9 baseApi", token);

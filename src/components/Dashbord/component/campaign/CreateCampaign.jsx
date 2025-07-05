@@ -664,7 +664,7 @@ const CampaignCreator = () => {
     endDate: null,
     selectedPlatforms: [],
     influencerCount: 1,
-    uploadedImageFile: null,
+    image: null,
     uploadedImageName: null,
     uploadedImagePreview: null
   });
@@ -846,7 +846,7 @@ const CampaignCreator = () => {
       
       // Add image file if uploaded
       if (formData.uploadedImageFile) {
-        backendFormData.append('campaignImage', formData.uploadedImageFile);
+        backendFormData.append('image', formData.uploadedImageFile);
       }
       
       // Add creation timestamp
@@ -868,13 +868,15 @@ const CampaignCreator = () => {
       }
       
       // Log regular form data object (for reference)
-      console.log('=== REGULAR FORM DATA ===', {
+      const data = {
         ...formData,
         startDateString: formData.startDate ? formData.startDate.format('YYYY-MM-DD') : null,
         endDateString: formData.endDate ? formData.endDate.format('YYYY-MM-DD') : null,
         totalAmount,
         createdAt: new Date().toISOString()
-      });
+      };
+
+        console.log("dataaaaaaaa.: ", data)
       
       // Send to backend API
       const response = await fetch('/api/campaigns', {

@@ -140,12 +140,15 @@ import { FileTextOutlined, CheckCircleOutlined, ClockCircleOutlined } from '@ant
 import Link from 'next/link';
 import { useGetMyCamaignsQuery } from '@/redux/fetures/campaign/getMyCampaign';
 import url from '@/redux/api/baseUrl';
+import { useGetSingleCampaignQuery } from '@/redux/fetures/campaign/getSingleCampaign';
 
 const { TabPane } = Tabs;
 
 const Campaigns = () => {
   const { data: myCampaign, isLoading, error } = useGetMyCamaignsQuery();
-  
+  const campaignId = "68660a8c510ec5e125b312f6"; // Assuming you have a campaign ID to fetch details
+  const {data: campaignData} = useGetSingleCampaignQuery(campaignId);
+  console.log(campaignData)
   // Get campaigns from API data
   const campaigns = myCampaign?.data?.attributes?.results || [];
 
@@ -224,6 +227,7 @@ const Campaigns = () => {
             </span>
           </div>
           <div className="mt-4 flex justify-end">
+            <Link href={`/dashboard/campaigns/details/${campaign.id}`}>
             <Button
               type="primary"
               className="mr-2"
@@ -231,6 +235,7 @@ const Campaigns = () => {
             >
               View Details
             </Button>
+             </Link>
             <Link href={`/dashboard/campaigns/edit-campaign?id=${campaign.id}`}>
               <Button type="default" icon={<ClockCircleOutlined />} className="mr-2">
                 Edit
