@@ -1,15 +1,14 @@
-
 const { apiSlice } = require("@/redux/api/apiSlice");
 
 
-const getMyCamaigns = apiSlice.injectEndpoints({
+const getMyCampaign = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        getMyCamaigns: builder.query({
-            query: () => `campaigns/getMy-Campaigns`,
-            providesTags: [{type: "Campaign"}]
+        getMyCampaign: builder.query({
+            query: () => `/campaigns/getMy-Campaigns`,
+            providesTags: [{type:"Campaign"}]
         })
 
     })
 })
 
-export const {useGetMyCamaignsQuery} = getMyCamaigns
+export const {useGetMyCampaignQuery} = getMyCampaign

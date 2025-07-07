@@ -5,6 +5,7 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
   
     baseUrl: "https://sayed3050.sobhoy.com/v1", 
+    // baseUrl: "http://10.10.7.68:3050/v1", 
     
     prepareHeaders: (headers, { getState }) => {
       const token = localStorage.getItem("token");

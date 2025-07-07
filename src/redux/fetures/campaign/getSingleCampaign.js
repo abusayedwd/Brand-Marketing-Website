@@ -1,12 +1,15 @@
-const { apiSlice } = require("@/redux/api/apiSlice");
+import { apiSlice } from "@/redux/api/apiSlice";
+
+ 
 
 const getSingleCampaign = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getSingleCampaign: builder.query({
-      query: (campaignId) => `/campaigns/${campaignId}`, 
-      providesTags: (id) => [{ type: "Campaign",}],
+      query: (id) => `/campaigns/${id}`,
+      providesTags: [{ type: "Campaign" }],
     }),
   }),
 });
 
 export const { useGetSingleCampaignQuery } = getSingleCampaign;
+

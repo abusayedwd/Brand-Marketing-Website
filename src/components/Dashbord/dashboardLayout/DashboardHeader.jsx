@@ -181,7 +181,7 @@ export default function DashboardHeader({ collapsed}) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const {data: user} = useLogedUserQuery();
-  console.log(user?.data?.attributes)
+  // console.log(user?.data?.attributes)
   const [changePasswordd] = useChangPasswordMutation()
   // Modal handlers
   const openPasswordModal = () => setIsPasswordModalOpen(true);

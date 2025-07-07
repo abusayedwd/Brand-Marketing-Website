@@ -138,17 +138,16 @@ import React, { useState } from 'react';
 import { Button, Card, Tabs } from 'antd';
 import { FileTextOutlined, CheckCircleOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import Link from 'next/link';
-import { useGetMyCamaignsQuery } from '@/redux/fetures/campaign/getMyCampaign';
+ 
 import url from '@/redux/api/baseUrl';
-import { useGetSingleCampaignQuery } from '@/redux/fetures/campaign/getSingleCampaign';
-
+import { useGetMyCampaignQuery } from '@/redux/fetures/campaign/getMyCampaign';
+ 
 const { TabPane } = Tabs;
 
 const Campaigns = () => {
-  const { data: myCampaign, isLoading, error } = useGetMyCamaignsQuery();
-  const campaignId = "68660a8c510ec5e125b312f6"; // Assuming you have a campaign ID to fetch details
-  const {data: campaignData} = useGetSingleCampaignQuery(campaignId);
-  console.log(campaignData)
+  const { data: myCampaign, isLoading, error } = useGetMyCampaignQuery();
+  console.log(myCampaign);
+  
   // Get campaigns from API data
   const campaigns = myCampaign?.data?.attributes?.results || [];
 
