@@ -1,16 +1,21 @@
-
 import { apiSlice } from "../../api/apiSlice";
 
 const acceptedInfluener = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         acceptedInfluener: builder.mutation({
-            query: ({id,influenerId}) => ({
-                url: `/campaigns/acceptInfluencer/${id}`,
-                method: "POST",
-                body: influenerId
-            })
+            query: ({ campaignId, influencerId }) => {  // Corrected spelling here
+                console.log("Campaign ID:", campaignId);  // Log campaignId
+                console.log("Influencer ID:", influencerId);  // Log influencerId
+                
+                return {
+                    url: `/campaigns/acceptInfluencer/${campaignId}`,
+                    method: "POST",
+                    body: { influencerId: influencerId }  // Corrected spelling here
+                };
+            }
         })
     })
-})
+});
 
-export const {useAcceptedInfluenerMutation} = acceptedInfluener;
+export const { useAcceptedInfluenerMutation } = acceptedInfluener;
+

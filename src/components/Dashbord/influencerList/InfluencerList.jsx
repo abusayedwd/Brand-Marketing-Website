@@ -1,57 +1,146 @@
-import { useGetUsersQuery } from "@/redux/fetures/user/getUsers";
+"use client";
+
+import { useContentCreatorQuery } from "@/redux/fetures/user/contentCreator";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import React from "react";
+import { Button, Modal, Table } from "antd";
+import { ArrowLeftOutlined } from '@ant-design/icons';
 
 const InfluencersList = () => {
+  const { data: influencerData } = useContentCreatorQuery();
+  
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedInfluencer, setSelectedInfluencer] = useState(null);
 
+  // Pagination state
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 5,
+    total: 0,
+  });
 
+  // Update the influencer data and pagination based on the API response
+  useEffect(() => {
+    if (influencerData && influencerData.data && influencerData.data.attributes.results) {
+      const { totalResults } = influencerData.data.attributes;
+      setPagination(prev => ({
+        ...prev,
+        total: totalResults, // Set total number of items for pagination
+      }));
+    }
+  }, [influencerData]);
 
-  const Influencers= [
-    { id: 1, name: "Madiha Qureshi", email: "madiha1@gmail.com", followers: 1200 },
-    { id: 2, name: "Madiha Qureshi", email: "madiha2@gmail.com", followers: 1300 },
-    { id: 3, name: "Madiha Qureshi", email: "madiha3@gmail.com", followers: 1500 },
-    { id: 4, name: "Madiha Qureshi", email: "madiha4@gmail.com", followers: 1600 },
-    { id: 5, name: "Madiha Qureshi", email: "madiha5@gmail.com", followers: 1700 },
-    { id: 6, name: "Madiha Qureshi", email: "madiha6@gmail.com", followers: 1800 },
+  const showModal = (influencer) => {
+    setSelectedInfluencer(influencer);
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    setSelectedInfluencer(null);
+  };
+
+  const handleTableChange = (pagination) => {
+    setPagination({
+      ...pagination,
+    });
+  };
+
+  // Conditionally render influencers based on API data
+  const influencers = influencerData?.data?.attributes?.results || [];
+
+  const columns = [
+    {
+      title: 'S. No',
+      dataIndex: 'key',
+      key: 'key',
+      render: (text, record, index) => index + 1, 
+    },
+    {
+      title: 'Name',
+      dataIndex: 'fullName',
+      key: 'fullName',
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+    },
+    {
+      title: 'Followers',
+      dataIndex: 'followers',
+      key: 'followers',
+      render: (_, influencer) => influencer.followers || 'N/A',
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (_, influencer) => (
+        <Button
+          type="default"
+          className="text-blue-500 hover:text-blue-700"
+          onClick={() => showModal(influencer)}
+        >
+          View
+        </Button>
+      ),
+    },
   ];
 
   return (
     <div className="container mx-auto p-4">
       <h2 className="text-xl font-semibold mb-4">All Content Creator List</h2>
-      <table className="min-w-full bg-white">
-        <thead className="bg-gray-800 text-white">
-          <tr>
-            <th className="py-2 px-4 text-left">S. No</th>
-            <th className="py-2 px-4 text-left">Name</th>
-            <th className="py-2 px-4 text-left">Email</th>
-            <th className="py-2 px-4 text-left">Followers</th>
-            <th className="py-2 px-4 text-left">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Influencers.map((influencer, index) => (
-            <tr key={influencer.id} className="border-b hover:bg-gray-100">
-              <td className="py-2 px-4">{index + 1}</td>
-              <td className="py-2 px-4">{influencer.name}</td>
-              <td className="py-2 px-4">{influencer.email}</td>
-              <td className="py-2 px-4">{influencer.followers}</td>
-              <td className="py-2 px-4">
-                {/* <Link href={`/influencer/${influencer.id}`}> */}
-                <Link href={`/dashboard/influencerDetails`}>
-                
-                <button className="text-blue-500 hover:text-blue-700">
-                   View
-                </button>
-                </Link>
-          
-                <button className="ml-2 text-red-500 hover:text-red-700">
-                  <i className="fas fa-trash"></i> Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      
+      {/* Table to show influencers */}
+      <Table
+        columns={columns}
+        dataSource={influencers}
+        pagination={{
+          current: pagination.current,
+          pageSize: pagination.pageSize,
+          total: pagination.total,
+          onChange: (page, pageSize) => {
+            setPagination({ ...pagination, current: page, pageSize });
+          },
+        }}
+        onChange={handleTableChange}
+        rowKey="id" // Set the unique key for each row
+      />
+
+      {/* Modal to show influencer details */}
+      <Modal
+        title="Influencer Details"
+        visible={isModalVisible}
+        onCancel={handleCancel}
+        footer={null}
+        className="custom-modal"
+        destroyOnClose={true}
+        centered
+      >
+        {selectedInfluencer && (
+          <div className="custom-modal-content">
+            <div className="modal-header">
+              <h3 className="modal-title">{selectedInfluencer.fullName}</h3>
+              <Button type="text" onClick={handleCancel} icon={<ArrowLeftOutlined />} />
+            </div>
+            <div className="modal-body">
+              <img
+                src={selectedInfluencer.image.url}
+                alt="Influencer Image"
+                className="modal-image"
+              />
+              <p><strong>Email:</strong> {selectedInfluencer.email}</p>
+              <p><strong>Phone Number:</strong> {selectedInfluencer.phoneNumber}</p>
+              <p><strong>Bio:</strong> {selectedInfluencer.bio || 'No bio available'}</p>
+              <p><strong>Date of Birth:</strong> {new Date(selectedInfluencer.dateOfBirth).toLocaleDateString()}</p>
+              <p><strong>Interests:</strong> {selectedInfluencer.interests.join(', ')}</p>
+              <p><strong>Social Media:</strong> {selectedInfluencer.socialMedia?.map((social, idx) => (
+                <span key={idx}>{social.platform} </span>
+              ))}</p>
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 };

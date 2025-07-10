@@ -649,12 +649,15 @@ import {
   CheckCircleOutlined
 } from '@ant-design/icons';
 import { useCreateCampaignMutation } from '@/redux/fetures/campaign/createCampaign';
+import toast, { Toaster } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 const { TextArea } = Input;
 const { Title, Text } = Typography;
 const { Option } = Select;
 
 const CampaignCreator = () => {
+  const router = useRouter()
   const [form] = Form.useForm();
   const [formData, setFormData] = useState({
     campaignName: '',
@@ -666,7 +669,8 @@ const CampaignCreator = () => {
     influencerCount: 1,
     image: null,
     uploadedImageName: null,
-    uploadedImagePreview: null
+    uploadedImagePreview: null,
+    uploadedImageFile: null
   });
 
   const [totalAmount, setTotalAmount] = useState(0);
@@ -797,23 +801,14 @@ const CampaignCreator = () => {
         uploadedImagePreview: null
       }));
     }
-  };
-
-  const startDate = (date, dateString) => {
-    console.log('Start Date Selected:',dateString);
-   setFormData(date, dateString);
-};
-  const endDate = (date, dateString) => {
-    console.log('Start Date Selected:',dateString);
-   setFormData(date, dateString);
-};
+  }; 
 
   const handleCreateCampaign = async () => {
     if (!formData.campaignName || formData.influencerCount < 1) {
       alert('Please fill in campaign name and select at least one influencer');
       return;
     }
-    
+    console.log(formData)
     try {
       // Create FormData for file upload
       const backendFormData = new FormData();
@@ -824,8 +819,10 @@ const CampaignCreator = () => {
       backendFormData.append('budget', formData.budget.toString());
       backendFormData.append('influencerCount', formData.influencerCount.toString());
       backendFormData.append('totalAmount', totalAmount.toString());
-      backendFormData.append('selectedPlatforms', JSON.stringify(formData.selectedPlatforms));
-      
+      backendFormData.append('selectedPlatforms', formData.selectedPlatforms);
+      if (formData) {
+        backendFormData.append('image', formData.uploadedImageFile);
+      }
       // Add dates if they exist (convert to string format)
       const startDateString = formData.startDate ? formData.startDate.format('YYYY-MM-DD') : null;
       const endDateString = formData.endDate ? formData.endDate.format('YYYY-MM-DD') : null;
@@ -835,73 +832,30 @@ const CampaignCreator = () => {
       }
       if (endDateString) {
         backendFormData.append('endDate', endDateString);
-      }
-      
-      // Log date strings specifically
-      console.log('=== DATE VALUES ===');
-      console.log('Start Date String:', startDateString);
-      console.log('End Date String:', endDateString);
-      console.log('Start Date Object:', formData.startDate);
-      console.log('End Date Object:', formData.endDate);
+      } 
       
       // Add image file if uploaded
-      if (formData.uploadedImageFile) {
-        backendFormData.append('image', formData.uploadedImageFile);
-      }
       
-      // Add creation timestamp
-      backendFormData.append('createdAt', new Date().toISOString());
+       
+       const res= await createCampaign(backendFormData).unwrap();
+       console.log(res)
+        if(res.status == "success"){
+          toast.success("successfully procces create campaign after payment")
+          setTimeout(() => { 
+            window.open(res?.url, '_blank');
+          }, 3000);
+          resetForm()
+          router.push("/dashboard/campaigns")
+        } 
       
-      // Log FormData contents (for debugging)
-      console.log('=== FORM DATA FOR BACKEND ===');
-      for (let [key, value] of backendFormData.entries()) {
-        if (value instanceof File) {
-          console.log(`${key}:`, {
-            name: value.name,
-            size: value.size,
-            type: value.type,
-            lastModified: value.lastModified
-          });
-        } else {
-          console.log(`${key}:`, value);
-        }
-      }
-      
-      // Log regular form data object (for reference)
-      const data = {
-        ...formData,
-        startDateString: formData.startDate ? formData.startDate.format('YYYY-MM-DD') : null,
-        endDateString: formData.endDate ? formData.endDate.format('YYYY-MM-DD') : null,
-        totalAmount,
-        createdAt: new Date().toISOString()
-      };
-
-        console.log("dataaaaaaaa.: ", data)
-      
-      // Send to backend API
-      const response = await fetch('/api/campaigns', {
-        method: 'POST',
-        body: backendFormData, // Don't set Content-Type header, let browser set it
-      });
-      
-      if (response.ok) {
-        const result = await response.json();
-        console.log('Campaign created successfully:', result);
-        alert('Campaign created successfully!');
-        
-        // Reset form after successful submission
-        resetForm();
-      } else {
-        const error = await response.text();
-        console.error('Failed to create campaign:', error);
-        alert('Failed to create campaign. Please try again.');
-      }
-      
-    } catch (error) {
-      console.error('Error creating campaign:', error);
-      alert('Error creating campaign. Please check your connection and try again.');
+  
+    } catch(error){
+      console.log(error.data)
     }
+   
   };
+
+
   
   const resetForm = () => {
     setFormData({
@@ -937,6 +891,7 @@ const CampaignCreator = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+      <Toaster />
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">

@@ -105,11 +105,16 @@
 "use client";
 import React, { useState } from 'react';
 import { Table, Button, Modal } from 'antd';
+import { useCampaignPaymentQuery } from '@/redux/fetures/payment/campaignPayment';
+ 
+ 
 
 const TransactionList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
-
+ const {data:transaction } = useCampaignPaymentQuery()
+ 
+console.log("addddddddddddd:",transaction)
   const transactions = [
     {
       key: 1,
@@ -145,6 +150,8 @@ const TransactionList = () => {
     },
   ];
 
+
+  
   const columns = [
     {
       title: '#SL',

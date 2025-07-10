@@ -170,9 +170,10 @@ import {
 } from '@ant-design/icons';
 import { Header } from 'antd/es/layout/layout';
 import { useLogedUserQuery } from '@/redux/fetures/user/logedUser';
-import url from '@/redux/api/baseUrl';
+ 
 import { useChangPasswordMutation } from '@/redux/fetures/auth/changePassword';
 import toast, { Toaster } from 'react-hot-toast';
+import url from '@/redux/api/baseUrl';
 
 export default function DashboardHeader({ collapsed}) {
   // State for modals and mobile menu
@@ -292,7 +293,7 @@ export default function DashboardHeader({ collapsed}) {
     trigger={["click"]}
   >
     <div className="flex items-center cursor-pointer">
-      <Avatar src={url + user?.data?.attributes?.image?.url} className='h-12 w-12' icon={<UserOutlined />} />
+      <Avatar src={url + user?.data?.attributes?.image?.url} className='h-12 w-12' />
       <span className="ml-2 hidden sm:inline">{user?.data?.attributes?.fullName}</span>
     </div>
   </Dropdown>

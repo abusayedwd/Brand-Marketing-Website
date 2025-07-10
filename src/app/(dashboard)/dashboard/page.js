@@ -11,7 +11,7 @@ export default function Dashboard() {
       
         <CardComponent />
         <Barchart /> 
-        <ActiveCampaigns />
+        {/* <ActiveCampaigns /> */}
       
       {/* Add more dashboard content here */}
     </div>

@@ -1,7 +1,6 @@
-
-
-
  
+
+
 // "use client";
 // import { useState, useEffect } from 'react';
 // import { Menu } from 'antd';
@@ -24,8 +23,8 @@
 //   const pathname = usePathname();
 
 //   const {data: user} = useLogedUserQuery();
-//   const userRole = user?.data?.attributes?.role
-//   console.log(userRole)
+//   const userRole = user?.data?.attributes?.role;
+
 //   // Handle responsive behavior
 //   useEffect(() => {
 //     const handleResize = () => {
@@ -51,6 +50,7 @@
 //     setCollapsed(!collapsed);
 //   };
 
+//   // Filter menu items based on the user role
 //   const menuItems = [
 //     {
 //       key: "/dashboard",
@@ -58,36 +58,41 @@
 //       label: "Dashboard",
 //       path: "/dashboard",
 //     },
-//     {
+//     // Conditionally hide "Content Creator" menu item for certain roles
+//     ...(userRole !== "influencer" && userRole !== "content creator" ? [{
 //       key: "/dashboard/influencerlist",
 //       icon: <UserOutlined />,
 //       label: "Content Creator",
 //       path: "/dashboard/influencerlist",
-//     },
+//     }] : []),
 //     {
 //       key: "/dashboard/campaigns",
 //       icon: <AppstoreAddOutlined />,
 //       label: "Campaigns",
 //       path: "/dashboard/campaigns",
 //     },
-//     {
+//     // Conditionally hide the "Payment" menu item for certain roles
+//     ...(userRole !== "influencer" && userRole !== "content creator" ? [{
 //       key: "/dashboard/payment",
 //       icon: <WalletOutlined />,
 //       label: "Payment",
 //       path: "/dashboard/payment",
-//     },
-//     {
-//       key: "/dashboard/withdraw",
-//       icon: <FileSearchOutlined />,
-//       label: "Withdraw Request",
-//       path: "/dashboard/withdraw",
-//     },
-//     {
-//       key: "/dashboard/transaction",
-//       icon: <FileSearchOutlined />,
-//       label: "Transactions",
-//       path: "/dashboard/transaction",
-//     },
+//     }] : []),
+//     // Conditionally hide the "Withdraw" and "Transactions" for the "brand" role
+//     ...(userRole !== "brand" ? [
+//       {
+//         key: "/dashboard/withdraw",
+//         icon: <FileSearchOutlined />,
+//         label: "Withdraw Request",
+//         path: "/dashboard/withdraw",
+//       },
+//       {
+//         key: "/dashboard/transaction",
+//         icon: <FileSearchOutlined />,
+//         label: "Transactions",
+//         path: "/dashboard/transaction",
+//       }
+//     ] : []),
 //   ];
 
 //   const logo = "/images/logo.png"; // Path to your logo image
@@ -111,9 +116,6 @@
 //         mode={collapsed ? "vertical" : "inline"}  // Switch mode based on collapsed state
 //         selectedKeys={[pathname]}
 //         inlineCollapsed={collapsed}
-       
-       
- 
 //       >
 //         {menuItems.map((item) => (
 //           <Menu.Item key={item.key} icon={item.icon}>
@@ -127,7 +129,8 @@
 
 
 
-"use client";
+'use client'
+
 import { useState, useEffect } from 'react';
 import { Menu } from 'antd';
 import { 
@@ -148,7 +151,7 @@ export default function Sidebar() {
   const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
 
-  const {data: user} = useLogedUserQuery();
+  const { data: user, isLoading, error } = useLogedUserQuery();
   const userRole = user?.data?.attributes?.role;
 
   // Handle responsive behavior
@@ -176,6 +179,8 @@ export default function Sidebar() {
     setCollapsed(!collapsed);
   };
 
+  
+
   // Filter menu items based on the user role
   const menuItems = [
     {
@@ -184,7 +189,6 @@ export default function Sidebar() {
       label: "Dashboard",
       path: "/dashboard",
     },
-    // Conditionally hide "Content Creator" menu item for certain roles
     ...(userRole !== "influencer" && userRole !== "content creator" ? [{
       key: "/dashboard/influencerlist",
       icon: <UserOutlined />,
@@ -197,14 +201,12 @@ export default function Sidebar() {
       label: "Campaigns",
       path: "/dashboard/campaigns",
     },
-    // Conditionally hide the "Payment" menu item for certain roles
     ...(userRole !== "influencer" && userRole !== "content creator" ? [{
       key: "/dashboard/payment",
       icon: <WalletOutlined />,
       label: "Payment",
       path: "/dashboard/payment",
     }] : []),
-    // Conditionally hide the "Withdraw" and "Transactions" for the "brand" role
     ...(userRole !== "brand" ? [
       {
         key: "/dashboard/withdraw",
@@ -221,7 +223,7 @@ export default function Sidebar() {
     ] : []),
   ];
 
-  const logo = "/images/logo.png"; // Path to your logo image
+  const logo = "/images/logo.png";  
 
   return (
     <div className={`${collapsed ? 'w-20' : 'w-52'} transition-all duration-300 h-full shadow-md`}>
