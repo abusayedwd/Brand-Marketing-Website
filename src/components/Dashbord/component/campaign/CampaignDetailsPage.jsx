@@ -526,6 +526,7 @@ import { useAcceptedInfluenerMutation } from "@/redux/fetures/campaign/acceptedI
 import BackButton from "@/components/customComponent/BackButton";
 import { useLogedUserQuery } from "@/redux/fetures/user/logedUser";
 import { CustomButton } from "@/components/customComponent/Button";
+import { useInterestedCampaignInfluMutation } from "@/redux/fetures/campaign/interestedCampaignInflu";
 
 const { Title, Text, Paragraph } = Typography;
 const { TabPane } = Tabs;
@@ -536,11 +537,22 @@ const CampaignDetailsPage = ({ id }) => {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-
-  const handleYes = () => {
-    // Handle the "Yes" action here
-    console.log("User is interested in the campaign!");
-    closeModal();
+const [interested, {}] = useInterestedCampaignInfluMutation()
+  const handleYes = async() => {
+    console.log("Campaign IDdddddd:", id);
+    try{
+      const res = await interested(id).unwrap();
+      console.log(res)
+      if(res.code=== 200){
+        toast.success("Intereted success") 
+       closeModal();
+      }
+    }catch(error){
+      console.log(error.data)
+      toast.error(error.data.message)
+    }
+    
+   
   }
 
 
@@ -910,7 +922,7 @@ const CampaignDetailsPage = ({ id }) => {
 
                 {/* intereted modal */}
 
-  {user?.data?.attributes?.role === "influencer" && (
+  {campaign.status === "upComming" &&  user?.data?.attributes?.role === "influencer" && (
            <div className="p-8">
       <div className="text-right font-semibold my-2">
         <button 

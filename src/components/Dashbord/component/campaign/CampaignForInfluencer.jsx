@@ -11,6 +11,10 @@ import { useGetMyCampaignQuery } from '@/redux/fetures/campaign/getMyCampaign';
 import { useRouter } from 'next/navigation';
 import { useUpcommingCampaignQuery } from '@/redux/fetures/campaign/upcommingCampaign';
 import { useGetAcceptedCampaignsForInfluencerQuery } from '@/redux/fetures/campaign/getMyAcceptedCampaign';
+import { useGetInterestedCampaignQuery } from '@/redux/fetures/campaign/getInterestedCampaign';
+import { LoginModal } from '@/components/customComponent/LoginModal';
+import { CustomButton } from '@/components/customComponent/Button';
+import { useLogedUserQuery } from '@/redux/fetures/user/logedUser';
  
  
  
@@ -19,12 +23,17 @@ const { TabPane } = Tabs;
 const Campaigns = () => {
 
 
-  // const router = useRouter();
+     const { data: loggedUser} = useLogedUserQuery()
+  const isSubscribed = loggedUser?.data?.attributes?.isSubscribe;
+  // console.log(loggedUser)
 
-  // const handleViewDetails = (id) => {
-  //   router.push(`/dashboard/campaigns/details?id=${id}`);
-  // };
-
+  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
+  const handleLogin = () => {
+    // Implement your login logic here
+    // This could redirect to login page or handle login in modal
+    console.log('Redirect to login or handle login');
+    setIsLoginModalVisible(false);
+  };
   const { data: myCampaign, isLoading, error } = useUpcommingCampaignQuery();
   console.log(myCampaign);
   
@@ -107,7 +116,42 @@ const Campaigns = () => {
           </div>
           <div className="mt-4 flex justify-end">
 
-            <Link href={`/dashboard/campaigns/details?id=${campaign.id}`}>
+
+                  {loggedUser && isSubscribed === true ? (
+                    
+                    <div>
+
+   <Link className='' href={`/dashboard/campaigns/details?id=${campaign.id}`}>
+      <CustomButton variant="primary" size="large">
+        View Details
+      </CustomButton>
+    </Link>
+                    </div>
+  ) : (
+    <>
+    <div>
+
+      <CustomButton
+        variant="primary" 
+        size="large"
+        onClick={() => setIsLoginModalVisible(true)} // This will open the modal
+      >
+        View Details  
+      </CustomButton>
+    </div>
+
+      {/* Modal for login or subscription when not logged in or not subscribed */}
+      <LoginModal
+        isVisible={isLoginModalVisible}
+        onClose={() => setIsLoginModalVisible(false)}
+        onLogin={handleLogin}
+        isSubscribed={isSubscribed}
+        isLoggedIn={loggedUser}
+      />
+    </>
+  )} 
+
+            {/* <Link href={`/dashboard/campaigns/details?id=${campaign.id}`}>
             <Button
               type="primary"
               className="mr-2"
@@ -115,7 +159,7 @@ const Campaigns = () => {
             >
               View Details
             </Button>
-             </Link> 
+             </Link>  */}
 
             {campaign.status === 'completed' && (
               <Button type="default" icon={<CheckCircleOutlined />}>
@@ -128,9 +172,13 @@ const Campaigns = () => {
     </Card>
   );
 
+ const {data: interesteCampaings} = useGetInterestedCampaignQuery()
+
   const {data:acceptedCampaigns} = useGetAcceptedCampaignsForInfluencerQuery()
-  console.log(acceptedCampaigns)
+  // console.log(acceptedCampaigns)
 const acceptedCampaign = acceptedCampaigns?.data?.attributes?.results || [];
+const interesteCampaing = interesteCampaings?.data?.attributes?.results || [];
+ console.log(interesteCampaing)
   // Filter campaigns by status
   const upcomingCampaigns = campaigns.filter(campaign => campaign.status === 'upComming');
   const activeCampaigns = acceptedCampaign.filter(campaign => campaign.status === 'active');
@@ -175,7 +223,27 @@ const acceptedCampaign = acceptedCampaigns?.data?.attributes?.results || [];
               </div>
             )}
           </TabPane>
-          <TabPane tab={`Active Campaigns (${activeCampaigns.length})`} key="2">
+
+
+          <TabPane tab={`Interested Campaigns (${interesteCampaing.length})`} key="2">
+            {interesteCampaing.length > 0 ? (
+              interesteCampaing.map((campaign) => renderCampaignCard(campaign))
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                No Interested campaigns found
+              </div>
+            )}
+          </TabPane>
+          <TabPane tab={`AcceptedCampaign Campaigns (${acceptedCampaign.length})`} key="3">
+            {acceptedCampaign.length > 0 ? (
+              acceptedCampaign.map((campaign) => renderCampaignCard(campaign))
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                No active campaigns found
+              </div>
+            )}
+          </TabPane>
+          <TabPane tab={`Active Campaigns (${activeCampaigns.length})`} key="4">
             {activeCampaigns.length > 0 ? (
               activeCampaigns.map((campaign) => renderCampaignCard(campaign))
             ) : (
@@ -184,7 +252,10 @@ const acceptedCampaign = acceptedCampaigns?.data?.attributes?.results || [];
               </div>
             )}
           </TabPane>
-          <TabPane tab={`Completed Campaigns (${completedCampaigns.length})`} key="3">
+
+
+
+          <TabPane tab={`Completed Campaigns (${completedCampaigns.length})`} key="5">
             {completedCampaigns.length > 0 ? (
               completedCampaigns.map((campaign) => renderCampaignCard(campaign))
             ) : (
