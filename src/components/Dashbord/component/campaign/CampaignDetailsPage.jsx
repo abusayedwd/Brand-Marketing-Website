@@ -489,7 +489,7 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import {
   Card,
   Tabs,
@@ -538,6 +538,9 @@ const CampaignDetailsPage = ({ id }) => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 const [interested, {}] = useInterestedCampaignInfluMutation()
+
+ 
+
   const handleYes = async() => {
     console.log("Campaign IDdddddd:", id);
     try{
@@ -554,11 +557,10 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
     
    
   }
-
-
-
-  console.log(id)
+ 
+ 
   const {data: user } = useLogedUserQuery()
+  console.log(user?.data?.attributes?.id)
   const [activeTab, setActiveTab] = useState("accepted");
   const {
     data: campaignData,
@@ -568,7 +570,7 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
   } = useGetSingleCampaignQuery(id);
   
   const [acceptInfluencer, { isLoading: acceptLoading }] = useAcceptedInfluenerMutation();
-
+ 
   // Handle loading state
   if (isLoading) {
     return (
@@ -612,7 +614,10 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
     );
   }
 
-  const campaign = campaignData.data.attributes;
+  const campaign = campaignData?.data?.attributes;
+console.log('User ID:', user?.data?.attributes?.id); // Should be "686df471dc927e1775150d3a"
+console.log('Accepted Influencers:', campaign?.acceptedInfluencers); // Should be ["686df471dc927e1775150d3a"]
+console.log('Does user ID exist in acceptedInfluencers?', campaign.acceptedInfluencers.includes(user?.data?.attributes?.id)); // Should return true
 
   // Helper functions
   const getSocialMediaIcon = (platform) => {
@@ -921,9 +926,13 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
                 </div>
 
                 {/* intereted modal */}
-
-  {campaign.status === "upComming" &&  user?.data?.attributes?.role === "influencer" && (
-           <div className="p-8">
+                
+{campaign.status === "upComming" && 
+  user?.data?.attributes?.role === "influencer" && 
+  !campaign.acceptedInfluencers.some((influencer) => influencer.id === user?.data?.attributes?.id) && 
+  !campaign.interestedInfluencers.some((influencer) => influencer.id === user?.data?.attributes?.id) ? (
+    // If status is "upComming" and user ID is not in either acceptedInfluencers or interestedInfluencers, show Interest button
+    <div className="p-8">
       <div className="text-right font-semibold my-2">
         <button 
           className="bg-sky-400 py-1 px-10 rounded hover:bg-sky-500 transition-colors"
@@ -963,7 +972,57 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
         </div>
       )}
     </div>
+  ) : (campaign.status !== "upComming" || 
+        campaign.acceptedInfluencers.some((influencer) => influencer.id === user?.data?.attributes?.id) || 
+        campaign.interestedInfluencers.some((influencer) => influencer.id === user?.data?.attributes?.id)) && (
+    // If the status is not "upComming" or user has already expressed interest, show the badge
+    <div className="p-8">
+      <div className="text-center font-semibold my-2">
+        <span className="bg-green-400 py-1 px-6 rounded text-white">
+          You already expressed interest in this campaign
+        </span>
+      </div>
+    </div>
+  )}
+
+{/* Show Submit Draft button if the user is in the acceptedInfluencers list */}
+{campaign.acceptedInfluencers.some((influencer) => influencer.id === user?.data?.attributes?.id) && (
+  <div className="p-8">
+    <div className="text-right font-semibold my-2">
+      <button 
+        className="bg-blue-400 py-1 px-10 rounded hover:bg-blue-500 transition-colors"
+        // onClick={submitDraft}
+      >
+        Submit Draft
+      </button>
+    </div>
+  </div>
 )}
+
+{/* Display Campaign Status */}
+{campaign.status === "active" && (
+  <div className="p-8">
+    <div className="text-center font-semibold my-2">
+      <span className="bg-yellow-400 py-1 px-6 rounded text-white">
+        This campaign is active
+      </span>
+    </div>
+  </div>
+)}
+
+{campaign.status === "completed" && (
+  <div className="p-8">
+    <div className="text-center font-semibold my-2">
+      <span className="bg-gray-400 py-1 px-6 rounded text-white">
+        This campaign is completed
+      </span>
+    </div>
+  </div>
+)}
+
+
+
+
 
 
 

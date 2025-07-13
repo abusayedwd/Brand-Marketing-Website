@@ -1,10 +1,10 @@
-import WithdrawRequestList from '@/components/Dashbord/component/WithdrawRequest';
+import WithdrawFormPage from '@/components/Dashbord/component/WithdrawFormPage';
 import React from 'react';
 
 const page = () => {
     return (
         <div>
-             <WithdrawRequestList />
+            <WithdrawFormPage />
         </div>
     );
 };

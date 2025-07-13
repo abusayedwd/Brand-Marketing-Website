@@ -209,10 +209,10 @@ export default function Sidebar() {
     }] : []),
     ...(userRole !== "brand" ? [
       {
-        key: "/dashboard/withdraw",
+        key: "/dashboard/my-wallet",
         icon: <FileSearchOutlined />,
-        label: "Withdraw Request",
-        path: "/dashboard/withdraw",
+        label: "My Wallet",
+        path: "/dashboard/my-wallet",
       },
       {
         key: "/dashboard/transaction",

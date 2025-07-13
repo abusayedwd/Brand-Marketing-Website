@@ -4,10 +4,8 @@
 import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, Area, AreaChart } from 'recharts';
 import { Select } from 'antd';
-import { useGetAcceptedCampaignsForInfluencerQuery } from '@/redux/fetures/campaign/getMyAcceptedCampaign';
-import { useUpcommingCampaignQuery } from '@/redux/fetures/campaign/upcommingCampaign';
 
-const Barchart = () => {
+const BarchartforBrand = () => {
   const [selectedYear, setSelectedYear] = useState('2023');
 
   // Payment data organized by year
@@ -56,29 +54,11 @@ const Barchart = () => {
     ]
   };
 
-
-  const {data:acceptedCampaignns} = useGetAcceptedCampaignsForInfluencerQuery()
-  console.log(acceptedCampaignns)
-    const acceptedCampaignn = acceptedCampaignns?.data?.attributes?.results || [];
-
-   const { data: myCampaign, isLoading, error } = useUpcommingCampaignQuery();
-   
-   
-   // Get campaigns from API data
-   const campaigns = myCampaign?.data?.attributes?.results || [];
-  //  console.log(campaigns.length);
-  
-
-  
-  const activeCampaigns = acceptedCampaignn.filter(campaign => campaign.status === 'active');
-  const completedCampaigns = acceptedCampaignn.filter(campaign => campaign.status === 'completed');
-
-
   // Campaign data for the pie chart
   const campaignData = [
-    { name: 'Upcoming', value: campaigns.length, color: '#8BB6FC' },
-    { name: 'Active', value: activeCampaigns.length, color: '#4A90E2' },
-    { name: 'Complete', value: completedCampaigns.length, color: '#1B5EB8' },
+    { name: 'Upcoming', value: 150, color: '#8BB6FC' },
+    { name: 'Active', value: 300, color: '#4A90E2' },
+    { name: 'Complete', value: 550, color: '#1B5EB8' },
   ];
 
   // Year selection options
@@ -166,7 +146,7 @@ const Barchart = () => {
           <div className="flex items-start justify-between mb-4">
             <div>
               <h2 className="text-lg font-semibold">Campaign Status</h2>
-              {/* <p className="text-2xl font-bold">1000+</p> */}
+              <p className="text-2xl font-bold">1000+</p>
             </div>
           </div>
           <div className="h-64">
@@ -217,4 +197,4 @@ const Barchart = () => {
   );
 };
 
-export default Barchart;
+export default BarchartforBrand;

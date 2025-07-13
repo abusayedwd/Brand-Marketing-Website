@@ -117,8 +117,7 @@ const Campaigns = () => {
           <div className="mt-4 flex justify-end">
 
 
-                  {loggedUser && isSubscribed === true ? (
-                    
+                  {loggedUser && isSubscribed === true ? ( 
                     <div>
 
    <Link className='' href={`/dashboard/campaigns/details?id=${campaign.id}`}>
@@ -176,13 +175,14 @@ const Campaigns = () => {
 
   const {data:acceptedCampaigns} = useGetAcceptedCampaignsForInfluencerQuery()
   // console.log(acceptedCampaigns)
-const acceptedCampaign = acceptedCampaigns?.data?.attributes?.results || [];
+const acceptedCampaignn = acceptedCampaigns?.data?.attributes?.results || [];
 const interesteCampaing = interesteCampaings?.data?.attributes?.results || [];
  console.log(interesteCampaing)
   // Filter campaigns by status
   const upcomingCampaigns = campaigns.filter(campaign => campaign.status === 'upComming');
-  const activeCampaigns = acceptedCampaign.filter(campaign => campaign.status === 'active');
-  const completedCampaigns = acceptedCampaign.filter(campaign => campaign.status === 'completed');
+  const activeCampaigns = acceptedCampaignn.filter(campaign => campaign.status === 'active');
+  const completedCampaigns = acceptedCampaignn.filter(campaign => campaign.status === 'completed');
+  const acceptedCampaign = acceptedCampaignn.filter(campaign => campaign.status === 'upComming');
 
   if (isLoading) {
     return (
