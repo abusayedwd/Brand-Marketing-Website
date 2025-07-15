@@ -24,7 +24,7 @@ const Campaigns = () => {
 
  
   const { data: myCampaign, isLoading, error } = useGetMyCampaignQuery();
-  console.log(myCampaign);
+  // console.log(myCampaign);
   
   // Get campaigns from API data
   const campaigns = myCampaign?.data?.attributes?.results || [];
@@ -119,14 +119,15 @@ const Campaigns = () => {
 
 
      
-   <Link href={`/dashboard/campaigns/edit-campaign?id=${campaign.id}`}>
-  {/* Conditionally render the Edit button */}
+   {/* <Link href={`/dashboard/campaigns/edit-campaign?id=${campaign.id}`}>
+   
   {campaign.status !== 'active' && campaign.status !== 'completed' && (
     <Button type="default" icon={<ClockCircleOutlined />} className="mr-2">
       Edit
     </Button>
   )}
-</Link>
+</Link> */}
+
             {campaign.status === 'completed' && (
               <Button type="default" icon={<CheckCircleOutlined />}>
                 Completed

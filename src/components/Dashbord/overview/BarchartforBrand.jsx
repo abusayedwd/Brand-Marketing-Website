@@ -4,9 +4,36 @@
 import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, Area, AreaChart } from 'recharts';
 import { Select } from 'antd';
+import { useGetMyCampaignQuery } from '@/redux/fetures/campaign/getMyCampaign';
+import { useBrandEarningChartQuery } from '@/redux/fetures/payment/brandEarningChart';
 
 const BarchartforBrand = () => {
-  const [selectedYear, setSelectedYear] = useState('2023');
+
+  const { data: myCampaign, isLoading, error } = useGetMyCampaignQuery();
+  // console.log(myCampaign);
+  
+  // Get campaigns from API data
+  const campaigns = myCampaign?.data?.attributes?.results || [];
+
+   // Filter campaigns by status
+  const upcomingCampaigns = campaigns.filter(campaign => campaign.status === 'upComming');
+  const activeCampaigns = campaigns.filter(campaign => campaign.status === 'active');
+  const completedCampaigns = campaigns.filter(campaign => campaign.status === 'completed');
+
+  const [selectedYear, setSelectedYear] = useState('2025');
+
+ const { data: areaChartData } = useBrandEarningChartQuery(selectedYear);
+  console.log(areaChartData);
+
+  
+
+  // Check if areaChartData is available and properly formatted
+  const formattedAreaChartData = areaChartData?.data?.attributes?.map((item) => ({
+    month: item.month,
+    earning: parseFloat(item.totalEarnings),  // Assuming totalEarnings is a string, converting it to number
+  })) || [];
+
+ 
 
   // Payment data organized by year
   const paymentDataByYear = {
@@ -56,17 +83,19 @@ const BarchartforBrand = () => {
 
   // Campaign data for the pie chart
   const campaignData = [
-    { name: 'Upcoming', value: 150, color: '#8BB6FC' },
-    { name: 'Active', value: 300, color: '#4A90E2' },
-    { name: 'Complete', value: 550, color: '#1B5EB8' },
+    { name: 'Upcoming', value: upcomingCampaigns?.length, color: '#8BB6FC' },
+    { name: 'Active', value: activeCampaigns?.length, color: '#4A90E2' },
+    { name: 'Complete', value: completedCampaigns?.length, color: '#1B5EB8' },
   ];
 
   // Year selection options
   const yearOptions = [
-    { value: '2023', label: '2023' },
-    { value: '2022', label: '2022' },
-    { value: '2021', label: '2021' },
- 
+    { value: '2025', label: '2025' },
+    { value: '2026', label: '2026' },
+    { value: '2027', label: '2027' },
+    { value: '2028', label: '2028' },
+    { value: '2029', label: '2029' },
+    { value: '2030', label: '2030' },
   ];
 
   const handleYearChange = (value) => {
@@ -110,7 +139,7 @@ const BarchartforBrand = () => {
           <div className="h-64 relative">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart 
-                data={paymentDataByYear[selectedYear]} 
+                data={formattedAreaChartData} 
                 margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
               >
                 <defs>
@@ -126,7 +155,7 @@ const BarchartforBrand = () => {
                 
                 <Area 
                   type="monotone" 
-                  dataKey="value" 
+                  dataKey="earning" 
                   stroke="#4A90E2"
                   strokeWidth={2}
                   fill="url(#colorBlueGradient)"
@@ -146,7 +175,7 @@ const BarchartforBrand = () => {
           <div className="flex items-start justify-between mb-4">
             <div>
               <h2 className="text-lg font-semibold">Campaign Status</h2>
-              <p className="text-2xl font-bold">1000+</p>
+              {/* <p className="text-2xl font-bold">1000+</p> */}
             </div>
           </div>
           <div className="h-64">

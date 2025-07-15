@@ -1,4 +1,7 @@
-  
+ 
+
+
+
 "use client";
 
 import React, { use, useState } from "react";
@@ -27,6 +30,9 @@ import {
   DollarOutlined,
   TeamOutlined,
   GlobalOutlined,
+  FileTextOutlined,
+  ClockCircleOutlined,
+  CheckCircleOutlined,
 } from "@ant-design/icons";
 
 import { useGetSingleCampaignQuery } from "@/redux/fetures/campaign/getSingleCampaign";
@@ -40,6 +46,7 @@ import { useLogedUserQuery } from "@/redux/fetures/user/logedUser";
 import { CustomButton } from "@/components/customComponent/Button";
 import { useInterestedCampaignInfluMutation } from "@/redux/fetures/campaign/interestedCampaignInflu";
 import Link from "next/link";
+import { useApprovedDraftMutation } from "@/redux/fetures/draftSubmit/approvedDraft";
 
 const { Title, Text, Paragraph } = Typography;
 const { TabPane } = Tabs;
@@ -83,6 +90,8 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
   } = useGetSingleCampaignQuery(id);
   
   const [acceptInfluencer, { isLoading: acceptLoading }] = useAcceptedInfluenerMutation();
+
+  const [approveDraft] = useApprovedDraftMutation()
  
   // Handle loading state
   if (isLoading) {
@@ -127,11 +136,7 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
     );
   }
 
-  const campaign = campaignData?.data?.attributes;
-console.log('User ID:', user?.data?.attributes?.id); // Should be "686df471dc927e1775150d3a"
-console.log('Accepted Influencers:', campaign?.acceptedInfluencers); // Should be ["686df471dc927e1775150d3a"]
-console.log('Does user ID exist in acceptedInfluencers?', campaign.acceptedInfluencers.includes(user?.data?.attributes?.id)); // Should return true
-
+  const campaign = campaignData?.data?.attributes; 
   // Helper functions
   const getSocialMediaIcon = (platform) => {
     const icons = {
@@ -200,6 +205,26 @@ console.log('Does user ID exist in acceptedInfluencers?', campaign.acceptedInflu
     }
 };
 
+  // Draft approve handler
+  const handleApproveDraft = async (draftId) => {
+    try {
+      console.log("Approving draft:", draftId, id);
+      const data = {
+        campaignId: id,
+        draftId: draftId
+      }
+      // Add your draft approval logic here
+      const result = await approveDraft(data).unwrap();
+      console.log(result)
+       if(result?.code === 200){
+         toast.success("Draft approved successfully!"); 
+       }
+      refetch(); // Refresh the campaign data
+    } catch (error) {
+      console.error("Error approving draft:", error);
+      toast.error("Failed to approve draft. Please try again.");
+    }
+  };
 
   const handleDenyInfluencer = async (influencerId) => {
     try {
@@ -325,7 +350,95 @@ console.log('Does user ID exist in acceptedInfluencers?', campaign.acceptedInflu
   </div>
 )}
 
+      </div>
+    </Card>
+  );
 
+  // Draft Card Component
+  
+  const DraftCard = ({ draft, showActions = false }) => (
+    <Card className="mb-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+      <div className="flex items-start justify-between">
+        <div className="flex items-start space-x-4 flex-1">
+          <img
+            src={draft.image?.url ? url + draft.image.url : "/placeholder-image.jpg"}
+            alt="Draft"
+            className="w-32 h-32 object-cover rounded-lg flex-shrink-0"
+            onError={(e) => {
+              e.target.src = "/placeholder-image.jpg";
+            }}
+          />
+          
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center space-x-2 mb-2">
+              <Title level={4} className="m-0">
+                Draft Content
+              </Title>
+              <div className="ml-auto">
+                {draft.isApproved ? (
+                  <Tag color="green" icon={<CheckCircleOutlined />}>
+                    Approved
+                  </Tag>
+                ) : (
+                  <Tag color="orange" icon={<ClockCircleOutlined />}>
+                    Pending
+                  </Tag>
+                )}
+              </div>
+            </div>
+
+            <div className="mb-3">
+              <Text strong className="block mb-1">Influencer ID:</Text>
+              <Text code className="text-sm">{draft.influencerId}</Text>
+            </div>
+            
+            <div className="mb-3">
+              <Text strong className="block mb-1">Content:</Text>
+              <Paragraph className="text-sm text-gray-600 mb-0">
+                {draft.draftContent}
+              </Paragraph>
+            </div>
+            
+            <div className="mb-3">
+              <Text strong className="block mb-2">Social Platforms:</Text>
+              <Space direction="vertical" size="small" className="w-full">
+                {draft.socialPlatform?.map((platform) => (
+                  <div key={platform._id} className="flex items-center space-x-2">
+                    {getSocialMediaIcon(platform.platform)}
+                    <Text className="text-sm">{platform.platform}</Text>
+                    <a
+                      href={platform.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:text-blue-700 text-sm"
+                    >
+                      {platform.url}
+                    </a>
+                  </div>
+                ))}
+              </Space>
+            </div>
+            
+            <div className="pt-2 border-t border-gray-100">
+              <Text className="text-xs text-gray-500">
+                Created: {formatDate(draft.createdAt)}
+              </Text>
+            </div>
+          </div>
+        </div>
+
+        {showActions && user?.data?.attributes?.role === "brand" && !draft.isApproved && (
+          <div className="flex space-x-2 flex-shrink-0">
+            <Button
+              type="primary"
+              icon={<CheckOutlined />}
+              onClick={() => handleApproveDraft(draft._id)}
+              className="bg-green-500 hover:bg-green-600 border-green-500"
+            >
+              Approve
+            </Button>
+          </div>
+        )}
       </div>
     </Card>
   );
@@ -616,6 +729,95 @@ console.log('Does user ID exist in acceptedInfluencers?', campaign.acceptedInflu
                 )}
               </div>
             </TabPane>
+ 
+            {/* <TabPane
+              tab={
+                <span className="text-lg">
+                  <FileTextOutlined className="mr-2" />
+                  Drafts ({campaign.drafts?.length || 0})
+                </span>
+              }
+              key="drafts"
+            >
+              <div className="py-4">
+                {campaign.drafts?.length > 0 ? (
+                  campaign.drafts.map((draft) => (
+                    <DraftCard
+                      key={draft._id}
+                      draft={draft}
+                      showActions={true}
+                    />
+                  ))
+                ) : (
+                  <div className="text-center py-12">
+                    <FileTextOutlined className="text-6xl text-gray-300 mb-4" />
+                    <Title level={4} type="secondary">
+                      No drafts submitted yet
+                    </Title>
+                    <Text type="secondary">
+                      Draft submissions from influencers will appear here
+                    </Text>
+                  </div>
+                )}
+              </div>
+            </TabPane> */}
+
+
+   // Replace the drafts TabPane with this updated version
+
+<TabPane
+  tab={
+    <span className="text-lg">
+      <FileTextOutlined className="mr-2" />
+      {user?.data?.attributes?.role === "brand" ? "Drafts" : "My Drafts"} ({
+        user?.data?.attributes?.role === "brand" 
+          ? campaign.drafts?.length || 0 
+          : campaign.drafts?.filter(draft => draft.influencerId === user?.data?.attributes?.id)?.length || 0
+      })
+    </span>
+  }
+  key="drafts"
+>
+  <div className="py-4">
+    {(() => {
+      const userRole = user?.data?.attributes?.role;
+      const userId = user?.data?.attributes?.id;
+      
+      // Filter drafts based on user role
+      const filteredDrafts = userRole === "brand" 
+        ? campaign.drafts || [] 
+        : (campaign.drafts || []).filter(draft => draft.influencerId === userId);
+
+      return filteredDrafts.length > 0 ? (
+        filteredDrafts.map((draft) => (
+          <DraftCard
+            key={draft._id}
+            draft={draft}
+            showActions={userRole === "brand"} // Only show actions for brand users
+          />
+        ))
+      ) : (
+        <div className="text-center py-12">
+          <FileTextOutlined className="text-6xl text-gray-300 mb-4" />
+          <Title level={4} type="secondary">
+            {userRole === "brand" 
+              ? "No drafts submitted yet" 
+              : "You haven't submitted any drafts yet"
+            }
+          </Title>
+          <Text type="secondary">
+            {userRole === "brand" 
+              ? "Draft submissions from influencers will appear here" 
+              : "Your draft submissions will appear here"
+            }
+          </Text>
+        </div>
+      );
+    })()}
+  </div>
+</TabPane>
+
+
           </Tabs>
         </Card>
       </div>

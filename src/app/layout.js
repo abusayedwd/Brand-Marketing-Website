@@ -77,8 +77,7 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/images/logo.png" sizes="32x32" type="image/png" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Providers>
-       
+        <Providers> 
           {children}
         </Providers>
       </body>

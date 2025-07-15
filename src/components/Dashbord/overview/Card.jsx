@@ -3,6 +3,7 @@
 // components/CardComponent.js
 import { useGetAcceptedCampaignsForInfluencerQuery } from '@/redux/fetures/campaign/getMyAcceptedCampaign';
 import { useUpcommingCampaignQuery } from '@/redux/fetures/campaign/upcommingCampaign';
+import { useGetInfluencerStatusQuery } from '@/redux/fetures/wallet/getInfluencerStatus';
 import { Card } from 'antd'; // Import Ant Design's Card component
 import { FaUser, FaMoneyBillAlt, FaBullhorn, FaClipboardList } from 'react-icons/fa'; // Optional: for icons
 
@@ -10,7 +11,9 @@ const CardComponent = () => {
 
 
   const {data:acceptedCampaignns} = useGetAcceptedCampaignsForInfluencerQuery()
-  console.log(acceptedCampaignns)
+
+  const {data:status} = useGetInfluencerStatusQuery()
+  console.log(status)
     const acceptedCampaignn = acceptedCampaignns?.data?.attributes?.results || [];
 
    const { data: myCampaign, isLoading, error } = useUpcommingCampaignQuery();
@@ -18,9 +21,7 @@ const CardComponent = () => {
    
    // Get campaigns from API data
    const campaigns = myCampaign?.data?.attributes?.results || [];
-  //  console.log(campaigns.length);
-  
-
+  //  console.log(campaigns.length); 
   
   const activeCampaigns = acceptedCampaignn.filter(campaign => campaign.status === 'active');
   const completedCampaigns = acceptedCampaignn.filter(campaign => campaign.status === 'completed');
@@ -36,10 +37,10 @@ const CardComponent = () => {
       >
         <div className="p-4 text-center">
           <div className="text-4xl text-blue-500 mb-4">
-            <FaUser />
+           <FaMoneyBillAlt />
           </div>
-          <div className="text-sm text-gray-500">Total Content Creator</div>
-          <div className="text-xl font-semibold text-gray-800">5000+</div>
+          <div className="text-sm text-gray-500">Total Earning</div>
+          <div className="text-xl font-semibold text-gray-800">{status?.data?.attributes?.totalEarnings}</div>
         </div>
       </Card>
 
@@ -50,11 +51,25 @@ const CardComponent = () => {
         bodyStyle={{ padding: 0 }}
       >
         <div className="p-4 text-center">
+          <div className="text-4xl text-red-500 mb-4">
+            <FaMoneyBillAlt />
+          </div>
+          <div className="text-sm text-gray-500">Total withdraw</div>
+          <div className="text-xl font-semibold text-gray-800">{status?.data?.attributes?.totalWithdrawals}</div>
+        </div>
+      </Card>
+
+      <Card
+        className="w-72"
+        bordered={false}
+        bodyStyle={{ padding: 0 }}
+      >
+        <div className="p-4 text-center">
           <div className="text-4xl text-green-500 mb-4">
             <FaMoneyBillAlt />
           </div>
-          <div className="text-sm text-gray-500">Total Payment</div>
-          <div className="text-xl font-semibold text-gray-800">10,000</div>
+          <div className="text-sm text-gray-500">Current Balance</div>
+          <div className="text-xl font-semibold text-gray-800">{status?.data?.attributes?.currentBalance}</div>
         </div>
       </Card>
 
