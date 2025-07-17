@@ -5,6 +5,7 @@ import { Button, Card, List, Pagination, Typography, Avatar } from 'antd';
 import { BankOutlined, CameraOutlined, DollarOutlined } from '@ant-design/icons';
 import { useGetMyWalletQuery } from '@/redux/fetures/wallet/getMyWallet';
 import { useRouter } from 'next/navigation';
+import WithdrawRequestPage from './MywithdrawHistory';
 
 const { Title, Text } = Typography;
 
@@ -47,9 +48,12 @@ const WalletPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-4xl mx-auto">
+   <div className='flex '>
+    <div className='md:w-[30%] w-full'> 
+      <div className="mx-auto">
         {/* Balance Card */}
         <Card className="mb-6 relative overflow-hidden">
+    
           <div className="bg-gradient-to-r from-teal-300 via-blue-300 to-purple-400 p-8 -m-6 mb-4">
             {/* Camera Icon */}
             <div className="absolute top-4 left-1/2 transform -translate-x-1/2">
@@ -161,7 +165,13 @@ const WalletPage = () => {
             </div>
           )}
         </Card>
-      </div>
+      </div> 
+    </div>
+    <div className='md:w-[70%] w-full'> 
+        <WithdrawRequestPage />
+    </div>
+   </div> 
+   
     </div>
   );
 };

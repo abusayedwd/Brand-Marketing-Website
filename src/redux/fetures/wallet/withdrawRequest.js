@@ -9,7 +9,8 @@ const withdreawRequest = apiSlice.injectEndpoints({
                 url: `/withdraw//request-withdrawal`,
                 method: "POST",
                 body:  data
-            })
+            }),
+            invalidatesTags:[{type:"Wallet"}]
         })
     })
 })

@@ -9,7 +9,8 @@ const interestedCampaignInflu = apiSlice.injectEndpoints({
             query: (id) => ({
                 url: `/campaigns/interested/${id}`,
                 method: "POST",
-            })
+            }),
+            invalidatesTags:[{type:"Campaign"}]
         })
     })
 })

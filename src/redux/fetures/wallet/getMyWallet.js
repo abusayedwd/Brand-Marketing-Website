@@ -7,7 +7,7 @@ const getMyWallet = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getMyWallet: builder.query({
             query: () => `withdraw/my-wallet`,
-            providesTags: [{type: "Profile"}]
+            providesTags: [{type: "Wallet"}]
         })
 
     })

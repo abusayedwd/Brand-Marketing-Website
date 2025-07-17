@@ -9,7 +9,8 @@ const createCampaign = apiSlice.injectEndpoints({
                 url: `/campaigns/createCampaign`,
                 method: "POST",
                 body:  data
-            })
+            }),
+            invalidatesTags:[{type:"Campaign"}]
         })
     })
 })

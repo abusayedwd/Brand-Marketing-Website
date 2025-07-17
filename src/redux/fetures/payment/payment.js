@@ -9,7 +9,8 @@ const payment = apiSlice.injectEndpoints({
                 url: `/payments/pay`,
                 method: "POST",
                 body:  data
-            })
+            }),
+            invalidatesTags:[{type:"Campaign"}]
         })
     })
 })

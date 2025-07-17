@@ -11,7 +11,8 @@ const approvedDraft = apiSlice.injectEndpoints({
                 url: `/campaigns/approveDraft`,
                 method: "POST",
                 body: data  
-            })
+            }),
+            invalidatesTags:[{type:"Campaign"}]
         })
     })
 })

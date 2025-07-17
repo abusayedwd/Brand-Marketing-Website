@@ -12,7 +12,9 @@ const acceptedInfluener = apiSlice.injectEndpoints({
                     method: "POST",
                     body: { influencerId: influencerId }  // Corrected spelling here
                 };
-            }
+                
+            },
+            invalidatesTags:[{type:"Campaign"}]
         })
     })
 });

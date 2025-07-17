@@ -9,7 +9,8 @@ const submitDraft = apiSlice.injectEndpoints({
                 url: `/campaigns/submitDraft/${id}`,
                 method: "POST",
                 body:  formData
-            })
+            }),
+            invalidatesTags:[{type:"Campaign"}]
         })
     })
 })

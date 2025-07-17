@@ -7,7 +7,8 @@ const updateCampaign = apiSlice.injectEndpoints({
                 url: `/campaigns/updateCampaign/${id}`,
                 method: "PUT",
                 body:  data
-            })
+            }),
+            invalidatesTags:[{type:"Campaign"}]
         })
     })
 })
