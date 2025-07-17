@@ -17,21 +17,21 @@ const PaymentRequestList = () => {
 
   // Set the payment requests and pagination when the data is fetched
   useEffect(() => {
-    if (transactionData && transactionData.data && transactionData.data.attributes.results) {
-      const transformedData = transactionData.data.attributes.results.map((transaction) => ({
-        key: transaction.id, // Unique key based on transaction id
-        requestId: transaction.id,
-        user: transaction.campaignId.campaignName, // Campaign name
-        amount: `$${transaction.amount}`,
-        requestTime: new Date(transaction.transactionDate).toLocaleString(),
-        status: transaction.paymentStatus,
-        campaignId: transaction.campaignId,
-        brandId: transaction.brandId,
+    if (transactionData && transactionData?.data && transactionData?.data?.attributes?.results) {
+      const transformedData = transactionData?.data?.attributes?.results.map((transaction) => ({
+        key: transaction?.id, // Unique key based on transaction? id
+        requestId: transaction?.id,
+        user: transaction?.campaignId?.campaignName, // Campaign name
+        amount: `$${transaction?.amount}`,
+        requestTime: new Date(transaction?.transactionDate).toLocaleString(),
+        status: transaction?.paymentStatus,
+        campaignId: transaction?.campaignId,
+        brandId: transaction?.brandId,
       }));
       setPaymentRequests(transformedData);
       setPagination((prev) => ({
         ...prev,
-        total: transactionData.data.attributes.totalResults, // Update the total count of records from API
+        total: transactionData?.data?.attributes?.totalResults, // Update the total count of records from API
       }));
     }
   }, [transactionData]);
@@ -132,19 +132,19 @@ const PaymentRequestList = () => {
 
             {/* Brand and Campaign Info */}
             <h3 className="mt-4">Brand and Campaign Information</h3>
-            <p><strong>Campaign Name:</strong> {selectedRequest.campaignId.campaignName}</p>
-            <p><strong>Description:</strong> {selectedRequest.campaignId.description}</p>
-            <p><strong>Start Date:</strong> {new Date(selectedRequest.campaignId.startDate).toLocaleDateString()}</p>
-            <p><strong>End Date:</strong> {new Date(selectedRequest.campaignId.endDate).toLocaleDateString()}</p>
-            <p><strong>Platforms:</strong> {JSON.parse(selectedRequest.campaignId.selectedPlatforms[0]).join(', ')}</p>
-            <p><strong>Influencer Count:</strong> {selectedRequest.campaignId.influencerCount}</p>
-            <p><strong>Campaign Image:</strong> <img src={selectedRequest.campaignId.image} alt="Campaign" style={{ width: '100px', height: 'auto' }} /></p>
+            <p><strong>Campaign Name:</strong> {selectedRequest?.campaignId?.campaignName}</p>
+            <p><strong>Description:</strong> {selectedRequest?.campaignId?.description}</p>
+            <p><strong>Start Date:</strong> {new Date(selectedRequest?.campaignId?.startDate).toLocaleDateString()}</p>
+            <p><strong>End Date:</strong> {new Date(selectedRequest?.campaignId?.endDate).toLocaleDateString()}</p>
+            {/* <p><strong>Platforms:</strong> {JSON.parse(selectedRequest?.campaignId?.selectedPlatforms[0]).join(', ')}</p> */}
+            <p><strong>Influencer Count:</strong> {selectedRequest?.campaignId?.influencerCount}</p>
+            <p><strong>Campaign Image:</strong> <img src={selectedRequest?.campaignId?.image} alt="Campaign" style={{ width: '100px', height: 'auto' }} /></p>
 
             {/* Brand Information */}
             <h3 className="mt-4">Brand Information</h3>
-            <p><strong>Brand Name:</strong> {selectedRequest.brandId.fullName}</p>
-            <p><strong>Email:</strong> {selectedRequest.brandId.email}</p>
-            <p><strong>Phone Number:</strong> {selectedRequest.brandId.phoneNumber}</p>
+            <p><strong>Brand Name:</strong> {selectedRequest?.brandId?.fullName}</p>
+            <p><strong>Email:</strong> {selectedRequest?.brandId?.email}</p>
+            <p><strong>Phone Number:</strong> {selectedRequest?.brandId?.phoneNumber}</p>
           </div>
         )}
       </Modal>
