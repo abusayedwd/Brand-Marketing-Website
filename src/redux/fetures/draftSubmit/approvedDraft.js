@@ -12,7 +12,7 @@ const approvedDraft = apiSlice.injectEndpoints({
                 method: "POST",
                 body: data  
             }),
-            invalidatesTags:[{type:"Campaign"}]
+            invalidatesTags:[{type:"Campaign"}, {type:"CompletedCampaign"}, {type:"Profile"}]
         })
     })
 })

@@ -1,3 +1,5 @@
+"use client";
+
 import PricingSection from '@/components/homePage/PricingPlan';
 import React from 'react';
 

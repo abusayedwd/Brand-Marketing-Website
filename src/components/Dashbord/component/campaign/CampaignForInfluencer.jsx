@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { useUpcommingCampaignQuery } from '@/redux/fetures/campaign/upcommingCampaign';
 import { useGetAcceptedCampaignsForInfluencerQuery } from '@/redux/fetures/campaign/getMyAcceptedCampaign';
 import { useGetInterestedCampaignQuery } from '@/redux/fetures/campaign/getInterestedCampaign';
+import { useGetMyCompletedCampaignsQuery } from '@/redux/fetures/campaign/getMyCompletedCampaigns';
 import { LoginModal } from '@/components/customComponent/LoginModal';
 import { CustomButton } from '@/components/customComponent/Button';
 import { useLogedUserQuery } from '@/redux/fetures/user/logedUser';
@@ -45,22 +46,26 @@ const Campaigns = () => {
   // Helper function to format date
   const formatDate = (dateString) => {
     if (!dateString) return '';
-    // Handle the date format from API (DD-MM-YY)
     const parts = dateString.split('-');
+    if (parts.length === 3 && parts[0].length === 4) {
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
     if (parts.length === 3) {
       const day = parts[0];
       const month = parts[1];
-      const year = `20${parts[2]}`; // Convert YY to YYYY
+      const year = `20${parts[2]}`;
       return `${day}/${month}/${year}`;
     }
     return dateString;
   };
 
-  // Helper function to get status display text
-  const getStatusDisplay = (status) => {
+  const getStatusDisplay = (status, isPersonalComplete = false) => {
+    if (isPersonalComplete) return 'Completed (by you)';
     switch (status) {
+      case 'pending':
+        return 'Payment Pending';
       case 'upComming':
-        return 'Waiting for approval';
+        return 'Upcoming / Recruiting';
       case 'active':
         return 'Active';
       case 'completed':
@@ -79,7 +84,7 @@ const Campaigns = () => {
     return image;
   };
 
-  const renderCampaignCard = (campaign) => (
+  const renderCampaignCard = (campaign, isPersonalComplete = false) => (
     <Card
       key={campaign.id}
       className="bg-white shadow-lg rounded-lg mb-4"
@@ -94,7 +99,7 @@ const Campaigns = () => {
         <div className="flex-1">
           <div className="flex justify-between items-center mb-2">
             <h3 className="text-lg font-semibold">{campaign.campaignName}</h3>
-            <span className="text-sm text-gray-500">{getStatusDisplay(campaign.status)}</span>
+            <span className="text-sm text-gray-500">{getStatusDisplay(campaign.status, isPersonalComplete)}</span>
           </div>
           <p className="text-sm text-gray-700">{campaign.description}</p>
           <p className="text-sm text-gray-500">
@@ -160,7 +165,7 @@ const Campaigns = () => {
             </Button>
              </Link>  */}
 
-            {campaign.status === 'completed' && (
+            {isPersonalComplete && (
               <Button type="default" icon={<CheckCircleOutlined />}>
                 Completed
               </Button>
@@ -174,15 +179,17 @@ const Campaigns = () => {
  const {data: interesteCampaings} = useGetInterestedCampaignQuery()
 
   const {data:acceptedCampaigns} = useGetAcceptedCampaignsForInfluencerQuery()
+  const { data: completedCampaignsData } = useGetMyCompletedCampaignsQuery()
   // console.log(acceptedCampaigns)
 const acceptedCampaignn = acceptedCampaigns?.data?.attributes?.results || [];
 const interesteCampaing = interesteCampaings?.data?.attributes?.results || [];
- console.log(interesteCampaing)
+const completedCampaigns = completedCampaignsData?.data?.attributes?.results || [];
   // Filter campaigns by status
   const upcomingCampaigns = campaigns.filter(campaign => campaign.status === 'upComming');
   const activeCampaigns = acceptedCampaignn.filter(campaign => campaign.status === 'active');
-  const completedCampaigns = acceptedCampaignn.filter(campaign => campaign.status === 'completed');
-  const acceptedCampaign = acceptedCampaignn.filter(campaign => campaign.status === 'upComming');
+  const acceptedCampaign = acceptedCampaignn.filter(
+    (campaign) => campaign.status !== 'completed' && campaign.status !== 'pending'
+  );
 
   if (isLoading) {
     return (
@@ -257,7 +264,7 @@ const interesteCampaing = interesteCampaings?.data?.attributes?.results || [];
 
           <TabPane tab={`Completed Campaigns (${completedCampaigns.length})`} key="5">
             {completedCampaigns.length > 0 ? (
-              completedCampaigns.map((campaign) => renderCampaignCard(campaign))
+              completedCampaigns.map((campaign) => renderCampaignCard(campaign, true))
             ) : (
               <div className="text-center py-8 text-gray-500">
                 No completed campaigns found

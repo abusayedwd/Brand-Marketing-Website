@@ -7,9 +7,12 @@ import React, { useState } from 'react';
 import { Button, Card, Tabs } from 'antd';
 import { FileTextOutlined, CheckCircleOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import Link from 'next/link';
+import { toast } from 'react-hot-toast';
  
 import url from '@/redux/api/baseUrl';
 import { useGetMyCampaignQuery } from '@/redux/fetures/campaign/getMyCampaign';
+import { useResumeCampaignPaymentMutation, redirectToCampaignPayment } from '@/redux/fetures/campaign/resumeCampaignPayment';
+import { useVerifyCampaignPaymentMutation } from '@/redux/fetures/campaign/verifyCampaignPayment';
 import { useRouter } from 'next/navigation';
 import { LoginModal } from '@/components/customComponent/LoginModal';
 import { CustomButton } from '@/components/customComponent/Button';
@@ -23,7 +26,9 @@ const Campaigns = () => {
 
 
  
-  const { data: myCampaign, isLoading, error } = useGetMyCampaignQuery();
+  const { data: myCampaign, isLoading, error, refetch } = useGetMyCampaignQuery();
+  const [verifyCampaignPayment, { isLoading: isVerifying }] = useVerifyCampaignPaymentMutation();
+  const [resumeCampaignPayment, { isLoading: isResumingPayment }] = useResumeCampaignPaymentMutation();
   // console.log(myCampaign);
   
   // Get campaigns from API data
@@ -34,22 +39,25 @@ const Campaigns = () => {
   // Helper function to format date
   const formatDate = (dateString) => {
     if (!dateString) return '';
-    // Handle the date format from API (DD-MM-YY)
     const parts = dateString.split('-');
+    if (parts.length === 3 && parts[0].length === 4) {
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
     if (parts.length === 3) {
       const day = parts[0];
       const month = parts[1];
-      const year = `20${parts[2]}`; // Convert YY to YYYY
+      const year = parts[0].length === 4 ? parts[0] : `20${parts[2]}`;
       return `${day}/${month}/${year}`;
     }
     return dateString;
   };
 
-  // Helper function to get status display text
   const getStatusDisplay = (status) => {
     switch (status) {
+      case 'pending':
+        return 'Payment Pending';
       case 'upComming':
-        return 'Waiting for approval';
+        return 'Upcoming / Recruiting';
       case 'active':
         return 'Active';
       case 'completed':
@@ -66,6 +74,39 @@ const Campaigns = () => {
       return `/api/images/${campaign.image}` || image;
     }
     return image;
+  };
+
+  const handlePayNow = async (campaignId) => {
+    try {
+      const result = await resumeCampaignPayment(campaignId).unwrap();
+      redirectToCampaignPayment(result.sessionId, result.url);
+    } catch (payError) {
+      console.error(payError);
+      toast.error('Could not open Stripe checkout. Please try again.');
+    }
+  };
+
+  const handleConfirmPayment = async (campaignId) => {
+    try {
+      const result = await verifyCampaignPayment({ campaignId }).unwrap();
+      const payload = result?.data?.attributes;
+
+      if (payload?.ignored && payload?.reason === 'payment not completed') {
+        toast.error('Stripe payment is not completed yet. Click Pay Now to finish checkout.');
+        return;
+      }
+
+      if (payload?.ignored) {
+        toast.error('Payment could not be confirmed yet.');
+        return;
+      }
+
+      toast.success('Campaign activated successfully.');
+      refetch();
+    } catch (verifyError) {
+      console.error(verifyError);
+      toast.error('Could not activate campaign. Please try again.');
+    }
   };
 
   const renderCampaignCard = (campaign) => (
@@ -104,6 +145,25 @@ const Campaigns = () => {
             </span>
           </div>
           <div className="mt-4 flex justify-end">
+            {campaign.status === 'pending' && (
+              <>
+                <Button
+                  type="primary"
+                  className="mr-2"
+                  loading={isResumingPayment}
+                  onClick={() => handlePayNow(campaign.id)}
+                >
+                  Pay Now
+                </Button>
+                <Button
+                  className="mr-2"
+                  loading={isVerifying}
+                  onClick={() => handleConfirmPayment(campaign.id)}
+                >
+                  Confirm Payment
+                </Button>
+              </>
+            )}
 
             <Link href={`/dashboard/campaigns/details?id=${campaign.id}`}>
             <Button
@@ -142,7 +202,9 @@ const Campaigns = () => {
 
 
   // Filter campaigns by status
-  const upcomingCampaigns = campaigns.filter(campaign => campaign.status === 'upComming');
+  const upcomingCampaigns = campaigns.filter(
+    (campaign) => campaign.status === 'upComming' || campaign.status === 'pending'
+  );
   const activeCampaigns = campaigns.filter(campaign => campaign.status === 'active');
   const completedCampaigns = campaigns.filter(campaign => campaign.status === 'completed');
 

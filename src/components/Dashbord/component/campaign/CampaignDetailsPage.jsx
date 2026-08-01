@@ -69,6 +69,7 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
       if(res.code=== 200){
         toast.success("Intereted success") 
        closeModal();
+       refetch();
       }
     }catch(error){
       console.log(error.data)
@@ -168,6 +169,7 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
 
   const getStatusBadge = (status) => {
     const statusConfig = {
+      pending: { status: "warning", text: "Payment Pending" },
       upComming: { status: "processing", text: "Upcoming" },
       active: { status: "success", text: "Active" },
       completed: { status: "default", text: "Completed" },
@@ -192,13 +194,14 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
 
   // Action handlers
  const handleAcceptInfluencer = async (influencerId) => {
-    console.log("Campaign ID:", id);  // Ensure id is defined
+    console.log("Campaign ID:", id);
     console.log("Accepting influencer:", influencerId);
     try {
         const res = await acceptInfluencer({ campaignId: id, influencerId }).unwrap();
         console.log(res);
         if (res.code === 200) {
             toast.success(res.message);
+            refetch();
         }
     } catch (error) {
         console.log(error);
@@ -613,7 +616,9 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
 
 
 {/* Show Submit Draft button if the user is in the acceptedInfluencers list */}
-{(campaign.acceptedInfluencers.some((influencer) => influencer.id === user?.data?.attributes?.id) && campaign?.status === "upComming") && campaign?.status !== "active" && campaign?.status !== "completed" && (
+{(campaign.acceptedInfluencers.some((influencer) => influencer.id === user?.data?.attributes?.id) &&
+  (campaign?.status === "upComming" || campaign?.status === "active") &&
+  campaign?.status !== "completed") && (
   <div className="p-8">
     <div className="text-right font-semibold my-2">
       <Link href={`/dashboard/campaigns/details/sumbit-draft?id=${campaign.id}`} >

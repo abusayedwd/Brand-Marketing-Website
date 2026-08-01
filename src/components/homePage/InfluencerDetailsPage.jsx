@@ -265,6 +265,7 @@ const InfluencerSinglePage = ({ id }) => {
     );
 
   const user = influencer.data.attributes.user;
+  const completedCampaignsCount = influencer.data.attributes.completedCampaignsCount ?? 0;
 
   const dobFormatted = new Date(user.dateOfBirth).toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -324,6 +325,13 @@ const InfluencerSinglePage = ({ id }) => {
                     className="px-4 py-2 text-sm font-semibold rounded-full border-0 bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800"
                   >
                     {user.role}
+                  </Tag>
+                  <Tag 
+                    color="green" 
+                    className="px-4 py-2 text-sm font-semibold rounded-full border-0 bg-gradient-to-r from-green-100 to-green-200 text-green-800"
+                  >
+                    <CheckCircleOutlined className="mr-1" />
+                    {completedCampaignsCount} Completed Campaign{completedCampaignsCount !== 1 ? 's' : ''}
                   </Tag>
                   <Tag 
                     color="blue" 

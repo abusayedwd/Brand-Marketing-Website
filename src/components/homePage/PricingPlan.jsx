@@ -123,14 +123,25 @@
 "use client";
 
 import { Card, Button } from 'antd';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { usePaymentMutation } from '@/redux/fetures/payment/payment';
-import { useRouter } from 'next/navigation';
+import { useVerifySubscriptionPaymentMutation } from '@/redux/fetures/payment/verifySubscriptionPayment';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useLogedUserQuery } from '@/redux/fetures/user/logedUser';
+import {
+  clearPendingSubscriptionSession,
+  getPendingSubscriptionSession,
+  savePendingSubscriptionSession,
+} from '@/utils/subscriptionPayment';
+import { toast } from 'react-hot-toast';
 
 const PricingSection = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const verifyStarted = useRef(false);
+
   useEffect(() => {
     AOS.init({
       duration: 1000,
@@ -139,8 +150,77 @@ const PricingSection = () => {
     });
   }, []);
 
- const {data: loggedUser} = useLogedUserQuery()
- console.log(loggedUser)
+  const { data: loggedUser, isLoading: isUserLoading } = useLogedUserQuery();
+  const [payment, { isLoading }] = usePaymentMutation();
+  const [verifySubscriptionPayment] = useVerifySubscriptionPaymentMutation();
+
+  useEffect(() => {
+    if (isUserLoading || verifyStarted.current) {
+      return;
+    }
+
+    const paymentStatus = searchParams.get('payment');
+    const urlSessionId = searchParams.get('session_id');
+    const storedSessionId = getPendingSubscriptionSession();
+    const sessionId = urlSessionId || storedSessionId;
+
+    if (paymentStatus === 'cancelled') {
+      clearPendingSubscriptionSession();
+      router.replace('/pricing');
+      return;
+    }
+
+    if (!sessionId || paymentStatus !== 'success') {
+      return;
+    }
+
+    verifyStarted.current = true;
+    let cancelled = false;
+    let attempts = 0;
+
+    const runVerify = async () => {
+      try {
+        const result = await verifySubscriptionPayment(sessionId).unwrap();
+        const payload = result?.data?.attributes;
+
+        if (payload?.ignored && payload?.reason === 'payment not completed') {
+          return false;
+        }
+
+        if (!cancelled) {
+          clearPendingSubscriptionSession();
+          toast.success('Subscription activated successfully.');
+          router.replace('/dashboard');
+        }
+
+        return true;
+      } catch (error) {
+        console.error('Subscription verification failed:', error);
+        if (attempts >= 4 && !cancelled) {
+          toast.error('Payment received, but subscription activation failed.');
+        }
+        return false;
+      }
+    };
+
+    const pollVerification = async () => {
+      let completed = await runVerify();
+
+      while (!completed && !cancelled && attempts < 15) {
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        attempts += 1;
+        completed = await runVerify();
+      }
+    };
+
+    pollVerification();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isUserLoading, searchParams, verifySubscriptionPayment, router]);
+
+  console.log(loggedUser)
 
   const plans = [
     {
@@ -186,32 +266,27 @@ const PricingSection = () => {
     }
   ];
 
-  const [payment, {isLoading, isError}] = usePaymentMutation()
-  const roqute = useRouter();
-  // Function to handle the button click
   const handleButtonClick = async (planName, planPrice) => {
-    // Extract numeric price value (using regex to remove non-numeric characters)
     const priceNumber = parseFloat(planPrice.replace(/[^0-9.-]+/g, ""));
-    const duration = '1 month';   
-   
+    const duration = '1 month';
+
     const data = {
       planName: planName,
       price: priceNumber,
       duration: duration
-    }
-    console.log('Button clicked for plan:', data);
+    };
+
     try {
       const response = await payment(data).unwrap();
-      console.log('Payment response:', response);
-      if(response.statusCode === 201){
-        window.open(response.url, '_blank'); // Redirect to success page
+      if (response.statusCode === 201) {
+        savePendingSubscriptionSession(response.sessionId);
+        toast.success('Redirecting to Stripe for payment...');
+        window.location.href = response.url;
       }
-      // Handle successful payment response here (e.g., redirect to a success page)
     } catch (error) {
       console.error('Payment error:', error);
-      // Handle error response here (e.g., show an error message)
+      toast.error('Could not start subscription payment.');
     }
-      
   };
 
   return (
@@ -263,7 +338,8 @@ const PricingSection = () => {
                       type={plan.highlight ? 'primary' : 'default'}
                       size="large"
                       className={`w-full ${plan.highlight ? 'bg-blue-600' : ''}`}
-                      onClick={() => handleButtonClick(plan.name, plan.price)}  // Add the click handler
+                      loading={isLoading}
+                      onClick={() => handleButtonClick(plan.name, plan.price)}
                     >
                       Get Started Now
                     </Button>

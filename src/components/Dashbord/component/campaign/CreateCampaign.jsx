@@ -649,6 +649,7 @@ import {
   CheckCircleOutlined
 } from '@ant-design/icons';
 import { useCreateCampaignMutation } from '@/redux/fetures/campaign/createCampaign';
+import { savePendingCampaignSession } from '@/utils/campaignPayment';
 import toast, { Toaster } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
@@ -840,12 +841,9 @@ const CampaignCreator = () => {
        const res= await createCampaign(backendFormData).unwrap();
        console.log(res)
         if(res.status == "success"){
-          toast.success("successfully procces create campaign after payment")
-          setTimeout(() => { 
-            window.open(res?.url, '_blank');
-          }, 3000);
-          resetForm()
-          router.push("/dashboard/campaigns")
+          savePendingCampaignSession(res.sessionId);
+          toast.success("Redirecting to Stripe for payment...");
+          window.location.href = res.url;
         } 
       
   

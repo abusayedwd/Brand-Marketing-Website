@@ -4,27 +4,18 @@
 import { useGetAcceptedCampaignsForInfluencerQuery } from '@/redux/fetures/campaign/getMyAcceptedCampaign';
 import { useUpcommingCampaignQuery } from '@/redux/fetures/campaign/upcommingCampaign';
 import { useGetInfluencerStatusQuery } from '@/redux/fetures/wallet/getInfluencerStatus';
-import { Card } from 'antd'; // Import Ant Design's Card component
-import { FaUser, FaMoneyBillAlt, FaBullhorn, FaClipboardList } from 'react-icons/fa'; // Optional: for icons
+import { Card } from 'antd';
+import { FaMoneyBillAlt, FaBullhorn, FaClipboardList } from 'react-icons/fa';
 
 const CardComponent = () => {
-
-
   const {data:acceptedCampaignns} = useGetAcceptedCampaignsForInfluencerQuery()
-
   const {data:status} = useGetInfluencerStatusQuery()
-  console.log(status)
-    const acceptedCampaignn = acceptedCampaignns?.data?.attributes?.results || [];
+  const acceptedCampaignn = acceptedCampaignns?.data?.attributes?.results || [];
+  const { data: myCampaign, isLoading, error } = useUpcommingCampaignQuery();
+  const campaigns = myCampaign?.data?.attributes?.results || [];
 
-   const { data: myCampaign, isLoading, error } = useUpcommingCampaignQuery();
-   
-   
-   // Get campaigns from API data
-   const campaigns = myCampaign?.data?.attributes?.results || [];
-  //  console.log(campaigns.length); 
-  
   const activeCampaigns = acceptedCampaignn.filter(campaign => campaign.status === 'active');
-  const completedCampaigns = acceptedCampaignn.filter(campaign => campaign.status === 'completed');
+  const completedCampaignsCount = status?.data?.attributes?.completedCampaignsCount ?? 0;
  
 
   return (
@@ -110,7 +101,7 @@ const CardComponent = () => {
             <FaClipboardList />
           </div>
           <div className="text-sm text-gray-500">Completed Campaign</div>
-          <div className="text-xl font-semibold text-gray-800">{completedCampaigns.length}</div>
+          <div className="text-xl font-semibold text-gray-800">{completedCampaignsCount}</div>
         </div>
       </Card> 
     </div>

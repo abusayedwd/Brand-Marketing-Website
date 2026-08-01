@@ -129,10 +129,12 @@
 
 
 "use client";
-import React, { useState } from "react";
-import { Button, Input, Image, Space, Tag } from "antd";
+import React from "react";
+import { Button, Input, Image, Space, Tag, Card, List } from "antd";
+import { CheckCircleOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { useLogedUserQuery } from "@/redux/fetures/user/logedUser";
+import { useGetMyCompletedCampaignsQuery } from "@/redux/fetures/campaign/getMyCompletedCampaigns";
 import url from "@/redux/api/baseUrl";
  
 
@@ -140,6 +142,10 @@ const Profile = () => {
   const router = useRouter();
   const { data: profile } = useLogedUserQuery();
   const user = profile?.data?.attributes;
+  const { data: completedData } = useGetMyCompletedCampaignsQuery(undefined, {
+    skip: user?.role !== "influencer",
+  });
+  const completedCampaigns = completedData?.data?.attributes?.results || [];
 
   // const profileImage = user?.image?.url 
   //   ? `${url + user.image.url}` 
@@ -325,6 +331,37 @@ const Profile = () => {
             <div className="grid grid-cols-1 gap-4">
               {user?.role === 'influencer' ? renderInfluencerFields() : renderBrandFields()}
             </div>
+
+            {user?.role === 'influencer' && (
+              <div className="mt-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <CheckCircleOutlined className="text-green-600 text-xl" />
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    Completed Campaigns ({user?.completedCampaignsCount ?? completedCampaigns.length})
+                  </h3>
+                </div>
+                {completedCampaigns.length > 0 ? (
+                  <List
+                    grid={{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 2 }}
+                    dataSource={completedCampaigns}
+                    renderItem={(campaign) => (
+                      <List.Item>
+                        <Card
+                          size="small"
+                          title={campaign.campaignName}
+                          extra={<Tag color="green">Completed</Tag>}
+                        >
+                          <p className="text-sm text-gray-600 line-clamp-2">{campaign.description}</p>
+                          <p className="text-sm text-gray-500 mt-2">Budget: ${campaign.budget}</p>
+                        </Card>
+                      </List.Item>
+                    )}
+                  />
+                ) : (
+                  <p className="text-gray-500 text-sm">No completed campaigns yet.</p>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="text-right">
