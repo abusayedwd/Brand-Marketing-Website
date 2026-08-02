@@ -1,8 +1,24 @@
 /** @type {import('next').NextConfig} */
+const apiHost = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:3050")
+  .replace(/^https?:\/\//, "")
+  .replace(/\/$/, "");
+
 const nextConfig = {
-    images: {
-      domains: ['http://10.10.11.118:3050'], // Add the domain(s) where your images are hosted
-    },
-  };
-  
-  export default nextConfig;
+  images: {
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: apiHost.split(":")[0] || "localhost",
+        port: apiHost.includes(":") ? apiHost.split(":")[1] : "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: apiHost.split(":")[0] || "localhost",
+        pathname: "/**",
+      },
+    ],
+  },
+};
+
+export default nextConfig;

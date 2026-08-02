@@ -1,5 +1,13 @@
-import { io } from 'socket.io-client';
+import { io } from "socket.io-client";
 
-const socket = io('http://sayed3040.sobhoy.com'); // Adjust the URL based on your backend server
+const socketUrl =
+  process.env.NEXT_PUBLIC_SOCKET_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://localhost:3050";
+
+const socket = io(socketUrl, {
+  autoConnect: false,
+  transports: ["websocket", "polling"],
+});
 
 export default socket;

@@ -1,6 +1,7 @@
 "use client";
 
-import { Badge, Button, Dropdown, Empty, Spin } from "antd";
+import { useEffect } from "react";
+import { Badge, Button, Dropdown, Empty, Spin, message } from "antd";
 import { BellOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import {
@@ -9,12 +10,42 @@ import {
   useMarkAllNotificationsReadMutation,
   useMarkNotificationReadMutation,
 } from "@/redux/fetures/notification/notifications";
+import socket from "@/utils/socket";
+import useAuthUser from "@/hooks/useAuthUser";
 
 export default function NotificationBell() {
-  const { data: countData } = useGetUnreadCountQuery();
-  const { data, isLoading } = useGetNotificationsQuery();
+  const { user, hasToken } = useAuthUser();
+  const userId = user?.id || user?._id;
+
+  const { data: countData, refetch: refetchCount } = useGetUnreadCountQuery(undefined, {
+    skip: !hasToken,
+  });
+  const { data, isLoading, refetch: refetchList } = useGetNotificationsQuery(undefined, {
+    skip: !hasToken,
+  });
   const [markRead] = useMarkNotificationReadMutation();
   const [markAll] = useMarkAllNotificationsReadMutation();
+
+  useEffect(() => {
+    if (!hasToken || !userId) return;
+
+    if (!socket.connected) socket.connect();
+    socket.emit("join-user", userId);
+
+    const onNew = (payload) => {
+      message.info({
+        content: payload?.title || "New notification",
+        duration: 3,
+      });
+      refetchCount();
+      refetchList();
+    };
+
+    socket.on("notification:new", onNew);
+    return () => {
+      socket.off("notification:new", onNew);
+    };
+  }, [hasToken, userId, refetchCount, refetchList]);
 
   const count = countData?.data?.attributes?.count || 0;
   const items = data?.data?.attributes?.results || [];
@@ -37,7 +68,18 @@ export default function NotificationBell() {
       ...(isLoading
         ? [{ key: "loading", label: <Spin size="small" />, disabled: true }]
         : items.length === 0
-          ? [{ key: "empty", label: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No notifications" />, disabled: true }]
+          ? [
+              {
+                key: "empty",
+                label: (
+                  <Empty
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    description="No notifications"
+                  />
+                ),
+                disabled: true,
+              },
+            ]
           : items.slice(0, 8).map((n) => ({
               key: n.id,
               label: (

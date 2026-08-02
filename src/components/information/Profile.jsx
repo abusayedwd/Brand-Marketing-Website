@@ -1,380 +1,271 @@
-// "use client";
-// import React, { useState } from "react";
-// import { Button, Input, Modal, Form, Image, Space, Upload } from "antd";
-// import { LuImagePlus } from "react-icons/lu";
-// import { useRouter } from "next/navigation";
- 
-// import url from "@/redux/api/baseUrl";
-// import { useLogedUserQuery } from "@/redux/fetures/user/logedUser";
-
-
-// const Profile = () => {
-//   const [fileList, setFileList] = useState([]);
-//   const [imageUrl, setImageUrl] = useState();
-//   const router = useRouter();
-
-//   const profileImage = "/images/user4.jpg";
-
-//   const { data: profile } = useLogedUserQuery();
-//   const user = profile?.data?.attributes;
-//   console.log(user)
-  
-//   const [isModalOpen, setIsModalOpen] = useState(false);
-//   const [form] = Form.useForm();
-
-//   const openModal = () => setIsModalOpen(true);
-//   const closeModal = () => setIsModalOpen(false);
-
-//   const handleFormSubmit = (values) => {
-//     console.log("Updated Profile Data:", values);
-//     closeModal();
-//   };
-
-//   const handleUploadChange = ({ fileList: newFileList }) => {
-//     setFileList(newFileList);
-//     if (newFileList[0]?.originFileObj) {
-//       const reader = new FileReader();
-//       reader.readAsDataURL(newFileList[0].originFileObj);
-//       reader.onload = () => setImageUrl(reader.result);
-//     }
-//   };
-
-//   const handleEditProfile = () => {
-//     router.push("/dashboard/profile/editProfile");
-//   };
-
-//   return (
-//     <div className="md:w-[70%] mx-auto md:py-24 px-4 md:px-8">
-//       <h1 className="text-3xl md:text-4xl mt-5 font-bold text-green-700 text-center md:mb-8">
-//         My Profile
-//       </h1>
-
-//       <div className="bg-white shadow-md py-10 rounded-lg p-6">
-//         <div className="flex flex-col md:flex-row items-center gap-6">
-//           <Space size={12}>
-//             <Image
-//               width={200}
-//               src={profileImage}
-//               placeholder={
-//                 <Image preview={false} src="/images/user4.jpg" width={200} />
-//               }
-//             />
-//           </Space>
-
-//           <div className="flex-1">
-//             <h2 className="text-xl font-semibold text-gray-800">{user?.fullName}</h2>
-//             <p className="text-gray-600">{user?.email}</p>
-
-//             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-//               <div>
-//                 <label className="text-sm text-gray-500">Company</label>
-//                 <Input
-//                   value={user?.company}
-//                   readOnly
-//                   className="bg-gray-100 border-gray-300 rounded-md"
-//                 />
-//               </div>
-//               <div>
-//                 <label className="text-sm text-gray-500">Address</label>
-//                 <Input
-//                   value={user?.address}
-//                   readOnly
-//                   className="bg-gray-100 border-gray-300 rounded-md"
-//                 />
-//               </div>
-//               <div>
-//                 <label className="text-sm text-gray-500">Phone Number</label>
-//                 <Input
-//                   value={user?.phoneNumber}
-//                   readOnly
-//                   className="bg-gray-100 border-gray-300 rounded-md"
-//                 />
-//               </div>
-//               <div>
-//                 <label className="text-sm text-gray-500">Date of Birth</label>
-//                 <Input
-//                   value={user?.dateOfBirth}
-//                   readOnly
-//                   className="bg-gray-100 border-gray-300 rounded-md"
-//                 />
-//               </div>
-//               <div>
-//                 <label className="text-sm text-gray-500">Social Platforms</label>
-//                 <Input
-//                   value={user?.socialPlatforms?.join(", ")}
-//                   readOnly
-//                   className="bg-gray-100 border-gray-300 rounded-md"
-//                 />
-//               </div>
-//             </div>
-//           </div>
-
-//           <div className="text-right">
-//             <Button
-//               type="primary"
-//               className="!bg-green-500 mt-6 hover:!bg-green-400 text-white"
-//               onClick={handleEditProfile}
-//             >
-//               Edit profile
-//             </Button>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Profile;
-
-
-
 "use client";
+
 import React from "react";
-import { Button, Input, Image, Space, Tag, Card, List } from "antd";
-import { CheckCircleOutlined } from "@ant-design/icons";
+import { Spin, Tag, Image } from "antd";
+import {
+  CheckCircleOutlined,
+  EditOutlined,
+  MailOutlined,
+  PhoneOutlined,
+  EnvironmentOutlined,
+  GlobalOutlined,
+  UserOutlined,
+  ShopOutlined,
+  VideoCameraOutlined,
+} from "@ant-design/icons";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useLogedUserQuery } from "@/redux/fetures/user/logedUser";
 import { useGetMyCompletedCampaignsQuery } from "@/redux/fetures/campaign/getMyCompletedCampaigns";
 import url from "@/redux/api/baseUrl";
- 
+
+const Field = ({ label, children }) => (
+  <div>
+    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">{label}</p>
+    <div className="mt-1 text-sm font-medium text-slate-800">{children || "—"}</div>
+  </div>
+);
 
 const Profile = () => {
   const router = useRouter();
-  const { data: profile } = useLogedUserQuery();
+  const { data: profile, isLoading } = useLogedUserQuery();
   const user = profile?.data?.attributes;
+  const isInfluencer = user?.role === "influencer";
+
   const { data: completedData } = useGetMyCompletedCampaignsQuery(undefined, {
-    skip: user?.role !== "influencer",
+    skip: !isInfluencer,
   });
   const completedCampaigns = completedData?.data?.attributes?.results || [];
+  const completedCount =
+    user?.completedCampaignsCount ?? completedCampaigns.length;
 
-  // const profileImage = user?.image?.url 
-  //   ? `${url + user.image.url}` 
-  //   : "/images/user4.jpg";
-
-  const handleEditProfile = () => {
-    router.push("/dashboard/profile/editProfile");
-  };
-
-  // Render influencer-specific fields
-  const renderInfluencerFields = () => (
-    <>
-      <div>
-        <label className="text-sm text-gray-500">Bio</label>
-        <Input.TextArea
-          value={user?.bio || 'N/A'}
-          readOnly
-          rows={3}
-          className="bg-gray-100 border-gray-300 rounded-md"
-        />
-      </div>
-      <div>
-        <label className="text-sm text-gray-500">Interests</label>
-        <div className="mt-1">
-          {user?.interests?.length > 0 ? (
-            <Space wrap>
-              {user.interests.map((interest, index) => (
-                <Tag key={index} color="green">{interest}</Tag>
-              ))}
-            </Space>
-          ) : (
-            <Input value="No interests added" readOnly className="bg-gray-100 border-gray-300 rounded-md" />
-          )}
-        </div>
-      </div>
-      <div>
-        <label className="text-sm text-gray-500">Social Media</label>
-        <div className="space-y-2 mt-1">
-          {user?.socialMedia?.length > 0 ? (
-            user.socialMedia.map((social, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <Tag color="blue">{social.platform}</Tag>
-                <span className="text-sm text-gray-600">{social.followers} followers</span>
-                <a href={social.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 text-sm">
-                  View Profile
-                </a>
-              </div>
-            ))
-          ) : (
-            <Input value="No social media added" readOnly className="bg-gray-100 border-gray-300 rounded-md" />
-          )}
-        </div>
-      </div>
-    </>
-  );
-
-  // Render brand-specific fields
-  const renderBrandFields = () => (
-    <>
-      <div>
-        <label className="text-sm text-gray-500">Company Name</label>
-        <Input
-          value={user?.companyName || 'N/A'}
-          readOnly
-          className="bg-gray-100 border-gray-300 rounded-md"
-        />
-      </div>
-      <div>
-        <label className="text-sm text-gray-500">Industry</label>
-        <Input
-          value={user?.industry || 'N/A'}
-          readOnly
-          className="bg-gray-100 border-gray-300 rounded-md"
-        />
-      </div>
-      <div>
-        <label className="text-sm text-gray-500">Website</label>
-        <Input
-          value={user?.website || 'N/A'}
-          readOnly
-          className="bg-gray-100 border-gray-300 rounded-md"
-        />
-      </div>
-      <div>
-        <label className="text-sm text-gray-500">Company Description</label>
-        <Input.TextArea
-          value={user?.companyDescription || 'N/A'}
-          readOnly
-          rows={3}
-          className="bg-gray-100 border-gray-300 rounded-md"
-        />
-      </div>
-      <div>
-        <label className="text-sm text-gray-500">Previous Experience</label>
-        <Input
-          value={user?.previousExperience || 'N/A'}
-          readOnly
-          className="bg-gray-100 border-gray-300 rounded-md"
-        />
-      </div>
-    </>
-  );
-
-  if (!user) {
+  if (isLoading || !user) {
     return (
-      <div className="md:w-[70%] mx-auto md:py-24 px-4 md:px-8">
-        <div className="text-center">Loading...</div>
+      <div className="flex min-h-[40vh] items-center justify-center">
+        <Spin size="large" />
       </div>
     );
   }
 
+  const avatarSrc = user?.image?.url ? `${url}${user.image.url}` : "/images/user4.jpg";
+
   return (
-    <div className="md:w-[70%] mx-auto md:py-24 px-4 md:px-8">
-      <h1 className="text-3xl md:text-4xl mt-5 font-bold text-green-700 text-center md:mb-8">
-        My Profile
-      </h1>
-
-      <div className="bg-white shadow-md py-10 rounded-lg p-6">
-        <div className="flex flex-col md:flex-row items-start gap-6">
-          <div className="flex flex-col items-center">
-            <Space size={12}>
+    <div className="mx-auto max-w-5xl space-y-6 pb-10">
+      {/* Header */}
+      <section className="relative overflow-hidden rounded-3xl bg-[#0b1f17] px-6 py-8 text-white sm:px-8">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_30%,rgba(16,185,129,0.28),transparent_45%)]" />
+        <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-5">
+            <div className="overflow-hidden rounded-2xl border-2 border-emerald-400/30 shadow-lg">
               <Image
-                width={200}
-                height={200}
-                src={url + user?.image?.url}
-                className="rounded-full object-cover"
-                placeholder={
-                  <Image 
-                    preview={false} 
-                    src="/images/user4.jpg" 
-                    width={200} 
-                    height={200}
-                    className="rounded-full object-cover"
-                  />
-                }
+                width={96}
+                height={96}
+                src={avatarSrc}
+                alt={user.fullName}
+                className="!object-cover"
+                preview={{ mask: "View" }}
               />
-            </Space>
-            <Tag color={user?.role === 'brand' ? 'blue' : 'green'} className="mt-2">
-              {user?.role?.toUpperCase()}
-            </Tag>
-          </div>
-
-          <div className="flex-1">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-2">{user?.fullName}</h2>
-            <p className="text-gray-600 mb-4">{user?.email}</p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <div>
-                <label className="text-sm text-gray-500">Username</label>
-                <Input
-                  value={user?.userName || 'N/A'}
-                  readOnly
-                  className="bg-gray-100 border-gray-300 rounded-md"
-                />
-              </div>
-              <div>
-                <label className="text-sm text-gray-500">Phone Number</label>
-                <Input
-                  value={user?.phoneNumber || 'N/A'}
-                  readOnly
-                  className="bg-gray-100 border-gray-300 rounded-md"
-                />
-              </div>
-              <div>
-                <label className="text-sm text-gray-500">Date of Birth</label>
-                <Input
-                  value={user?.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString() : 'N/A'}
-                  readOnly
-                  className="bg-gray-100 border-gray-300 rounded-md"
-                />
-              </div>
-              <div>
-                <label className="text-sm text-gray-500">Address</label>
-                <Input
-                  value={user?.address || 'N/A'}
-                  readOnly
-                  className="bg-gray-100 border-gray-300 rounded-md"
-                />
-              </div>
             </div>
-
-            {/* Role-specific fields */}
-            <div className="grid grid-cols-1 gap-4">
-              {user?.role === 'influencer' ? renderInfluencerFields() : renderBrandFields()}
-            </div>
-
-            {user?.role === 'influencer' && (
-              <div className="mt-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <CheckCircleOutlined className="text-green-600 text-xl" />
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    Completed Campaigns ({user?.completedCampaignsCount ?? completedCampaigns.length})
-                  </h3>
-                </div>
-                {completedCampaigns.length > 0 ? (
-                  <List
-                    grid={{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 2 }}
-                    dataSource={completedCampaigns}
-                    renderItem={(campaign) => (
-                      <List.Item>
-                        <Card
-                          size="small"
-                          title={campaign.campaignName}
-                          extra={<Tag color="green">Completed</Tag>}
-                        >
-                          <p className="text-sm text-gray-600 line-clamp-2">{campaign.description}</p>
-                          <p className="text-sm text-gray-500 mt-2">Budget: ${campaign.budget}</p>
-                        </Card>
-                      </List.Item>
-                    )}
-                  />
-                ) : (
-                  <p className="text-gray-500 text-sm">No completed campaigns yet.</p>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-300">
+                My profile
+              </p>
+              <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
+                {user.fullName}
+              </h1>
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-0.5 text-xs font-semibold capitalize text-emerald-100">
+                  {isInfluencer ? <VideoCameraOutlined /> : <ShopOutlined />}
+                  {user.role}
+                </span>
+                {user.userName && (
+                  <span className="text-sm text-emerald-100/70">@{user.userName}</span>
+                )}
+                {user.isEmailVerified && (
+                  <span className="inline-flex items-center gap-1 text-xs text-emerald-300">
+                    <CheckCircleOutlined /> Verified
+                  </span>
                 )}
               </div>
-            )}
+            </div>
           </div>
+          <button
+            type="button"
+            onClick={() => router.push("/dashboard/profile/editProfile")}
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 text-sm font-semibold text-[#0b1f17] transition hover:bg-emerald-400"
+          >
+            <EditOutlined />
+            Edit profile
+          </button>
+        </div>
+      </section>
 
-          <div className="text-right">
-            <Button
-              type="primary"
-              className="!bg-green-500 mt-6 hover:!bg-green-400 text-white"
-              onClick={handleEditProfile}
-            >
-              Edit Profile
-            </Button>
+      {/* Contact + account */}
+      <section className="rounded-3xl border border-emerald-100 bg-white p-6 sm:p-8">
+        <h2 className="text-lg font-bold text-slate-900">Account details</h2>
+        <p className="mt-1 text-sm text-slate-500">How brands and creators see you on Brivio</p>
+
+        <div className="mt-6 grid gap-6 sm:grid-cols-2">
+          <div className="flex gap-3">
+            <MailOutlined className="mt-0.5 text-emerald-700" />
+            <Field label="Email">{user.email}</Field>
+          </div>
+          <div className="flex gap-3">
+            <PhoneOutlined className="mt-0.5 text-emerald-700" />
+            <Field label="Phone">{user.phoneNumber}</Field>
+          </div>
+          <div className="flex gap-3">
+            <EnvironmentOutlined className="mt-0.5 text-emerald-700" />
+            <Field label="Address">{user.address}</Field>
+          </div>
+          <div className="flex gap-3">
+            <UserOutlined className="mt-0.5 text-emerald-700" />
+            <Field label="Date of birth">
+              {user.dateOfBirth
+                ? new Date(user.dateOfBirth).toLocaleDateString()
+                : null}
+            </Field>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* Role-specific */}
+      {isInfluencer ? (
+        <section className="rounded-3xl border border-emerald-100 bg-white p-6 sm:p-8">
+          <h2 className="text-lg font-bold text-slate-900">Creator profile</h2>
+          <p className="mt-3 text-sm leading-relaxed text-slate-600">
+            {user.bio || "No bio added yet."}
+          </p>
+
+          {user.interests?.length > 0 && (
+            <div className="mt-6">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                Interests
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {user.interests.map((interest) => (
+                  <span
+                    key={interest}
+                    className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-900"
+                  >
+                    {interest}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {user.socialMedia?.length > 0 && (
+            <div className="mt-8">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                Social platforms
+              </p>
+              <ul className="mt-3 divide-y divide-slate-100">
+                {user.socialMedia.map((social, index) => (
+                  <li
+                    key={social._id || index}
+                    className="flex flex-wrap items-center justify-between gap-2 py-3"
+                  >
+                    <div>
+                      <p className="font-semibold text-slate-900">{social.platform}</p>
+                      <p className="text-sm text-slate-500">
+                        {social.followers || 0} followers
+                      </p>
+                    </div>
+                    {social.url && (
+                      <a
+                        href={social.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm font-semibold text-emerald-800 hover:underline"
+                      >
+                        Open profile
+                      </a>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
+      ) : (
+        <section className="rounded-3xl border border-emerald-100 bg-white p-6 sm:p-8">
+          <h2 className="text-lg font-bold text-slate-900">Brand profile</h2>
+          <div className="mt-6 grid gap-6 sm:grid-cols-2">
+            <Field label="Company">{user.companyName}</Field>
+            <Field label="Industry">{user.industry}</Field>
+            <div className="sm:col-span-2 flex gap-3">
+              <GlobalOutlined className="mt-0.5 text-emerald-700" />
+              <Field label="Website">
+                {user.website ? (
+                  <a
+                    href={user.website}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-emerald-800 hover:underline"
+                  >
+                    {user.website}
+                  </a>
+                ) : null}
+              </Field>
+            </div>
+            <div className="sm:col-span-2">
+              <Field label="Company description">{user.companyDescription}</Field>
+            </div>
+            <div className="sm:col-span-2">
+              <Field label="Previous experience">{user.previousExperience}</Field>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Completed campaigns — influencer */}
+      {isInfluencer && (
+        <section className="rounded-3xl border border-emerald-100 bg-white p-6 sm:p-8">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">Completed campaigns</h2>
+              <p className="mt-1 text-sm text-slate-500">
+                {completedCount} campaign{completedCount === 1 ? "" : "s"} finished with approved work
+              </p>
+            </div>
+            <Link
+              href="/dashboard/campaigns"
+              className="text-sm font-semibold text-emerald-800 hover:underline"
+            >
+              View all campaigns
+            </Link>
+          </div>
+
+          {completedCampaigns.length === 0 ? (
+            <p className="mt-6 text-sm text-slate-500">No completed campaigns yet.</p>
+          ) : (
+            <ul className="mt-6 divide-y divide-slate-100">
+              {completedCampaigns.slice(0, 6).map((campaign) => (
+                <li
+                  key={campaign.id || campaign._id}
+                  className="flex flex-wrap items-start justify-between gap-3 py-4"
+                >
+                  <div className="min-w-0">
+                    <p className="font-semibold text-slate-900">{campaign.campaignName}</p>
+                    <p className="mt-1 line-clamp-2 text-sm text-slate-500">
+                      {campaign.description}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <Tag color="success">Completed</Tag>
+                    {campaign.budget != null && (
+                      <p className="mt-1 text-sm font-medium text-emerald-800">
+                        ${campaign.budget}
+                      </p>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
     </div>
   );
 };

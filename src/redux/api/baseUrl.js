@@ -1,6 +1,5 @@
+const url =
+  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
+  "http://localhost:3050";
 
-
-const url = "http://10.10.11.118:3050"
-// const url = "http://10.10.7.68:3050"
- 
 export default url;

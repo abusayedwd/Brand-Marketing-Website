@@ -1,153 +1,275 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal } from 'antd';
-import { useCampaignPaymentQuery } from '@/redux/fetures/payment/campaignPayment';
+
+import React, { useMemo, useState } from "react";
+import { Table, Modal, Tag, Spin, Empty } from "antd";
+import {
+  CreditCardOutlined,
+  EyeOutlined,
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  CloseCircleOutlined,
+} from "@ant-design/icons";
+import { useCampaignPaymentQuery } from "@/redux/fetures/payment/campaignPayment";
+import url from "@/redux/api/baseUrl";
+
+const statusMeta = {
+  paid: { color: "success", icon: <CheckCircleOutlined />, label: "Paid" },
+  succeeded: { color: "success", icon: <CheckCircleOutlined />, label: "Paid" },
+  success: { color: "success", icon: <CheckCircleOutlined />, label: "Paid" },
+  pending: { color: "warning", icon: <ClockCircleOutlined />, label: "Pending" },
+  failed: { color: "error", icon: <CloseCircleOutlined />, label: "Failed" },
+  cancelled: { color: "default", icon: <CloseCircleOutlined />, label: "Cancelled" },
+};
 
 const PaymentRequestList = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedRequest, setSelectedRequest] = useState(null);
-  const { data: transactionData } = useCampaignPaymentQuery();
+  const { data: transactionData, isLoading } = useCampaignPaymentQuery();
+  const [selected, setSelected] = useState(null);
 
-  const [paymentRequests, setPaymentRequests] = useState([]);
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 5, // Adjust the page size as needed
-    total: 0,
-  });
-
-  // Set the payment requests and pagination when the data is fetched
-  useEffect(() => {
-    if (transactionData && transactionData?.data && transactionData?.data?.attributes?.results) {
-      const transformedData = transactionData?.data?.attributes?.results.map((transaction) => ({
-        key: transaction?.id, // Unique key based on transaction? id
-        requestId: transaction?.id,
-        user: transaction?.campaignId?.campaignName, // Campaign name
-        amount: `$${transaction?.amount}`,
-        requestTime: new Date(transaction?.transactionDate).toLocaleString(),
-        status: transaction?.paymentStatus,
-        campaignId: transaction?.campaignId,
-        brandId: transaction?.brandId,
-      }));
-      setPaymentRequests(transformedData);
-      setPagination((prev) => ({
-        ...prev,
-        total: transactionData?.data?.attributes?.totalResults, // Update the total count of records from API
-      }));
-    }
+  const rows = useMemo(() => {
+    const results = transactionData?.data?.attributes?.results || [];
+    return results.map((t) => ({
+      key: t.id || t._id,
+      id: t.id || t._id,
+      amount: Number(t.amount) || 0,
+      status: (t.paymentStatus || t.status || "pending").toLowerCase(),
+      date: t.transactionDate || t.createdAt,
+      campaign: t.campaignId,
+      brand: t.brandId,
+    }));
   }, [transactionData]);
+
+  const totalPaid = rows
+    .filter((r) => ["paid", "succeeded", "success"].includes(r.status))
+    .reduce((s, r) => s + r.amount, 0);
 
   const columns = [
     {
-      title: '#SL',
-      dataIndex: 'key',
-      key: 'key',
-      render: (text, record, index) => index + 1, 
+      title: "#",
+      width: 56,
+      render: (_, __, i) => (
+        <span className="text-slate-400">{i + 1}</span>
+      ),
     },
     {
-      title: 'Transaction ID',
-      dataIndex: 'requestId',
-      key: 'requestId',
+      title: "Campaign",
+      key: "campaign",
+      render: (_, row) => (
+        <div>
+          <p className="font-semibold text-slate-900">
+            {row.campaign?.campaignName || "—"}
+          </p>
+          <p className="max-w-xs truncate text-xs text-slate-500">
+            {row.id}
+          </p>
+        </div>
+      ),
     },
     {
-      title: 'Campaign Name',
-      dataIndex: 'user',
-      key: 'user',
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
+      render: (amount) => (
+        <span className="font-semibold text-emerald-800">
+          ${Number(amount).toLocaleString()}
+        </span>
+      ),
     },
     {
-      title: 'Amount',
-      dataIndex: 'amount',
-      key: 'amount',
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
+      render: (d) =>
+        d ? new Date(d).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }) : "—",
     },
     {
-      title: 'Transaction Time',
-      dataIndex: 'requestTime',
-      key: 'requestTime',
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => {
+        const meta = statusMeta[status] || statusMeta.pending;
+        return (
+          <Tag color={meta.color} icon={meta.icon}>
+            {meta.label}
+          </Tag>
+        );
+      },
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, record) => (
-        <Button type="link" onClick={() => showModal(record)}>
-          View
-        </Button>
+      title: "",
+      key: "action",
+      width: 100,
+      render: (_, row) => (
+        <button
+          type="button"
+          onClick={() => setSelected(row)}
+          className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-800 hover:underline"
+        >
+          <EyeOutlined /> Details
+        </button>
       ),
     },
   ];
 
-  const showModal = (request) => {
-    setSelectedRequest(request);
-    setIsModalVisible(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-    setSelectedRequest(null);
-  };
-
-  const handleTableChange = (pagination) => {
-    setPagination(pagination);
-    // Optionally, refetch the data based on the page change, passing the pagination params
-    // If your API supports paginated requests, you can modify your query to fetch the current page's data.
-  };
-
   return (
-    <div className="container mx-auto p-4">
-      <div className="bg-white shadow-lg rounded-lg">
-        <h2 className="text-xl font-semibold text-gray-800 p-4 border-b">Payment Request List</h2>
-        <Table
-          columns={columns}
-          dataSource={paymentRequests}
-          pagination={{
-            current: pagination.current,
-            pageSize: pagination.pageSize,
-            total: pagination.total,
-            onChange: (page, pageSize) => {
-              setPagination({ ...pagination, current: page, pageSize });
-            },
-          }}
-          onChange={handleTableChange}
-          className="ant-table-container"
-        />
+    <div className="space-y-6">
+      <div className="relative overflow-hidden rounded-3xl bg-[#0b1f17] px-6 py-8 text-white sm:px-8">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_40%,rgba(16,185,129,0.25),transparent_45%)]" />
+        <div className="relative flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-300">
+              Payments
+            </p>
+            <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
+              Campaign payment history
+            </h1>
+            <p className="mt-2 max-w-xl text-sm text-emerald-50/75">
+              Stripe checkout records for your campaigns — open a row for full details.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3">
+            <p className="text-xs uppercase tracking-wide text-emerald-300">Total paid</p>
+            <p className="text-2xl font-bold text-white">
+              ${totalPaid.toLocaleString()}
+            </p>
+          </div>
+        </div>
       </div>
 
-      {/* Modal to show payment request details */}
+      <div className="overflow-hidden rounded-3xl border border-emerald-100 bg-white">
+        {isLoading ? (
+          <div className="flex h-48 items-center justify-center">
+            <Spin />
+          </div>
+        ) : rows.length === 0 ? (
+          <div className="py-16">
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              description="No payment records yet"
+            />
+          </div>
+        ) : (
+          <Table
+            columns={columns}
+            dataSource={rows}
+            rowKey="key"
+            pagination={{ pageSize: 8, showSizeChanger: false }}
+            className="payment-table"
+          />
+        )}
+      </div>
+
       <Modal
-        title="Payment Request Details"
-        visible={isModalVisible}
-        onCancel={handleCancel}
+        open={!!selected}
+        onCancel={() => setSelected(null)}
         footer={null}
+        width={560}
+        title={
+          <span className="inline-flex items-center gap-2">
+            <CreditCardOutlined className="text-emerald-700" />
+            Payment details
+          </span>
+        }
       >
-        {selectedRequest && (
-          <div>
-            <p><strong>Request ID:</strong> {selectedRequest.requestId}</p>
-            <p><strong>User (Campaign Name):</strong> {selectedRequest.user}</p>
-            <p><strong>Amount:</strong> {selectedRequest.amount}</p>
-            <p><strong>Request Time:</strong> {selectedRequest.requestTime}</p>
-            <p><strong>Status:</strong> {selectedRequest.status}</p>
+        {selected && (
+          <div className="space-y-5 pt-2">
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-emerald-50/80 px-4 py-3">
+              <div>
+                <p className="text-xs uppercase tracking-wide text-slate-400">Amount</p>
+                <p className="text-2xl font-bold text-emerald-900">
+                  ${selected.amount.toLocaleString()}
+                </p>
+              </div>
+              <Tag
+                color={(statusMeta[selected.status] || statusMeta.pending).color}
+                icon={(statusMeta[selected.status] || statusMeta.pending).icon}
+                className="!text-sm"
+              >
+                {(statusMeta[selected.status] || statusMeta.pending).label}
+              </Tag>
+            </div>
 
-            {/* Brand and Campaign Info */}
-            <h3 className="mt-4">Brand and Campaign Information</h3>
-            <p><strong>Campaign Name:</strong> {selectedRequest?.campaignId?.campaignName}</p>
-            <p><strong>Description:</strong> {selectedRequest?.campaignId?.description}</p>
-            <p><strong>Start Date:</strong> {new Date(selectedRequest?.campaignId?.startDate).toLocaleDateString()}</p>
-            <p><strong>End Date:</strong> {new Date(selectedRequest?.campaignId?.endDate).toLocaleDateString()}</p>
-            {/* <p><strong>Platforms:</strong> {JSON.parse(selectedRequest?.campaignId?.selectedPlatforms[0]).join(', ')}</p> */}
-            <p><strong>Influencer Count:</strong> {selectedRequest?.campaignId?.influencerCount}</p>
-            <p><strong>Campaign Image:</strong> <img src={selectedRequest?.campaignId?.image} alt="Campaign" style={{ width: '100px', height: 'auto' }} /></p>
+            <dl className="grid gap-3 text-sm sm:grid-cols-2">
+              <div>
+                <dt className="text-xs uppercase text-slate-400">Transaction ID</dt>
+                <dd className="mt-0.5 break-all font-medium text-slate-800">{selected.id}</dd>
+              </div>
+              <div>
+                <dt className="text-xs uppercase text-slate-400">Date</dt>
+                <dd className="mt-0.5 font-medium text-slate-800">
+                  {selected.date
+                    ? new Date(selected.date).toLocaleString()
+                    : "—"}
+                </dd>
+              </div>
+            </dl>
 
-            {/* Brand Information */}
-            <h3 className="mt-4">Brand Information</h3>
-            <p><strong>Brand Name:</strong> {selectedRequest?.brandId?.fullName}</p>
-            <p><strong>Email:</strong> {selectedRequest?.brandId?.email}</p>
-            <p><strong>Phone Number:</strong> {selectedRequest?.brandId?.phoneNumber}</p>
+            <div className="border-t border-slate-100 pt-4">
+              <h3 className="text-sm font-semibold text-slate-900">Campaign</h3>
+              <div className="mt-3 flex gap-3">
+                {selected.campaign?.image && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={
+                      selected.campaign.image.startsWith("http")
+                        ? selected.campaign.image
+                        : `${url}${selected.campaign.image}`
+                    }
+                    alt=""
+                    className="h-16 w-16 rounded-xl object-cover"
+                  />
+                )}
+                <div className="min-w-0">
+                  <p className="font-semibold text-slate-900">
+                    {selected.campaign?.campaignName || "—"}
+                  </p>
+                  <p className="mt-1 line-clamp-2 text-sm text-slate-500">
+                    {selected.campaign?.description || "No description"}
+                  </p>
+                  {(selected.campaign?.startDate || selected.campaign?.endDate) && (
+                    <p className="mt-2 text-xs text-slate-400">
+                      {selected.campaign?.startDate
+                        ? new Date(selected.campaign.startDate).toLocaleDateString()
+                        : "—"}{" "}
+                      –{" "}
+                      {selected.campaign?.endDate
+                        ? new Date(selected.campaign.endDate).toLocaleDateString()
+                        : "—"}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {selected.brand && (
+              <div className="border-t border-slate-100 pt-4">
+                <h3 className="text-sm font-semibold text-slate-900">Brand</h3>
+                <p className="mt-2 font-medium text-slate-800">
+                  {selected.brand.fullName || "—"}
+                </p>
+                <p className="text-sm text-slate-500">{selected.brand.email}</p>
+                {selected.brand.phoneNumber && (
+                  <p className="text-sm text-slate-500">{selected.brand.phoneNumber}</p>
+                )}
+              </div>
+            )}
           </div>
         )}
       </Modal>
+
+      <style jsx global>{`
+        .payment-table .ant-table {
+          background: transparent;
+        }
+        .payment-table .ant-table-thead > tr > th {
+          background: #ecfdf5 !important;
+          color: #065f46;
+          font-weight: 600;
+          border-bottom: 1px solid #d1fae5 !important;
+        }
+        .payment-table .ant-table-tbody > tr > td {
+          border-bottom: 1px solid #f1f5f9 !important;
+        }
+      `}</style>
     </div>
   );
 };

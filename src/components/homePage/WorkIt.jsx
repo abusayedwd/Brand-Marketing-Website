@@ -1,93 +1,175 @@
-import React from 'react';
-import { Button } from 'antd';
-import { SearchOutlined, FileTextOutlined, BarChartOutlined, PlayCircleFilled } from '@ant-design/icons';
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import {
+  CreditCardOutlined,
+  RocketOutlined,
+  FileDoneOutlined,
+  LineChartOutlined,
+  UserAddOutlined,
+  HeartOutlined,
+  EditOutlined,
+  WalletOutlined,
+} from "@ant-design/icons";
+import useAuthUser from "@/hooks/useAuthUser";
+
+const flows = {
+  brand: {
+    label: "For brands",
+    blurb: "Launch a campaign, pick creators, approve content, and track results.",
+    cta: { href: "/auth/singup", text: "Start as a brand" },
+    steps: [
+      {
+        icon: CreditCardOutlined,
+        title: "Subscribe",
+        text: "Create your brand account and pick a plan that fits your volume.",
+      },
+      {
+        icon: RocketOutlined,
+        title: "Create & pay",
+        text: "Publish a campaign brief and complete secure Stripe checkout.",
+      },
+      {
+        icon: FileDoneOutlined,
+        title: "Accept & approve",
+        text: "Accept interested creators, review drafts, approve or request changes.",
+      },
+      {
+        icon: LineChartOutlined,
+        title: "Track results",
+        text: "Follow campaign status and performance from your brand dashboard.",
+      },
+    ],
+  },
+  creator: {
+    label: "For creators",
+    blurb: "Discover campaigns, submit drafts, earn to your wallet, and withdraw.",
+    cta: { href: "/auth/singup", text: "Join as a creator" },
+    steps: [
+      {
+        icon: UserAddOutlined,
+        title: "Join & subscribe",
+        text: "Build your creator profile and activate a subscription to apply.",
+      },
+      {
+        icon: HeartOutlined,
+        title: "Show interest",
+        text: "Browse open campaigns and express interest in the right fits.",
+      },
+      {
+        icon: EditOutlined,
+        title: "Submit drafts",
+        text: "Upload content for brand review — revise if rejected, then ship.",
+      },
+      {
+        icon: WalletOutlined,
+        title: "Earn & withdraw",
+        text: "Approved work credits your wallet. Withdrawals are admin-reviewed.",
+      },
+    ],
+  },
+};
 
 export default function HowItWorks() {
+  const [role, setRole] = useState("brand");
+  const active = flows[role];
+  const { isLoggedIn, hasToken } = useAuthUser();
+  const hideSignup = hasToken || isLoggedIn;
+
   return (
-    <div className="bg-white py-16">
-      <div className="container mx-auto px-4 max-w-6xl">
-        <div className="flex flex-col lg:flex-row items-center justify-between">
-          {/* Left Side - Step Cards */}
-          <div className="w-full lg:w-1/2 relative mb-10 lg:mb-0">
-            {/* Step 1 */}
-            <div className="bg-white rounded-lg shadow-md p-6 mb-16 max-w-md mx-auto lg:mx-0 relative z-10">
-              <div className="flex items-center mb-2">
-                <SearchOutlined className="text-blue-500 text-xl mr-3" />
-                <div>
-                  <div className="text-blue-600 font-medium">Step 1</div>
-                  <div className="text-gray-800 font-bold">Find a Content Creator</div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Arrow 1 */}
-            <div className="hidden lg:block absolute top-24 right-16 transform -rotate-12">
-              <svg width="130" height="80" viewBox="0 0 130 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10 10 C40 30, 80 20, 120 70" stroke="#3CDBC0" strokeWidth="2" strokeLinecap="round" />
-                <path d="M110 50 L120 70 L100 65" stroke="#3CDBC0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-            
-            {/* Step 2 */}
-            <div className="bg-white rounded-lg shadow-md p-6 mb-16 max-w-md mx-auto lg:ml-20 relative z-10">
-              <div className="flex items-center mb-2">
-                <FileTextOutlined className="text-blue-500 text-xl mr-3" />
-                <div>
-                  <div className="text-blue-600 font-medium">Step 2</div>
-                  <div className="text-gray-800 font-bold">Create a content</div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Arrow 2 */}
-            <div className="hidden lg:block absolute bottom-60 right-24 transform rotate-45">
-              <svg width="110" height="80" viewBox="0 0 110 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10 10 C30 20, 60 30, 100 70" stroke="#3CDBC0" strokeWidth="2" strokeLinecap="round" />
-                <path d="M80 60 L100 70 L90 50" stroke="#3CDBC0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-            
-            {/* Step 3 */}
-            <div className="bg-white rounded-lg shadow-md p-6 max-w-md mx-auto lg:ml-40 relative z-10">
-              <div className="flex items-center mb-2">
-                <BarChartOutlined className="text-blue-500 text-xl mr-3" />
-                <div>
-                  <div className="text-blue-600 font-medium">Step 3</div>
-                  <div className="text-gray-800 font-bold">Monitoring</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          {/* Right Side - How it works description */}
-          <div className="w-full lg:w-5/12">
-            <h2 className="text-2xl lg:text-3xl font-bold mb-6">
-              How it <span className="text-blue-500">work's?</span>
-            </h2>
-            
-            <p className="text-gray-700 mb-8">
-              An influencer marketing website connects brands with  Content Creator to
-              promote products. Content Creator create profiles, receive campaign
-              invitations, and share promotional content, while brands approve and
-              track influencer performance.
-            </p>
-            
-            <div className="flex items-center justify-center lg:justify-start">
-              <div className="bg-blue-100 rounded-full p-3 inline-flex items-center justify-center relative">
-                <div className="absolute inset-0 bg-blue-200 bg-opacity-50 rounded-full animate-ping" style={{ animationDuration: '3s' }}></div>
-                <PlayCircleFilled className="text-blue-500 text-4xl" />
-              </div>
-              
-              <Button
-                type="link"
-                className="text-blue-500 font-medium ml-4 hover:text-blue-700"
+    <section className="relative overflow-hidden border-y border-emerald-100 bg-gradient-to-b from-emerald-50/40 via-white to-white py-16 sm:py-20">
+      <div className="pointer-events-none absolute -right-24 top-10 h-64 w-64 rounded-full bg-emerald-200/30 blur-3xl" />
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
+        <div className="max-w-2xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">
+            How it works
+          </p>
+          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+            Clear steps for brands and creators
+          </h2>
+          <p className="mt-3 text-sm text-slate-600 sm:text-base">
+            One platform workflow — from subscription to published campaigns and payouts.
+          </p>
+        </div>
+
+        <div className="mt-8 inline-flex rounded-full border border-emerald-200 bg-white p-1 shadow-sm">
+          {(["brand", "creator"]).map((key) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setRole(key)}
+              className={`rounded-full px-5 py-2 text-sm font-semibold transition ${
+                role === key
+                  ? "bg-[#0b1f17] text-white"
+                  : "text-slate-600 hover:text-emerald-800"
+              }`}
+            >
+              {flows[key].label}
+            </button>
+          ))}
+        </div>
+
+        <p
+          key={role + "-blurb"}
+          className="mt-6 max-w-xl text-sm text-slate-600 animate-[fadeIn_0.4s_ease]"
+        >
+          {active.blurb}
+        </p>
+
+        <ol className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {active.steps.map((step, index) => {
+            const Icon = step.icon;
+            return (
+              <li
+                key={`${role}-${step.title}`}
+                className="group relative animate-[fadeUp_0.45s_ease_both]"
+                style={{ animationDelay: `${index * 70}ms` }}
               >
-                View tutorials
-              </Button>
-            </div>
-          </div>
+                <div className="mb-4 flex items-center gap-3">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-800 transition group-hover:bg-[#0b1f17] group-hover:text-emerald-100">
+                    <Icon />
+                  </span>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-emerald-700">
+                    Step {index + 1}
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900">{step.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-500">{step.text}</p>
+              </li>
+            );
+          })}
+        </ol>
+
+        <div className="mt-10">
+          {hideSignup ? (
+            <Link
+              href="/dashboard"
+              className="inline-flex h-11 items-center rounded-xl bg-emerald-700 px-6 text-sm font-semibold text-white transition hover:bg-emerald-600"
+            >
+              Go to dashboard
+            </Link>
+          ) : (
+            <Link
+              href={active.cta.href}
+              className="inline-flex h-11 items-center rounded-xl bg-emerald-700 px-6 text-sm font-semibold text-white transition hover:bg-emerald-600"
+            >
+              {active.cta.text}
+            </Link>
+          )}
         </div>
       </div>
-    </div>
+
+      <style jsx global>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(12px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+    </section>
   );
 }
