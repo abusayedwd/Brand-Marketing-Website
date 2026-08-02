@@ -6,7 +6,7 @@ const withdreawRequest = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         withdreawRequest : builder.mutation({
             query: (data) => ({
-                url: `/withdraw//request-withdrawal`,
+                url: `/withdraw/request-withdrawal`,
                 method: "POST",
                 body:  data
             }),

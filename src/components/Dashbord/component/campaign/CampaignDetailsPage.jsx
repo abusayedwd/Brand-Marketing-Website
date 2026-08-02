@@ -47,6 +47,7 @@ import { CustomButton } from "@/components/customComponent/Button";
 import { useInterestedCampaignInfluMutation } from "@/redux/fetures/campaign/interestedCampaignInflu";
 import Link from "next/link";
 import { useApprovedDraftMutation } from "@/redux/fetures/draftSubmit/approvedDraft";
+import { useRejectDraftMutation } from "@/redux/fetures/campaign/rejectDraft";
 
 const { Title, Text, Paragraph } = Typography;
 const { TabPane } = Tabs;
@@ -93,6 +94,7 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
   const [acceptInfluencer, { isLoading: acceptLoading }] = useAcceptedInfluenerMutation();
 
   const [approveDraft] = useApprovedDraftMutation()
+  const [rejectDraft] = useRejectDraftMutation()
  
   // Handle loading state
   if (isLoading) {
@@ -226,6 +228,24 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
     } catch (error) {
       console.error("Error approving draft:", error);
       toast.error("Failed to approve draft. Please try again.");
+    }
+  };
+
+  const handleRejectDraft = async (draftId) => {
+    try {
+      const reason = window.prompt("Reason for rejection (influencer can resubmit):", "Please revise and resubmit.");
+      if (reason === null) return;
+      const result = await rejectDraft({
+        campaignId: id,
+        draftId,
+        rejectionReason: reason,
+      }).unwrap();
+      if (result?.code === 200) {
+        toast.success("Draft rejected. Influencer can revise.");
+        refetch();
+      }
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to reject draft.");
     }
   };
 
@@ -430,7 +450,13 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
           </div>
         </div>
 
-        {showActions && user?.data?.attributes?.role === "brand" && !draft.isApproved && (
+        {draft.isRejected && (
+          <div className="mt-2 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">
+            Rejected: {draft.rejectionReason || "Please revise and resubmit."}
+          </div>
+        )}
+
+        {showActions && user?.data?.attributes?.role === "brand" && !draft.isApproved && !draft.isRejected && (
           <div className="flex space-x-2 flex-shrink-0">
             <Button
               type="primary"
@@ -439,6 +465,9 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
               className="bg-green-500 hover:bg-green-600 border-green-500"
             >
               Approve
+            </Button>
+            <Button danger onClick={() => handleRejectDraft(draft._id)}>
+              Reject
             </Button>
           </div>
         )}

@@ -174,6 +174,7 @@ import { useLogedUserQuery } from '@/redux/fetures/user/logedUser';
 import { useChangPasswordMutation } from '@/redux/fetures/auth/changePassword';
 import toast, { Toaster } from 'react-hot-toast';
 import url from '@/redux/api/baseUrl';
+import NotificationBell from './NotificationBell';
 
 export default function DashboardHeader({ collapsed}) {
   // State for modals and mobile menu
@@ -254,14 +255,13 @@ export default function DashboardHeader({ collapsed}) {
     <div className=''>
       <Toaster />
       <Header
-        className="p-0 h-24 bg-[#c7c8c9] shadow-md flex items-center justify-between sticky top-0 z-50"
+        className="sticky top-0 z-50 flex h-20 items-center justify-between border-b border-emerald-100 bg-white/90 px-4 shadow-sm backdrop-blur"
         style={{
           position: 'sticky',
           top: 0,
           zIndex: 100,
           width: '100%',
           padding: '0 16px',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)'
         }}
       >
         <div className="flex items-center">
@@ -275,9 +275,11 @@ export default function DashboardHeader({ collapsed}) {
          
         
          <div>
-          <h1 className="text-lg font-bold ml-4">
-            Dashboard <br /> 
-            <span className='text-orange-400'>role: {user?.data?.attributes?.role}</span>
+          <h1 className="ml-2 text-lg font-bold text-slate-900">
+            Dashboard
+            <span className="mt-0.5 block text-xs font-semibold uppercase tracking-wide text-emerald-700">
+              {user?.data?.attributes?.role || "member"}
+            </span>
             </h1>
        
 
@@ -286,13 +288,14 @@ export default function DashboardHeader({ collapsed}) {
         </div>
        
         {/* User profile */}
-        <div className="mr-6">
+        <div className="mr-2 flex items-center">
+  <NotificationBell />
   <Dropdown
     menu={{ items: userMenuItems }}
     placement="bottomRight"
     trigger={["click"]}
   >
-    <div className="flex items-center cursor-pointer">
+    <div className="flex items-center cursor-pointer rounded-full border border-slate-200 px-2 py-1 hover:border-emerald-300">
       <Avatar src={url + user?.data?.attributes?.image?.url} className='h-12 w-12' />
       <span className="ml-2 hidden sm:inline">{user?.data?.attributes?.fullName}</span>
     </div>

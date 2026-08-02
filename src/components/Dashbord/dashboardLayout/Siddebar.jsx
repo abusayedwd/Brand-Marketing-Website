@@ -226,27 +226,33 @@ export default function Sidebar() {
   const logo = "/images/logo.png";  
 
   return (
-    <div className={`${collapsed ? 'w-20' : 'w-52'} transition-all duration-300 h-full shadow-md`}>
-      <div className="flex justify-between items-center p-4">
-        <div className={`text-xl font-bold ${collapsed ? 'hidden' : 'block'}`}>
+    <div className={`${collapsed ? 'w-20' : 'w-56'} h-full border-r border-emerald-100/80 bg-[#0b1f17] text-white transition-all duration-300`}>
+      <div className="flex items-center justify-between p-4">
+        <div className={`${collapsed ? 'hidden' : 'block'}`}>
           <Link href="/" className="flex items-center">
-            <img src={logo} alt="App Logo" className="w-24" /> {/* App logo */}
+            <img src={logo} alt="App Logo" className="w-24 brightness-110" />
           </Link>
+          <p className="mt-2 text-[11px] uppercase tracking-[0.14em] text-emerald-200/80">
+            {userRole || "account"}
+          </p>
         </div>
         <button 
           onClick={toggleCollapsed} 
-          className="p-2 rounded-md hover:bg-gray-100"
+          className="rounded-lg p-2 text-emerald-100 hover:bg-white/10"
         >
           {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
         </button>
       </div>
       <Menu 
-        mode={collapsed ? "vertical" : "inline"}  // Switch mode based on collapsed state
+        theme="dark"
+        mode={collapsed ? "vertical" : "inline"}
         selectedKeys={[pathname]}
         inlineCollapsed={collapsed}
+        className="!bg-transparent px-2"
+        style={{ background: "transparent" }}
       >
         {menuItems.map((item) => (
-          <Menu.Item key={item.key} icon={item.icon}>
+          <Menu.Item key={item.key} icon={item.icon} className="!rounded-lg !my-1">
             <Link href={item.path}>{item.label}</Link>
           </Menu.Item>
         ))}

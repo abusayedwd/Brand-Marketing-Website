@@ -25,16 +25,17 @@ const { apiSlice } = require("@/redux/api/apiSlice");
 const getInfluencers = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getInfluencers: builder.query({
-      query: ({ socialMedia, fullName, interests }) => {
+      query: ({ socialMedia, fullName, interests, platform, minFollowers, address } = {}) => {
         const params = new URLSearchParams({ role: "influencer" });
 
         if (interests) params.append("interests", interests);
         if (socialMedia) params.append("socialMedia", socialMedia);
         if (fullName) params.append("fullName", fullName);
+        if (platform) params.append("platform", platform);
+        if (minFollowers) params.append("minFollowers", minFollowers);
+        if (address) params.append("address", address);
 
-        const url = `/users?${params.toString()}`;
-        console.log("Fetching influencers with URL:", url);  // For debugging
-        return url;
+        return `/users?${params.toString()}`;
       },
       providesTags: [{ type: "Profile" }],
     }),

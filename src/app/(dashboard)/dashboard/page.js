@@ -1,67 +1,40 @@
-// "use client"
+"use client";
 
-// import { Card, Row, Col, Statistic } from 'antd';
-// import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
-// import CardComponent from '@/components/Dashbord/overview/Card';
- 
-// import Barchart from '@/components/Dashbord/overview/Barchart';
-// import CardForbarand from '@/components/Dashbord/overview/CardForbarand';
-// import { useLogedUserQuery } from '@/redux/fetures/user/logedUser';
-// import BarchartforBrand from '@/components/Dashbord/overview/BarchartforBrand';
-
-// export default function Dashboard() {
-
-// const {data: loggedUser} = useLogedUserQuery()
-// const userRole = loggedUser?.data?.attributes?.role;
-// console.log(userRole)
-// userRole === "brand"
-//   return (
-//     <div>
-//       <h1 className="text-2xl font-bold mb-6">Dashboard Overview</h1>
-       
-//         <CardComponent />
-//         <CardForbarand/>
-//         <Barchart /> 
-//         <BarchartforBrand />
-      
-//     </div>
-//   );
-// }
-
-
-
-"use client"
-
-import { Card } from 'antd';
-import CardComponent from '@/components/Dashbord/overview/Card';
-import Barchart from '@/components/Dashbord/overview/Barchart';
-import CardForbarand from '@/components/Dashbord/overview/CardForbarand';
-import { useLogedUserQuery } from '@/redux/fetures/user/logedUser';
-import BarchartforBrand from '@/components/Dashbord/overview/BarchartforBrand';
+import CardComponent from "@/components/Dashbord/overview/Card";
+import Barchart from "@/components/Dashbord/overview/Barchart";
+import BarchartforBrand from "@/components/Dashbord/overview/BarchartforBrand";
+import BrandAnalytics from "@/components/Dashbord/overview/BrandAnalytics";
+import { useLogedUserQuery } from "@/redux/fetures/user/logedUser";
 
 export default function Dashboard() {
-
   const { data: loggedUser } = useLogedUserQuery();
   const userRole = loggedUser?.data?.attributes?.role;
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-6">Dashboard Overview</h1>
+    <div className="space-y-6">
+      <div className="px-4 pt-2">
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">
+          Workspace
+        </p>
+        <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+          Dashboard overview
+        </h1>
+        <p className="mt-1 text-sm text-slate-500">
+          {userRole === "brand"
+            ? "Track campaign pipeline, spend, and progress."
+            : "Track earnings, active work, and completed campaigns."}
+        </p>
+      </div>
 
-      {/* Common Card for all users */}
-      
+      <CardComponent />
 
-      {/* Conditionally render components based on the user role */}
       {userRole === "brand" ? (
         <>
-          <CardForbarand />
+          <BrandAnalytics />
           <BarchartforBrand />
         </>
       ) : (
-        <>
-        <CardComponent />
-          <Barchart />
-        </>
+        <Barchart />
       )}
     </div>
   );

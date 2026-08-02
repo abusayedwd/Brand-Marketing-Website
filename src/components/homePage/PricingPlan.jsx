@@ -136,11 +136,13 @@ import {
   savePendingSubscriptionSession,
 } from '@/utils/subscriptionPayment';
 import { toast } from 'react-hot-toast';
+import { useGetPlansQuery } from '@/redux/fetures/plans/plans';
 
 const PricingSection = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const verifyStarted = useRef(false);
+  const { data: plansData } = useGetPlansQuery();
 
   useEffect(() => {
     AOS.init({
@@ -220,60 +222,53 @@ const PricingSection = () => {
     };
   }, [isUserLoading, searchParams, verifySubscriptionPayment, router]);
 
-  console.log(loggedUser)
+  const apiPlans = plansData?.data?.attributes || [];
+  const plans =
+    apiPlans.length > 0
+      ? apiPlans.map((p) => ({
+          name: p.name,
+          description: p.description,
+          price: `${p.price}`,
+          priceLabel: `€${p.price}`,
+          features: p.features || [],
+          highlight: !!p.isPopular,
+          durationDays: p.durationDays || 30,
+        }))
+      : [
+          {
+            name: 'Starter',
+            description: 'Essential access for creators and brands getting started.',
+            price: '19',
+            priceLabel: '€19',
+            features: ['Campaign access', 'Messaging', 'Basic analytics'],
+            highlight: false,
+            durationDays: 30,
+          },
+          {
+            name: 'Pro',
+            description: 'For growing teams that need more visibility and campaigns.',
+            price: '49',
+            priceLabel: '€49',
+            features: ['Everything in Starter', 'Priority listing', 'Advanced analytics'],
+            highlight: true,
+            durationDays: 30,
+          },
+          {
+            name: 'Business',
+            description: 'Full marketplace power for serious brands and agencies.',
+            price: '99',
+            priceLabel: '€99',
+            features: ['Everything in Pro', 'Dedicated support', 'Unlimited campaigns'],
+            highlight: false,
+            durationDays: 30,
+          },
+        ];
 
-  const plans = [
-    {
-      name: 'Abonnement Starter',
-      description: 'Pour les petits créateurs de contenu. Idéal si tu débutes et que tu veux gagner en visibilité auprès des marques.',
-      price: '29.99EUR/mois',
-      features: [
-        'Accès à toutes les offres disponibles',
-        'Profil optimisé dans l\'algorithme de mise en relation',
-        'Recommandations personnalisées de collaborations',
-        'Statistiques de performance de base'
-      ],
-      highlight: false,
-      image: '/mnt/data/579e741b-900c-47f1-b4fb-0b4e5e094d1a.png'
-    },
-    {
-      name: 'Abonnement Pro',
-      description: 'Pour les créateurs de contenu populaires. Pour ceux qui souhaitent monétiser efficacement leur audience.',
-      price: '99.99EUR/mois',
-      features: [
-        'Accès prioritaire aux campagnes premium',
-        'Statistiques avancées et analyse de performance',
-        'Mise en avant sur la page d\'accueil',
-        'Service client dédié',
-        'Certification Brivio Pro'
-      ],
-      highlight: true,
-      image: '/mnt/data/579e741b-900c-47f1-b4fb-0b4e5e094d1a.png'
-    },
-    {
-      name: 'Abonnement Marques',
-      description: 'Pour les entreprises et marques qui souhaitent lancer leurs campagnes.',
-      price: '129.99EUR/mois',
-      features: [
-        'Création et publication de campagnes illimitées',
-        'Accès à une base d\'influenceurs qualifiés',
-        'Statistiques détaillées des campagnes',
-        'Outils de gestion et de suivi des collaborations',
-        'Assistance personnalisée pour le recrutement d\'influenceurs'
-      ],
-      highlight: false,
-      image: '/mnt/data/579e741b-900c-47f1-b4fb-0b4e5e094d1a.png'
-    }
-  ];
-
-  const handleButtonClick = async (planName, planPrice) => {
-    const priceNumber = parseFloat(planPrice.replace(/[^0-9.-]+/g, ""));
-    const duration = '1 month';
-
+  const handleButtonClick = async (plan) => {
     const data = {
-      planName: planName,
-      price: priceNumber,
-      duration: duration
+      planName: plan.name,
+      price: Number(plan.price),
+      duration: `${plan.durationDays || 30} days`,
     };
 
     try {
@@ -293,31 +288,31 @@ const PricingSection = () => {
     <div className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16" data-aos="fade-up">
-          <h1 className="text-4xl font-bold text-[#00008B] mb-4">Powerful features for powerful creators</h1>
+          <h1 className="text-4xl font-bold text-emerald-900 mb-4">Plans built for brands & creators</h1>
           <p className="text-xl text-gray-600">Choose a plan that's right for you.</p>
-          <div className="mt-8 h-1 bg-gradient-to-r from-transparent via-gray-300 to-transparent w-1/2 mx-auto" />
+          <div className="mt-8 h-1 bg-gradient-to-r from-transparent via-emerald-200 to-transparent w-1/2 mx-auto" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {plans.map((plan, index) => (
             <div
-              key={index}
+              key={plan.name || index}
               data-aos="zoom-out-up"
               data-aos-delay={index * 100}
             >
               <Card
-                className={`h-full border-2 ${plan.highlight ? 'border-blue-500' : 'border-gray-200'} rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300`}
+                className={`h-full border-2 ${plan.highlight ? 'border-emerald-500' : 'border-gray-200'} rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300`}
                 bodyStyle={{ padding: 0 }}
               >
-                <div className={`p-6 ${plan.highlight ? 'bg-blue-50' : 'bg-white'}`}>
+                <div className={`p-6 ${plan.highlight ? 'bg-emerald-50' : 'bg-white'}`}>
                   <div className="text-center mb-6">
                     <h2 className="text-2xl font-semibold text-gray-800">{plan.name}</h2>
                     <p className="text-gray-600 mt-2">{plan.description}</p>
                   </div>
 
                   <div className="text-center mb-8">
-                    <span className="text-4xl font-bold text-gray-900">{plan.price}</span>
-                    {plan.price !== 'Free' && <span className="text-gray-500">/mo</span>}
+                    <span className="text-4xl font-bold text-gray-900">{plan.priceLabel || `€${plan.price}`}</span>
+                    <span className="text-gray-500">/mo</span>
                   </div>
 
                   <div className="mb-8">
@@ -337,9 +332,9 @@ const PricingSection = () => {
                     <Button
                       type={plan.highlight ? 'primary' : 'default'}
                       size="large"
-                      className={`w-full ${plan.highlight ? 'bg-blue-600' : ''}`}
+                      className={`w-full ${plan.highlight ? '!bg-emerald-700' : ''}`}
                       loading={isLoading}
-                      onClick={() => handleButtonClick(plan.name, plan.price)}
+                      onClick={() => handleButtonClick(plan)}
                     >
                       Get Started Now
                     </Button>
