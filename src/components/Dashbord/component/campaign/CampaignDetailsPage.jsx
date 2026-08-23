@@ -564,7 +564,7 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
                   <Text strong className="block mb-2">Brand Information:</Text>
                   <div className="flex items-center space-x-3">
                     <Avatar
-                      src={campaign.brandId?.image?.url}
+                      src={getMediaUrl(campaign.brandId?.image)}
                       icon={<UserOutlined />}
                       size={40}
                     />

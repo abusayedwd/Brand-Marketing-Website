@@ -47,7 +47,7 @@ const Profile = () => {
     );
   }
 
-  const avatarSrc = getMediaUrl(user?.image, "/images/user4.jpg");
+  const avatarSrc = getMediaUrl(user?.image);
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 pb-10">

@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button, Modal, Table } from "antd";
 import { ArrowLeftOutlined } from '@ant-design/icons';
+import getMediaUrl from "@/utils/getMediaUrl";
 
 const InfluencersList = () => {
   const { data: influencerData } = useContentCreatorQuery();
@@ -125,7 +126,7 @@ const InfluencersList = () => {
             </div>
             <div className="modal-body">
               <img
-                src={selectedInfluencer.image.url}
+                src={getMediaUrl(selectedInfluencer.image, "/images/default-avatar.png")}
                 alt="Influencer Image"
                 className="modal-image"
               />

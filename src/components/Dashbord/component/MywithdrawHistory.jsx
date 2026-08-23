@@ -162,7 +162,7 @@ const WithdrawRequestPage = () => {
       title: 'Signature',
       key: 'signature',
       render: (_, withdraw) => (
-        withdraw.image?.url ? (
+        withdraw.image ? (
           <img
             src={getMediaUrl(withdraw.image)}
             alt="Signature"

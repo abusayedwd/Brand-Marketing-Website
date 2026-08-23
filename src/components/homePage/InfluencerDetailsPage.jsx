@@ -115,7 +115,7 @@ const InfluencerSinglePage = ({ id }) => {
             <Avatar
               size={120}
               src={avatarSrc}
-              icon={!avatarSrc && <UserOutlined />}
+              icon={<UserOutlined />}
               className="!border-2 !border-emerald-400/40 !bg-emerald-900 shadow-xl"
             />
             <div className="min-w-0 flex-1">

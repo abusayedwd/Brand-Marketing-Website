@@ -542,7 +542,7 @@ const EditProfile = () => {
       });
 
       // Set profile image url
-      if (user.image?.url) setImageUrl(getMediaUrl(user.image));
+      if (user.image) setImageUrl(getMediaUrl(user.image));
 
       // Set social media for influencers
       if (user.role === "influencer" && user.socialMedia?.length) {
@@ -796,7 +796,7 @@ const EditProfile = () => {
               <Image
                 width={120}
                 height={120}
-                src={imageUrl || "/images/user4.jpg"}
+                src={imageUrl || "/images/default-avatar.svg"}
                 alt="Profile"
                 className="rounded-full object-cover"
               />

@@ -692,7 +692,7 @@ export default function AllInfluencer({ searchCriteria }) {
       tag: influencer.interests?.[0] ? `#${influencer.interests[0]}` : "#Influencer",
       category: influencer.interests?.[0] || "General",
       bio: influencer.bio || "No bio available",
-      image: influencer.image?.url ? `${process.env.NEXT_PUBLIC_API_BASE_URL || ''}${influencer.image.url}` : "/images/default-avatar.png",
+      image: getMediaUrl(influencer.image, "/images/default-avatar.png"),
       interests: influencer.interests || [],
       socialMedia: influencer.socialMedia || [],
       followers: {
@@ -936,7 +936,7 @@ export default function AllInfluencer({ searchCriteria }) {
                       >
                         <Avatar
                           size={148}
-                          src={getMediaUrl(influencer.image)}
+                          src={influencer.image}
                           className="profile-image"
                           style={{ 
                             border: "4px solid transparent",
