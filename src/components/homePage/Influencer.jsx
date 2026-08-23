@@ -397,6 +397,7 @@ import { Button, Card, Typography, Row, Col, Avatar, Spin, Empty, Modal } from "
 import { motion, useInView, useAnimation } from "framer-motion"
 import { useGetInfluencersQuery } from "@/redux/fetures/user/influencers"
 import getMediaUrl from "@/utils/getMediaUrl"
+import InfluencerCard from "./InfluencerCard"
 import { useLogedUserQuery } from "@/redux/fetures/user/logedUser"
 import { CustomButton } from "../customComponent/Button"
 import { LoginModal } from "../customComponent/LoginModal"
@@ -655,276 +656,26 @@ export default function InfluencersPage() {
           <div className="mt-4">Loading influencers...</div>
         </div>
       ) : (
-        <Row gutter={[24, 24]}>
-          {filteredInfluencers.map((influencer, index) => (
-            <Col xs={24} md={12} lg={8} key={influencer.id}>
-              <ScrollReveal threshold={0.1}>
-                <motion.div whileHover="hover">
-                  <MotionCard 
-                    hoverable 
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 1.03 }}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 * index, duration: 0.8 }}
-                  >
-                    <div className="flex flex-col items-center text-center">
-                      <motion.div
-                        className="avatar-wrapper relative"
-                        whileHover={{
-                          scale: 1.05,
-                        }}
-                      >
-                        <Avatar
-                          size={148}
-                          src={influencer.image}
-                          className="profile-image"
-                          style={{ 
-                            border: "4px solid transparent",
-                            transition: "all 0.3s ease"
-                          }}
-                        />
-                        <motion.div
-                          initial={{ opacity: 0 }}
-                          whileHover={{ opacity: 1 }}
-                          className="absolute inset-0 bg-blue-500 bg-opacity-10 rounded-full flex items-center justify-center"
-                        >
-                            <Link href={`/influencer/${influencer.id}`}>
-                            
-                          <div className="bg-white bg-opacity-80 px-2 py-1 rounded text-xs font-bold text-blue-500">
-                            View Profile
-                          </div>
-                            </Link>
-                        </motion.div>
-                      </motion.div>
-                      
-                      <Title level={4} style={{ color: "#003366", marginTop: 16 }} className="influencer-name">
-                        {influencer.name}
-                      </Title>
-                      
-                      <Text type="secondary" className="text-sm">
-                        @{influencer.userName}
-                      </Text>
-                      
-                      <motion.div 
-                        className="mb-2 mt-2 tag-container"
-                        whileHover={{ scale: 1.1 }}
-                      >
-                        <span
-                          style={{
-                            backgroundColor: "#e6f7ff",
-                            color: "#1890ff",
-                            padding: "2px 8px",
-                            borderRadius: "4px",
-                            fontSize: "14px",
-                          }}
-                          className="tag"
-                        >
-                          {influencer.tag}
-                        </span>
-                      </motion.div>
-                      
-                      <Paragraph className="mt-2 mb-6 bio" style={{ fontSize: 14 }}>
-                        {influencer.bio}
-                      </Paragraph>
-
-                      {/* Interests */}
-                      <div className="mb-4">
-                        <div className="flex flex-wrap gap-1 justify-center">
-                          {influencer.interests.slice(0, 3).map((interest, idx) => (
-                            <span
-                              key={idx}
-                              className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded"
-                            >
-                              {interest}
-                            </span>
-                          ))}
-                          {influencer.interests.length > 3 && (
-                            <span className="text-xs text-gray-500">
-                              +{influencer.interests.length - 3} more
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      <Row gutter={[16, 16]} className="w-full mb-6">
-                        <Col span={12}>
-                          <motion.div 
-                            className="social-icon-container flex items-center gap-2" 
-                            variants={socialIconVariants}
-                            whileHover="hover"
-                          >
-                            <Avatar
-                              className="social-icon"
-                              style={{ backgroundColor: "#FCE7F3" }}
-                              icon={<InstagramOutlined style={{ color: "#DB2777" }} />}
-                              size={40}
-                            />
-                            <div className="text-left">
-                              <Text strong className="follower-count block">
-                                {influencer.followers.instagram}
-                              </Text>
-                              <div className="text-xs text-gray-500">Instagram</div>
-                            </div>
-                          </motion.div>
-                        </Col>
-                        
-                        <Col span={12}>
-                          <motion.div 
-                            className="social-icon-container flex items-center gap-2"
-                            variants={socialIconVariants}
-                            whileHover="hover"
-                          >
-                            <Avatar
-                              className="social-icon"
-                              style={{ backgroundColor: "#000" }}
-                              icon={<TikTokIcon style={{ color: "white" }} />}
-                              size={40}
-                            />
-                            <div className="text-left">
-                              <Text strong className="follower-count block">
-                                {influencer.followers.tiktok}
-                              </Text>
-                              <div className="text-xs text-gray-500">TikTok</div>
-                            </div>
-                          </motion.div>
-                        </Col>
-                        
-                        <Col span={12}>
-                          <motion.div 
-                            className="social-icon-container flex items-center gap-2"
-                            variants={socialIconVariants}
-                            whileHover="hover"
-                          >
-                            <Avatar
-                              className="social-icon"
-                              style={{ backgroundColor: "#EFF6FF" }}
-                              icon={<FacebookOutlined style={{ color: "#2563EB" }} />}
-                              size={40}
-                            />
-                            <div className="text-left">
-                              <Text strong className="follower-count block">
-                                {influencer.followers.facebook}
-                              </Text>
-                              <div className="text-xs text-gray-500">Facebook</div>
-                            </div>
-                          </motion.div>
-                        </Col>
-                        
-                        <Col span={12}>
-                          <motion.div 
-                            className="social-icon-container flex items-center gap-2"
-                            variants={socialIconVariants}
-                            whileHover="hover"
-                          >
-                            <Avatar
-                              className="social-icon"
-                              style={{ backgroundColor: "#FEF2F2" }}
-                              icon={<YoutubeOutlined style={{ color: "#DC2626" }} />}
-                              size={40}
-                            />
-                            <div className="text-left">
-                              <Text strong className="follower-count block">
-                                {influencer.followers.youtube}
-                              </Text>
-                              <div className="text-xs text-gray-500">YouTube</div>
-                            </div>
-                          </motion.div>
-                        </Col>
-
-                        <Col span={12}>
-                          <motion.div 
-                            className="social-icon-container flex items-center gap-2"
-                            variants={socialIconVariants}
-                            whileHover="hover"
-                          >
-                            <Avatar
-                              className="social-icon"
-                              style={{ backgroundColor: "#E0F2FE" }}
-                              icon={<TwitterOutlined style={{ color: "#0284C7" }} />}
-                              size={40}
-                            />
-                            <div className="text-left">
-                              <Text strong className="follower-count block">
-                                {influencer.followers.twitter}
-                              </Text>
-                              <div className="text-xs text-gray-500">Twitter</div>
-                            </div>
-                          </motion.div>
-                        </Col>
-
-                        <Col span={12}>
-                          <motion.div 
-                            className="social-icon-container flex items-center gap-2"
-                            variants={socialIconVariants}
-                            whileHover="hover"
-                          >
-                            <Avatar
-                              className="social-icon"
-                              style={{ backgroundColor: "#FFFBEB" }}
-                              icon={<SnapchatIcon style={{ color: "#F59E0B" }} />}
-                              size={40}
-                            />
-                            <div className="text-left">
-                              <Text strong className="follower-count block">
-                                {influencer.followers.snapchat}
-                              </Text>
-                              <div className="text-xs text-gray-500">Snapchat</div>
-                            </div>
-                          </motion.div>
-                        </Col>
-                      </Row>
-
-                      <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        style={{ width: "100%" }}
-                      >
-
-{/*                         
-                        <Link href={`/influencer/${influencer.id}`}>
-                        
-                        <Button type="primary" block className="connect-button">
-                          View Details {influencer.name.split(' ')[0]}
-                        </Button>
-                        </Link> */}
-
-  {loggedUser && isSubscribed === true ? (
-    <Link href={`/influencer/${influencer.id}`}>
-      <CustomButton variant="primary" size="large">
-        View Details {influencer.name.split(' ')[0]}
-      </CustomButton>
-    </Link>
-  ) : (
-    <>
-      <CustomButton 
-        variant="primary" 
-        size="large"
-        onClick={() => setIsLoginModalVisible(true)} // This will open the modal
-      >
-        View Details {influencer.name.split(' ')[0]}
-      </CustomButton>
-
-      {/* Modal for login or subscription when not logged in or not subscribed */}
-      <LoginModal
-        isVisible={isLoginModalVisible}
-        onClose={() => setIsLoginModalVisible(false)}
-        onLogin={handleLogin}
-        isSubscribed={isSubscribed}
-        isLoggedIn={loggedUser}
-      />
-    </>
-  )}
-
-
-                      </motion.div>
-                    </div>
-                  </MotionCard>
-                </motion.div>
-              </ScrollReveal>
+        <>
+        <Row gutter={[18, 18]}>
+          {filteredInfluencers.map((influencer) => (
+            <Col xs={12} sm={12} md={8} key={influencer.id}>
+              <InfluencerCard
+                influencer={influencer}
+                canView={!!(loggedUser && isSubscribed)}
+                onLockedClick={() => setIsLoginModalVisible(true)}
+              />
             </Col>
           ))}
         </Row>
+        <LoginModal
+          isVisible={isLoginModalVisible}
+          onClose={() => setIsLoginModalVisible(false)}
+          onLogin={handleLogin}
+          isSubscribed={isSubscribed}
+          isLoggedIn={loggedUser}
+        />
+        </>
       )}
 
       {!isLoading && filteredInfluencers.length === 0 && (

@@ -9,10 +9,10 @@ import {
   getPendingCampaignSession,
 } from '@/utils/campaignPayment';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useRef } from 'react';
+import React, { Suspense, useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
 
-const Page = () => {
+const CampaignsPageContent = () => {
     const { data: user, isLoading, isError } = useLogedUserQuery();
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -105,5 +105,11 @@ const Page = () => {
         </div>
     );
 };
+
+const Page = () => (
+    <Suspense fallback={<div>Loading...</div>}>
+        <CampaignsPageContent />
+    </Suspense>
+);
 
 export default Page;

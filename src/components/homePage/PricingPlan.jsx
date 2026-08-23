@@ -123,7 +123,7 @@
 "use client";
 
 import { Button } from 'antd';
-import { useEffect, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { usePaymentMutation } from '@/redux/fetures/payment/payment';
@@ -138,7 +138,7 @@ import {
 import { toast } from 'react-hot-toast';
 import { useGetPlansQuery } from '@/redux/fetures/plans/plans';
 
-const PricingSection = () => {
+const PricingSectionContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const verifyStarted = useRef(false);
@@ -374,5 +374,11 @@ const PricingSection = () => {
     </section>
   );
 };
+
+const PricingSection = () => (
+  <Suspense fallback={null}>
+    <PricingSectionContent />
+  </Suspense>
+);
 
 export default PricingSection;
