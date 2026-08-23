@@ -9,7 +9,7 @@ const sendMessage = apiSlice.injectEndpoints({
                 method: "POST",
                 body:  data
             }),
-            invalidatesTags: [{type: "Chat"}]
+            invalidatesTags: [{ type: "Chat" }],
         })
     })
 })

@@ -1,16 +1,16 @@
-
 import { apiSlice } from "../../api/apiSlice";
 
 const creatChat = apiSlice.injectEndpoints({
-    endpoints: (builder) => ({
-        creatChat : builder.mutation({
-            query: (data) => ({
-                url: `/chating/create`,
-                method: "POST",
-                body:  data
-            })
-        })
-    })
-})
+  endpoints: (builder) => ({
+    creatChat: builder.mutation({
+      query: (data) => ({
+        url: `/chating/create`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "Chat" }],
+    }),
+  }),
+});
 
-export const {useCreatChatMutation} = creatChat;
+export const { useCreatChatMutation } = creatChat;

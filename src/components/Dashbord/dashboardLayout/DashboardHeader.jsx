@@ -158,16 +158,15 @@ import React, { useState } from 'react';
 import { Button, Avatar, Dropdown, Modal, Form, Input } from 'antd';
 import { 
   UserOutlined, 
-  BellOutlined, 
-  MenuUnfoldOutlined, 
-  MenuFoldOutlined,
   SettingOutlined,
   LogoutOutlined,
   BarsOutlined,
   LockOutlined,
   EyeTwoTone,
-  EyeInvisibleOutlined
+  EyeInvisibleOutlined,
+  MessageOutlined,
 } from '@ant-design/icons';
+import Link from "next/link";
 import { Header } from 'antd/es/layout/layout';
 import { useLogedUserQuery } from '@/redux/fetures/user/logedUser';
  
@@ -289,6 +288,13 @@ export default function DashboardHeader({ collapsed}) {
        
         {/* User profile */}
         <div className="mr-2 flex items-center">
+  <Link
+    href="/dashboard/messages"
+    className="mr-1 inline-flex h-10 w-10 items-center justify-center rounded-full text-slate-600 hover:bg-emerald-50 hover:text-emerald-700"
+    aria-label="Messages"
+  >
+    <MessageOutlined className="text-lg" />
+  </Link>
   <NotificationBell />
   <Dropdown
     menu={{ items: userMenuItems }}

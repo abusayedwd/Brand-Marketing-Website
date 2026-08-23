@@ -6,14 +6,27 @@ const favoritesApi = apiSlice.injectEndpoints({
       query: () => `/favorites`,
       providesTags: [{ type: "Favorites" }],
     }),
+    getFavoriteStatus: builder.query({
+      query: (influencerId) => `/favorites/status/${influencerId}`,
+      providesTags: (result, error, influencerId) => [
+        { type: "Favorites", id: influencerId },
+      ],
+    }),
     toggleFavorite: builder.mutation({
       query: (influencerId) => ({
         url: `/favorites/${influencerId}`,
         method: "POST",
       }),
-      invalidatesTags: [{ type: "Favorites" }],
+      invalidatesTags: (result, error, influencerId) => [
+        { type: "Favorites" },
+        { type: "Favorites", id: influencerId },
+      ],
     }),
   }),
 });
 
-export const { useGetFavoritesQuery, useToggleFavoriteMutation } = favoritesApi;
+export const {
+  useGetFavoritesQuery,
+  useGetFavoriteStatusQuery,
+  useToggleFavoriteMutation,
+} = favoritesApi;

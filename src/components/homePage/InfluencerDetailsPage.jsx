@@ -19,6 +19,8 @@ import {
 } from "@ant-design/icons";
 import { useSigleInfluencerQuery } from "@/redux/fetures/user/signleInfluencer";
 import CreatorRatings from "@/components/homePage/CreatorRatings";
+import StartChatButton from "@/components/shared/StartChatButton";
+import FavoriteButton from "@/components/shared/FavoriteButton";
 import useAuthUser from "@/hooks/useAuthUser";
 import getMediaUrl from "@/utils/getMediaUrl";
 
@@ -259,12 +261,20 @@ const InfluencerSinglePage = ({ id }) => {
               </div>
             )}
 
-            <Link
-              href={inviteHref}
-              className="mt-8 inline-flex h-11 items-center rounded-xl bg-emerald-700 px-5 text-sm font-semibold text-white transition hover:bg-emerald-600"
-            >
-              {inviteLabel}
-            </Link>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href={inviteHref}
+                className="inline-flex h-11 items-center rounded-xl bg-emerald-700 px-5 text-sm font-semibold text-white transition hover:bg-emerald-600"
+              >
+                {inviteLabel}
+              </Link>
+              <StartChatButton
+                userId={user.id || user._id || id}
+                type="default"
+                className="!h-11"
+              />
+              <FavoriteButton influencerId={user.id || user._id || id} />
+            </div>
           </section>
 
           {/* Ratings */}

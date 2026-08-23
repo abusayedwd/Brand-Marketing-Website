@@ -3,9 +3,11 @@
 import { useContentCreatorQuery } from "@/redux/fetures/user/contentCreator";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Button, Modal, Table } from "antd";
+import { Button, Modal, Space, Table } from "antd";
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import getMediaUrl from "@/utils/getMediaUrl";
+import StartChatButton from "@/components/shared/StartChatButton";
+import FavoriteButton from "@/components/shared/FavoriteButton";
 
 const InfluencersList = () => {
   const { data: influencerData } = useContentCreatorQuery();
@@ -77,13 +79,20 @@ const InfluencersList = () => {
       title: 'Actions',
       key: 'actions',
       render: (_, influencer) => (
-        <Button
-          type="default"
-          className="text-blue-500 hover:text-blue-700"
-          onClick={() => showModal(influencer)}
-        >
-          View
-        </Button>
+        <Space wrap>
+          <Button
+            type="default"
+            className="text-blue-500 hover:text-blue-700"
+            onClick={() => showModal(influencer)}
+          >
+            View
+          </Button>
+          <Link href={`/influencer/${influencer.id}`}>
+            <Button>Profile</Button>
+          </Link>
+          <StartChatButton userId={influencer.id} size="small" />
+          <FavoriteButton influencerId={influencer.id} size="small" />
+        </Space>
       ),
     },
   ];

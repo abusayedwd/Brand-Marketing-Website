@@ -27,6 +27,7 @@ export const apiSlice = createApi({
     "CompletedCampaign",
     "Support",
     "Ratings",
+    "Chat",
   ],
   endpoints: () => ({}),
 });

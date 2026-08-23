@@ -48,6 +48,8 @@ import { useInterestedCampaignInfluMutation } from "@/redux/fetures/campaign/int
 import Link from "next/link";
 import { useApprovedDraftMutation } from "@/redux/fetures/draftSubmit/approvedDraft";
 import { useRejectDraftMutation } from "@/redux/fetures/campaign/rejectDraft";
+import StartChatButton from "@/components/shared/StartChatButton";
+import RateUserModal from "@/components/shared/RateUserModal";
 
 const { Title, Text, Paragraph } = Typography;
 const { TabPane } = Tabs;
@@ -269,7 +271,10 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
   };
 
   // Influencer Card Component
-  const InfluencerCard = ({ influencer, showActions = false }) => (
+  const canRate = campaign.status === "completed" || campaign.status === "active";
+  const currentRole = user?.data?.attributes?.role;
+
+  const InfluencerCard = ({ influencer, showActions = false, showMessage = true, showRate = false }) => (
     <Card className="mb-4 shadow-sm hover:shadow-md transition-shadow duration-200">
       <div className="flex items-start justify-between">
         <div className="flex items-start space-x-4 flex-1">
@@ -353,25 +358,37 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
           </div>
         </div>
 
-{showActions && user?.data?.attributes?.role === "brand" && (
-  <div className="flex space-x-2 flex-shrink-0">
-    <Button
-      type="primary"
-      icon={<CheckOutlined />}
-      onClick={() => handleAcceptInfluencer(influencer.id)}
-      className="bg-green-500 hover:bg-green-600 border-green-500"
-    >
-      Accept
-    </Button>
-    <Button
-      danger
-      icon={<CloseOutlined />}
-      onClick={() => handleDenyInfluencer(influencer.id)}
-    >
-      Deny
-    </Button>
-  </div>
-)}
+<div className="flex flex-col gap-2 flex-shrink-0">
+  {showActions && currentRole === "brand" && (
+    <div className="flex space-x-2">
+      <Button
+        type="primary"
+        icon={<CheckOutlined />}
+        onClick={() => handleAcceptInfluencer(influencer.id)}
+        className="bg-green-500 hover:bg-green-600 border-green-500"
+      >
+        Accept
+      </Button>
+      <Button
+        danger
+        icon={<CloseOutlined />}
+        onClick={() => handleDenyInfluencer(influencer.id)}
+      >
+        Deny
+      </Button>
+    </div>
+  )}
+  {showMessage && (
+    <StartChatButton userId={influencer.id} size="small" />
+  )}
+  {showRate && currentRole === "brand" && (
+    <RateUserModal
+      campaignId={campaign.id}
+      toUserId={influencer.id}
+      toName={influencer.fullName}
+    />
+  )}
+</div>
 
       </div>
     </Card>
@@ -578,6 +595,20 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
                       <div className="text-sm text-gray-600">
                         {campaign.brandId?.phoneNumber || "No phone"}
                       </div>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <StartChatButton
+                          userId={campaign.brandId?.id || campaign.brandId?._id}
+                          size="small"
+                          label="Message brand"
+                        />
+                        {canRate && currentRole === "influencer" && (
+                          <RateUserModal
+                            campaignId={campaign.id}
+                            toUserId={campaign.brandId?.id || campaign.brandId?._id}
+                            toName={campaign.brandId?.fullName || "the brand"}
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
                   
@@ -716,6 +747,7 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
                       key={influencer.id}
                       influencer={influencer}
                       showActions={false}
+                      showRate={canRate}
                     />
                   ))
                 ) : (

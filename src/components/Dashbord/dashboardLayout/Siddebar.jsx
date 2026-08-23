@@ -140,7 +140,9 @@ import {
   WalletOutlined, 
   FileSearchOutlined, 
   MenuFoldOutlined, 
-  MenuUnfoldOutlined 
+  MenuUnfoldOutlined,
+  MessageOutlined,
+  HeartOutlined,
 } from '@ant-design/icons';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -201,6 +203,18 @@ export default function Sidebar() {
       label: "Campaigns",
       path: "/dashboard/campaigns",
     },
+    {
+      key: "/dashboard/messages",
+      icon: <MessageOutlined />,
+      label: "Messages",
+      path: "/dashboard/messages",
+    },
+    ...(userRole === "brand" ? [{
+      key: "/dashboard/favorites",
+      icon: <HeartOutlined />,
+      label: "Saved creators",
+      path: "/dashboard/favorites",
+    }] : []),
     ...(userRole !== "influencer" && userRole !== "content creator" ? [{
       key: "/dashboard/payment",
       icon: <WalletOutlined />,

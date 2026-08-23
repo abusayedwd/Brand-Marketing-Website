@@ -61,12 +61,20 @@ const Navbar = () => {
 
           <div className="hidden items-center gap-3 md:flex">
             {user ? (
-              <Button
-                onClick={() => router.push("/dashboard")}
-                className="!h-10 !rounded-xl !border-0 !bg-emerald-500 !font-semibold !text-[#0b1f17] hover:!bg-emerald-400"
-              >
-                Dashboard
-              </Button>
+              <>
+                <Button
+                  onClick={() => router.push("/dashboard/messages")}
+                  className="!h-10 !rounded-xl !border-white/20 !bg-transparent !text-white hover:!border-emerald-300 hover:!text-emerald-200"
+                >
+                  Messages
+                </Button>
+                <Button
+                  onClick={() => router.push("/dashboard")}
+                  className="!h-10 !rounded-xl !border-0 !bg-emerald-500 !font-semibold !text-[#0b1f17] hover:!bg-emerald-400"
+                >
+                  Dashboard
+                </Button>
+              </>
             ) : (
               <div className="flex items-center gap-2">
                 <Link href="/auth/login">
@@ -115,13 +123,22 @@ const Navbar = () => {
               ))}
 
               {user && (
-                <Link
-                  href="/dashboard"
-                  className="mt-2 rounded-lg border-t border-white/10 px-3 pt-4 text-base text-emerald-200"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Dashboard
-                </Link>
+                <>
+                  <Link
+                    href="/dashboard/messages"
+                    className="rounded-lg px-3 py-3 text-base text-emerald-50/90 hover:bg-white/5"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Messages
+                  </Link>
+                  <Link
+                    href="/dashboard"
+                    className="mt-2 rounded-lg border-t border-white/10 px-3 pt-4 text-base text-emerald-200"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                </>
               )}
             </div>
 
