@@ -10,7 +10,7 @@ import {
   CloseCircleOutlined,
 } from "@ant-design/icons";
 import { useCampaignPaymentQuery } from "@/redux/fetures/payment/campaignPayment";
-import url from "@/redux/api/baseUrl";
+import getMediaUrl from "@/utils/getMediaUrl";
 
 const statusMeta = {
   paid: { color: "success", icon: <CheckCircleOutlined />, label: "Paid" },
@@ -209,11 +209,7 @@ const PaymentRequestList = () => {
                 {selected.campaign?.image && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={
-                      selected.campaign.image.startsWith("http")
-                        ? selected.campaign.image
-                        : `${url}${selected.campaign.image}`
-                    }
+                    src={getMediaUrl(selected.campaign.image)}
                     alt=""
                     className="h-16 w-16 rounded-xl object-cover"
                   />

@@ -50,12 +50,10 @@
 
 // export default function AllInfluencer({ searchCriteria }) {
 
-//     console.log(searchCriteria)
    
 //   const [activeCategory, setActiveCategory] = useState(null)
 //   const [loaded, setLoaded] = useState(false)
 //   const [localSearchTerm, setLocalSearchTerm] = useState("")
-// console.log(activeCategory)
 
 
 
@@ -571,7 +569,7 @@ import { ArrowRightOutlined, FacebookOutlined, InstagramOutlined, YoutubeOutline
 import { Button, Card, Typography, Row, Col, Avatar, Input, Empty } from "antd"
 import { motion, useInView, useAnimation } from "framer-motion"
 import { useGetInfluencersQuery } from "@/redux/fetures/user/influencers"
-import url from "@/redux/api/baseUrl"
+import getMediaUrl from "@/utils/getMediaUrl"
 import { useLogedUserQuery } from "@/redux/fetures/user/logedUser"
 import { CustomButton } from "../customComponent/Button"
 import { LoginModal } from "../customComponent/LoginModal"
@@ -610,13 +608,11 @@ function ScrollReveal({ children, threshold = 0.1 }) {
 }
 
 export default function AllInfluencer({ searchCriteria }) {
-  console.log(searchCriteria)
    
   const [activeCategory, setActiveCategory] = useState(null)
   const [loaded, setLoaded] = useState(false)
   const [localSearchTerm, setLocalSearchTerm] = useState("")
 
-  console.log(activeCategory)
 
   const { data: influencersResponse, isLoading, error } = useGetInfluencersQuery({
     interests: activeCategory || "",
@@ -624,11 +620,8 @@ export default function AllInfluencer({ searchCriteria }) {
     fullName: searchCriteria?.searchValue || "",
   });
 
-  console.log("API Response:", influencersResponse)
-
   const { data: loggedUser} = useLogedUserQuery()
   const isSubscribed = loggedUser?.data?.attributes?.isSubscribe;
-  // console.log(loggedUser)
 
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
 
@@ -650,7 +643,6 @@ export default function AllInfluencer({ searchCriteria }) {
   const handleLogin = () => {
     // Implement your login logic here
     // This could redirect to login page or handle login in modal
-    console.log('Redirect to login or handle login');
     setIsLoginModalVisible(false);
   };
 
@@ -787,7 +779,7 @@ export default function AllInfluencer({ searchCriteria }) {
   }
 
   return (
-    <div className={`md:container mx-auto py-12 px-4 ${loaded ? "fade-in" : ""}`}>
+    <div className={`mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12 ${loaded ? "fade-in" : ""}`}>
       <ScrollReveal>
         <Row gutter={[32, 32]} className="mb-8">
           <Col xs={24} md={12}>
@@ -944,7 +936,7 @@ export default function AllInfluencer({ searchCriteria }) {
                       >
                         <Avatar
                           size={148}
-                          src={url + influencer.image}
+                          src={getMediaUrl(influencer.image)}
                           className="profile-image"
                           style={{ 
                             border: "4px solid transparent",

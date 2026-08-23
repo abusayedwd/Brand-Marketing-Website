@@ -122,7 +122,7 @@
 
 "use client";
 
-import { Card, Button } from 'antd';
+import { Button } from 'antd';
 import { useEffect, useRef } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -285,67 +285,93 @@ const PricingSection = () => {
   };
 
   return (
-    <div className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16" data-aos="fade-up">
-          <h1 className="text-4xl font-bold text-emerald-900 mb-4">Plans built for brands & creators</h1>
-          <p className="text-xl text-gray-600">Choose a plan that's right for you.</p>
-          <div className="mt-8 h-1 bg-gradient-to-r from-transparent via-emerald-200 to-transparent w-1/2 mx-auto" />
+    <section className="border-y border-emerald-100 bg-white py-16 sm:py-20">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <div className="max-w-2xl" data-aos="fade-up">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">
+            Pricing
+          </p>
+          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+            Plans built for brands & creators
+          </h2>
+          <p className="mt-3 text-sm text-slate-600 sm:text-base">
+            Subscribe once, then run campaigns with clear drafting, approval, and payouts.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
           {plans.map((plan, index) => (
             <div
               key={plan.name || index}
-              data-aos="zoom-out-up"
-              data-aos-delay={index * 100}
+              data-aos="fade-up"
+              data-aos-delay={index * 80}
+              className={`rounded-3xl border p-6 sm:p-7 ${
+                plan.highlight
+                  ? "border-emerald-400 bg-[#0b1f17] text-white shadow-lg shadow-emerald-900/10"
+                  : "border-emerald-100 bg-emerald-50/30 text-slate-900"
+              }`}
             >
-              <Card
-                className={`h-full border-2 ${plan.highlight ? 'border-emerald-500' : 'border-gray-200'} rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300`}
-                bodyStyle={{ padding: 0 }}
+              <h3 className="text-xl font-semibold">{plan.name}</h3>
+              <p
+                className={`mt-2 text-sm leading-relaxed ${
+                  plan.highlight ? "text-emerald-100/80" : "text-slate-600"
+                }`}
               >
-                <div className={`p-6 ${plan.highlight ? 'bg-emerald-50' : 'bg-white'}`}>
-                  <div className="text-center mb-6">
-                    <h2 className="text-2xl font-semibold text-gray-800">{plan.name}</h2>
-                    <p className="text-gray-600 mt-2">{plan.description}</p>
-                  </div>
+                {plan.description}
+              </p>
 
-                  <div className="text-center mb-8">
-                    <span className="text-4xl font-bold text-gray-900">{plan.priceLabel || `€${plan.price}`}</span>
-                    <span className="text-gray-500">/mo</span>
-                  </div>
+              <div className="mt-6">
+                <span className="text-4xl font-bold tracking-tight">
+                  {plan.priceLabel || `€${plan.price}`}
+                </span>
+                <span
+                  className={`text-sm ${
+                    plan.highlight ? "text-emerald-200/70" : "text-slate-500"
+                  }`}
+                >
+                  /mo
+                </span>
+              </div>
 
-                  <div className="mb-8">
-                    <ul className="space-y-3">
-                      {plan.features.map((feature, i) => (
-                        <li key={i} className="flex items-start">
-                          <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                          <span className="text-gray-700">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="text-center">
-                    <Button
-                      type={plan.highlight ? 'primary' : 'default'}
-                      size="large"
-                      className={`w-full ${plan.highlight ? '!bg-emerald-700' : ''}`}
-                      loading={isLoading}
-                      onClick={() => handleButtonClick(plan)}
+              <ul className="mt-6 space-y-3">
+                {plan.features.map((feature, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm">
+                    <span
+                      className={
+                        plan.highlight ? "text-emerald-300" : "text-emerald-600"
+                      }
                     >
-                      Get Started Now
-                    </Button>
-                  </div>
-                </div>
-              </Card>
+                      ✓
+                    </span>
+                    <span
+                      className={
+                        plan.highlight ? "text-emerald-50/90" : "text-slate-700"
+                      }
+                    >
+                      {feature}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              <Button
+                type="primary"
+                size="large"
+                className={`mt-8 !h-11 !w-full !rounded-xl !border-0 !font-semibold ${
+                  plan.highlight
+                    ? "!bg-emerald-500 !text-[#0b1f17] hover:!bg-emerald-400"
+                    : "!bg-[#0b1f17] !text-white hover:!bg-emerald-900"
+                }`}
+                loading={isLoading}
+                onClick={() => handleButtonClick(plan)}
+              >
+                Get started
+              </Button>
             </div>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

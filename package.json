@@ -1,7 +1,8 @@
 {
-  "name": "infulencer-website",
-  "version": "0.1.0",
+  "name": "brivio-website",
+  "version": "1.0.0",
   "private": true,
+  "description": "Brivio — brand and creator campaign marketplace (Next.js)",
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",

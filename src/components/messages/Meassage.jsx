@@ -446,7 +446,7 @@
 
 "use client";
 
-import url from "@/redux/api/baseUrl";
+import getMediaUrl from "@/utils/getMediaUrl";
 import { useGetChatlistQuery } from "@/redux/fetures/messaging/getChatlist";
 import { useSendMessageMutation } from "@/redux/fetures/messaging/sendMessage";
 import { useLogedUserQuery } from "@/redux/fetures/user/logedUser";
@@ -481,7 +481,7 @@ const MessagesPage = () => {
       id: participant?.id,
       name: participant?.fullName,
       status: participant?.role,
-      avatar: url + participant?.image?.url,
+      avatar: getMediaUrl(participant?.image),
       chatId: chat.id,
     };
   });

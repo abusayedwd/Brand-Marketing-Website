@@ -6,7 +6,7 @@ import { Button, Card, Tabs } from 'antd';
 import { FileTextOutlined, CheckCircleOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import Link from 'next/link';
  
-import url from '@/redux/api/baseUrl';
+import getMediaUrl from '@/utils/getMediaUrl';
 import { useGetMyCampaignQuery } from '@/redux/fetures/campaign/getMyCampaign';
 import { useRouter } from 'next/navigation';
 import { useUpcommingCampaignQuery } from '@/redux/fetures/campaign/upcommingCampaign';
@@ -41,7 +41,7 @@ const Campaigns = () => {
   // Get campaigns from API data
   const campaigns = myCampaign?.data?.attributes?.results || [];
 
-  const image =  url + '/uploads/users/camp-1751092725956.jpg'; // Replace with actual image path
+  const image = '/images/banner1.png';
 
   // Helper function to format date
   const formatDate = (dateString) => {
@@ -93,7 +93,7 @@ const Campaigns = () => {
       <div className="flex items-center mb-4">
         <img 
           alt={campaign.campaignName} 
-          src={url + campaign?.image ? url + campaign?.image : image } 
+          src={getMediaUrl(campaign?.image, image)} 
           className="w-32 h-32 object-cover rounded-lg mr-4" 
         />
         <div className="flex-1">

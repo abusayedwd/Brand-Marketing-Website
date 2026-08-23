@@ -500,7 +500,7 @@ import {
 import { LuImagePlus, LuX } from "react-icons/lu";
 import { useRouter } from "next/navigation";
 import { useLogedUserQuery } from "@/redux/fetures/user/logedUser";
-import url from "@/redux/api/baseUrl";
+import getMediaUrl from "@/utils/getMediaUrl";
 import dayjs from "dayjs";
 import { useUpdateUserMutation } from "@/redux/fetures/user/updateUser";
 
@@ -542,7 +542,7 @@ const EditProfile = () => {
       });
 
       // Set profile image url
-      if (user.image?.url) setImageUrl(`${url}${user.image.url}`);
+      if (user.image?.url) setImageUrl(getMediaUrl(user.image));
 
       // Set social media for influencers
       if (user.role === "influencer" && user.socialMedia?.length) {

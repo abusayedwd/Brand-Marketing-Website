@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLogedUserQuery } from "@/redux/fetures/user/logedUser";
 import { useGetMyCompletedCampaignsQuery } from "@/redux/fetures/campaign/getMyCompletedCampaigns";
-import url from "@/redux/api/baseUrl";
+import getMediaUrl from "@/utils/getMediaUrl";
 
 const Field = ({ label, children }) => (
   <div>
@@ -47,7 +47,7 @@ const Profile = () => {
     );
   }
 
-  const avatarSrc = user?.image?.url ? `${url}${user.image.url}` : "/images/user4.jpg";
+  const avatarSrc = getMediaUrl(user?.image, "/images/user4.jpg");
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 pb-10">

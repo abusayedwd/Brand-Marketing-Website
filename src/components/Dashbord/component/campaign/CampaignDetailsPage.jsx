@@ -37,7 +37,7 @@ import {
 
 import { useGetSingleCampaignQuery } from "@/redux/fetures/campaign/getSingleCampaign";
  
-import url from "@/redux/api/baseUrl";
+import getMediaUrl from "@/utils/getMediaUrl";
  
 import toast, { Toaster } from "react-hot-toast";
 import { useAcceptedInfluenerMutation } from "@/redux/fetures/campaign/acceptedInfluener";
@@ -275,7 +275,7 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
         <div className="flex items-start space-x-4 flex-1">
           <Avatar
             size={64}
-            src={influencer.image?.url}
+            src={getMediaUrl(influencer.image)}
             icon={<UserOutlined />}
             className="border-2 border-gray-200 flex-shrink-0"
           />
@@ -384,7 +384,7 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
       <div className="flex items-start justify-between">
         <div className="flex items-start space-x-4 flex-1">
           <img
-            src={draft.image?.url ? url + draft.image.url : "/placeholder-image.jpg"}
+            src={getMediaUrl(draft.image, "/placeholder-image.jpg")}
             alt="Draft"
             className="w-32 h-32 object-cover rounded-lg flex-shrink-0"
             onError={(e) => {
@@ -517,7 +517,7 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
             <Col xs={24} md={8}>
               <div className="text-center md:text-left">
                 <img
-                  src={campaign.image ? url + campaign.image : "/placeholder-image.jpg"}
+                  src={getMediaUrl(campaign.image, "/placeholder-image.jpg")}
                   alt={campaign.campaignName || "Campaign"}
                   className="w-full h-80 object-cover rounded-lg mb-4"
                   onError={(e) => {

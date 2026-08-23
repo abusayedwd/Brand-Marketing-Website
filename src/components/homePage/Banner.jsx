@@ -1,575 +1,246 @@
-
-// "use client";
-// import { Input, Button, Card } from "antd";
-// import { SearchOutlined, HeartFilled, UserOutlined } from "@ant-design/icons";
-// import Image from "next/image";
-
-// const Banner = () => {
-//   return (
-//     <div
-//       className="w-full py-20 bg-cover bg-center bg-no-repeat relative"
-//       style={{
-//         backgroundImage: "url('/images/bannerbg.png')",
-//         backgroundSize: "cover",
-//         backgroundPosition: "center",
-//         backgroundRepeat: "no-repeat",
-//       }}
-//     >
-//       {/* Overlay to ensure text readability */}
-//       <div className=""></div>
-
-//       <div className="container mx-auto px-4 relative z-10">
-//         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-//           {/* Left side - Text content */}
-//           <div className="space-y-6">
-//             <p className="text-white font-medium tracking-wide uppercase text-sm">
-//               GO TO YOUR CONTENT CREATOR PLATFORM
-//             </p>
-
-//             <h1 className="text-4xl md:text-5xl font-bold text-[#003165]">
-//   <span className="block mb-2">Connecting Your</span>
-//   <span className="block mb-2">Brand With The</span>
-//   <span className="block">Right Voices</span>
-// </h1>
-
-
-//             <div className="relative h-2">
-//               <div className="absolute w-48 h-1 bg-gradient-to-r from-orange-300 to-orange-200 rounded-full"></div>
-//             </div>
-
-//             <div className="flex flex-col sm:flex-row gap-2">
-//               <Input
-//                 placeholder="Search by name & profession"
-//                 prefix={<SearchOutlined style={{ color: "#9ca3af" }} />}
-//                 className="py-2 rounded-md text-gray-700"
-//                 style={{
-//                   height: "44px",
-//                   background: "linear-gradient(to right, #F4F7FC, #91939629)", // Gradient for the input field
-//                   border: "none", // Removing default border to show gradient clearly
-//                 }}
-//               />
-//               <Button
-//                 type="primary"
-//                 className="py-2 rounded-md text-white"
-//                 style={{
-//                   height: "44px",
-//                   background: "linear-gradient(to right, #3b82f6, #22c55e)", // Gradient applied here
-//                 }}
-//               >
-//                 Search
-//               </Button>
-//             </div>
-
-//             <div className="pt-4">
-//               <div className="flex flex-wrap items-center gap-3">
-//                 <span className="text-gray-800 font-medium">
-//                   Popular search by
-//                 </span>
-//                 <div className="flex flex-wrap gap-2">
-//                   {[
-//                     "TikTok",
-//                     "Facebook",
-//                     "Instagram",
-//                     "You tube",
-//                     "SNapchat",
-//                   ].map((platform) => (
-//                     <Button
-//                       key={platform}
-//                       shape="round"
-//                       className=" bg-transparent border border-gray-300"
-//                       style={{
-//                         borderRadius: "30px",
-//                         padding: "8px 20px",
-//                         background:
-//                           "linear-gradient(to right, #F4F7FC, #91939629)",
-//                       }}
-//                     >
-//                       {platform}
-//                     </Button>
-//                   ))}
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* Right side - Image cards */}
-//           <div className="relative h-[400px] md:h-[500px]">
-//             {/* Satisfaction card */}
-//             <Card
-//               className="absolute left-[20%] rounded-l-lg shadow-md"
-//               style={{ width: 190, padding: 0 }}
-//               bodyStyle={{ padding: 12 }}
-//             >
-//               <div className="flex items-center rounded-l-lg gap-2">
-//                 <div className="bg-blue-50 p-1 rounded-full">
-//                   <HeartFilled style={{ color: "#3b82f6" }} />
-//                 </div>
-//                 <div className="text-sm font-semibold text-blue-900">
-//                   99.99% <br />
-//                   Satisfied user's
-//                 </div>
-//               </div>
-//               <div className="mt-2">
-//                 <Image
-//                   src="/images/banner1.png"
-//                   width={180}
-//                   height={150}
-//                   alt="Satisfied user"
-//                   className="rounded-lg object-cover "
-//                 />
-//               </div>
-//             </Card>
-
-//             {/* Makeup artist card */}
-//             <Card
-//               className="absolute left-[50%] rounded-xl shadow-md z-20"
-//               style={{ width: 200, padding: 0 }}
-//               bodyStyle={{ padding: 12 }}
-//             >
-//               <Image
-//                 src="/images/banner2.png"
-//                 width={190}
-//                 height={190}
-//                 alt="Makeup artist"
-//                 className="rounded-lg h-52 object-cover animate-bounce"
-//               />
-//             </Card>
-
-//             {/* Pink outfit card */}
-//             <Card
-//               className="absolute bottom-0  left-[21%]"
-//               style={{ width: 180, padding: 0 }}
-//               bodyStyle={{ padding: 12 }}
-//             >
-//               <Image
-//                 src="/images/banner3.png"
-//                 width={180}
-//                 height={190}
-//                 alt="Content Creator with phone"
-//                 className=" rounded-b-lg object-cover h-48 animate-bounce"
-//               />
-//             </Card>
-
-//             {/* Popular influence card */}
-
-//             <Card
-//               className="absolute -bottom-5 right-[24%] rounded-xl "
-//               style={{ width: 200, padding: 0 }}
-//               bodyStyle={{ padding: 12 }}
-//             >
-//               <div className="bg-yellow-100 rounded-lg p-3">
-//                 <div className="flex items-center gap-2 mb-2">
-//                   <Image
-//                     src="/images/banner4.png"
-//                     width={140}
-//                     height={140}
-//                     alt="Profile"
-//                     className=" h-40"
-//                   />
-//                 </div>
-//               </div>
-//               <div className="flex relative  items-center gap-2 mb-2">
-//                 <div className="bg-blue-100 p-1 rounded-full">
-//                   <UserOutlined style={{ color: "#3b82f6" }} />
-//                 </div>
-//                 <div className="text-sm font-semibold text-blue-900">
-//                   1000+ <br />
-//                   Popular influence
-//                 </div>
-//               </div>
-//             </Card>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Banner;
-
-
-
-
 "use client";
-import { Input, Button, Card } from "antd";
+
+import { Input, Button } from "antd";
 import { SearchOutlined, HeartFilled, UserOutlined } from "@ant-design/icons";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import AOS from 'aos';
-import 'aos/dist/aos.css';
+import AOS from "aos";
+import "aos/dist/aos.css";
+
+const PLATFORMS = [
+  "TikTok",
+  "Facebook",
+  "Instagram",
+  "YouTube",
+  "Snapchat",
+  "Twitter",
+];
 
 const Banner = ({ onSearch }) => {
   const [searchValue, setSearchValue] = useState("");
 
-  // When input changes
-  const handleInputChange = (e) => {
-    setSearchValue(e.target.value);
-  };
+  useEffect(() => {
+    AOS.init({ duration: 900, easing: "ease-in-out", once: true });
+  }, []);
 
-  // When Search button clicked
   const handleSearch = () => {
-    console.log("Search for:", searchValue);
-    // Send both searchValue and platform (null here)
-    onSearch({ searchValue, platform: "" });
+    onSearch?.({ searchValue, platform: "" });
   };
 
-  // When popular platform button clicked
   const handlePopularClick = (platform) => {
-    console.log("Popular platform clicked:", platform);
-    // setSearchValue(platform);
-    // Send both values, here platform is clicked
-    onSearch({ searchValue: searchValue, platform });
+    onSearch?.({ searchValue, platform });
   };
-
-
-
-    useEffect(() => {
-        AOS.init({
-          duration: 1200, // animation duration in ms
-          easing: 'ease-in-out', // animation easing
-          once: true, // whether animation should happen only once or every time
-        });
-      }, []);
-
-      
-
 
   return (
-    <div
-      className="w-full py-12 md:py-20 bg-cover bg-center bg-no-repeat relative"
-      style={{
-        backgroundImage: "url('/images/bannerbg.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
+    <section
+      className="relative w-full overflow-hidden bg-cover bg-center bg-no-repeat py-10 sm:py-14 md:py-20"
+      style={{ backgroundImage: "url('/images/bannerbg.png')" }}
     >
-      <div className="md:container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-          {/* Left side - Text content */}
+      <div className="pointer-events-none absolute inset-0 bg-white/10" />
 
-          {/* <div className="space-y-4 md:space-y-6">
-            <p className="text-white font-medium tracking-wide uppercase text-xs sm:text-sm">
-              GO TO YOUR CONTENT CREATOR PLATFORM
+      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6">
+        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-10">
+          {/* Copy + search */}
+          <div className="min-w-0 space-y-4 sm:space-y-6">
+            <p className="text-xs font-medium uppercase tracking-wide text-white sm:text-sm">
+              Go to your content creator platform
             </p>
 
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#060C8C]">
-              <span className="block mb-2">Connecting Your</span>
-              <span className="block mb-2">Brand With The</span>
+            <h1 className="text-3xl font-bold leading-tight text-[#060C8C] sm:text-4xl md:text-5xl">
+              <span className="block">Connecting Your</span>
+              <span className="block">Brand With The</span>
               <span className="block">Right Voices</span>
             </h1>
 
-            <div className="relative h-2">
-              <div className="absolute w-36 md:w-48 h-1 bg-gradient-to-r from-orange-300 to-orange-200 rounded-full"></div>
-            </div>
+            <div className="h-1 w-36 rounded-full bg-gradient-to-r from-orange-300 to-orange-200 md:w-48" />
 
-            <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex w-full min-w-0 flex-col gap-2 sm:flex-row">
               <Input
+                size="large"
                 placeholder="Search by name & profession"
                 prefix={<SearchOutlined style={{ color: "#9ca3af" }} />}
-                className="py-2 rounded-md text-gray-700"
+                className="!h-11 !min-w-0 !flex-1 !rounded-lg !border-0 sm:!h-12"
                 style={{
-                  height: "44px",
                   background: "linear-gradient(to right, #F4F7FC, #91939629)",
-                  border: "none",
                 }}
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                onPressEnter={handleSearch}
               />
               <Button
                 type="primary"
-                className="py-2 rounded-md text-white"
+                size="large"
+                className="!h-11 !shrink-0 !rounded-lg !border-0 !px-6 !font-semibold sm:!h-12"
                 style={{
-                  height: "44px",
                   background: "linear-gradient(to right, #3b82f6, #22c55e)",
                 }}
+                onClick={handleSearch}
               >
                 Search
               </Button>
             </div>
 
-            <div className="pt-2 md:pt-4">
-              <div className="flex flex-wrap items-center gap-2 md:gap-3">
-                <span className="text-gray-800 text-sm md:text-base font-medium">
-                  Popular search by
-                </span>
-                <div className="flex flex-wrap gap-2">
-                  {[
-                    "TikTok",
-                    "Facebook",
-                    "Instagram",
-                    "YouTube",
-                    "Snapchat",
-                  ].map((platform) => (
-                    <Button
-                      key={platform}
-                      shape="round"
-                      className="bg-transparent border border-gray-300 text-xs md:text-sm"
-                      style={{
-                        borderRadius: "30px",
-                        padding: "4px 12px",
-                        background:
-                          "linear-gradient(to right, #F4F7FC, #91939629)",
-                      }}
-                    >
-                      {platform}
-                    </Button>
-                  ))}
+            <div className="pt-1 sm:pt-2">
+              <p className="mb-2 text-sm font-medium text-gray-800 md:text-base">
+                Popular search by
+              </p>
+              <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 scrollbar-none">
+                {PLATFORMS.map((platform) => (
+                  <button
+                    key={platform}
+                    type="button"
+                    onClick={() => handlePopularClick(platform)}
+                    className="shrink-0 rounded-full border border-gray-300 bg-gradient-to-r from-[#F4F7FC] to-[#91939629] px-3 py-1.5 text-xs text-gray-800 transition hover:border-blue-400 sm:text-sm"
+                  >
+                    {platform}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Visual collage */}
+          <div className="relative mx-auto w-full max-w-md lg:max-w-none">
+            {/* Mobile / small tablet grid */}
+            <div className="grid grid-cols-2 gap-3 sm:hidden">
+              <div className="rounded-xl bg-white p-2 shadow-md">
+                <div className="mb-1 flex items-center gap-1">
+                  <div className="rounded-full bg-blue-50 p-1">
+                    <HeartFilled style={{ color: "#3b82f6", fontSize: 12 }} />
+                  </div>
+                  <p className="text-[11px] font-semibold leading-tight text-blue-900">
+                    99.99%
+                    <br />
+                    Satisfied users
+                  </p>
+                </div>
+                <Image
+                  src="/images/banner1.png"
+                  width={160}
+                  height={120}
+                  alt="Satisfied user"
+                  className="h-24 w-full rounded-lg object-cover"
+                />
+              </div>
+
+              <div className="rounded-xl bg-white p-2 shadow-md">
+                <Image
+                  src="/images/banner2.png"
+                  width={160}
+                  height={160}
+                  alt="Creator"
+                  className="h-32 w-full rounded-lg object-cover"
+                />
+              </div>
+
+              <div className="rounded-xl bg-white p-2 shadow-md">
+                <Image
+                  src="/images/banner3.png"
+                  width={160}
+                  height={160}
+                  alt="Content creator with phone"
+                  className="h-32 w-full rounded-lg object-cover"
+                />
+              </div>
+
+              <div className="rounded-xl bg-white p-2 shadow-md">
+                <div className="rounded-lg bg-yellow-100 p-2">
+                  <Image
+                    src="/images/banner4.png"
+                    width={140}
+                    height={100}
+                    alt="Creator profile"
+                    className="h-20 w-full object-cover"
+                  />
+                </div>
+                <div className="mt-1 flex items-center gap-1">
+                  <div className="rounded-full bg-blue-100 p-1">
+                    <UserOutlined style={{ color: "#3b82f6", fontSize: 12 }} />
+                  </div>
+                  <p className="text-[11px] font-semibold leading-tight text-blue-900">
+                    1000+ Creators
+                  </p>
                 </div>
               </div>
             </div>
-          </div> */}
-           <div className="space-y-4 md:space-y-6">
-      <p className="text-white font-medium tracking-wide uppercase text-xs sm:text-sm">
-        GO TO YOUR CONTENT CREATOR PLATFORM
-      </p>
 
-      <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#060C8C]">
-        <span className="block mb-2">Connecting Your</span>
-        <span className="block mb-2">Brand With The</span>
-        <span className="block">Right Voices</span>
-      </h1>
-
-      <div className="relative h-2">
-        <div className="absolute w-36 md:w-48 h-1 bg-gradient-to-r from-orange-300 to-orange-200 rounded-full"></div>
-      </div>
-
-      <div className="flex flex-col sm:flex-row gap-2">
-        <Input
-          placeholder="Search by name & profession"
-          prefix={<SearchOutlined style={{ color: "#9ca3af" }} />}
-          className="py-2 rounded-md text-gray-700"
-          style={{
-            height: "44px",
-            background: "linear-gradient(to right, #F4F7FC, #91939629)",
-            border: "none",
-          }}
-          value={searchValue}
-          onChange={handleInputChange}
-          onPressEnter={handleSearch} // optional: search on Enter key
-        />
-        <Button
-          type="primary"
-          className="py-2 rounded-md text-white"
-          style={{
-            height: "44px",
-            background: "linear-gradient(to right, #3b82f6, #22c55e)",
-          }}
-          onClick={handleSearch}
-        >
-          Search
-        </Button>
-      </div>
-
-      <div className="pt-2 md:pt-4">
-        <div className="flex flex-wrap items-center gap-2 md:gap-3">
-          <span className="text-gray-800 text-sm md:text-base font-medium">
-            Popular search by
-          </span>
-          <div className="flex flex-wrap gap-2">
-            {["TikTok", "Facebook", "Instagram", "YouTube", "Snapchat", "Twitter"].map(
-              (platform) => (
-                <Button
-                  key={platform}
-                  shape="round"
-                  className="bg-transparent border border-gray-300 text-xs md:text-sm"
-                  style={{
-                    borderRadius: "30px",
-                    padding: "4px 12px",
-                    background: "linear-gradient(to right, #F4F7FC, #91939629)",
-                  }}
-                  onClick={() => handlePopularClick(platform)}
-                >
-                  {platform}
-                </Button>
-              )
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-          {/* Right side - Image cards */}
-          <div className="relative h-[300px] sm:h-[400px] md:h-[500px] mt-8 lg:mt-0">
-            {/* Cards for desktop and larger tablets (hidden on small screens) */}
-            <div className="hidden sm:block">
-              {/* Satisfaction card */}
-              <div data-aos="fade-down-right ">
-
-              <Card
-                className="absolute md:left-[20%] left-4 rounded-l-lg shadow-md "
-                style={{ width: 190, padding: 0 }}
-                bodyStyle={{ padding: 12 }}
+            {/* Desktop / tablet collage */}
+            <div
+              className="relative hidden h-[380px] sm:block md:h-[460px] lg:h-[500px]"
+              data-aos="fade-left"
+            >
+              <div
+                className="absolute left-[4%] top-0 z-10 w-[42%] max-w-[190px] rounded-xl bg-white p-3 shadow-md md:left-[12%]"
+                data-aos="fade-down-right"
               >
-                <div className="flex items-center rounded-l-lg gap-2">
-                  <div className="bg-blue-50 p-1 rounded-full">
+                <div className="mb-2 flex items-center gap-2">
+                  <div className="rounded-full bg-blue-50 p-1">
                     <HeartFilled style={{ color: "#3b82f6" }} />
                   </div>
-                  <div className="text-sm font-semibold text-blue-900">
-                    99.99% <br />
-                    Satisfied user's
-                  </div>
+                  <p className="text-sm font-semibold leading-tight text-blue-900">
+                    99.99%
+                    <br />
+                    Satisfied users
+                  </p>
                 </div>
-                <div className="mt-2">
-                  <Image
-                    src="/images/banner1.png"
-                    width={180}
-                    height={150}
-                    alt="Satisfied user"
-                    className="rounded-lg object-cover md:h-52 h-40"
-                  />
-                </div>
-              </Card>
+                <Image
+                  src="/images/banner1.png"
+                  width={180}
+                  height={180}
+                  alt="Satisfied user"
+                  className="h-36 w-full rounded-lg object-cover md:h-44"
+                />
               </div>
 
-              {/* Makeup artist card */}
-              <div data-aos="fade-down-left">
-
-              <Card
-                className="absolute left-[50%] rounded-xl shadow-md z-20"
-                style={{ width: 200, padding: 0 }}
-                bodyStyle={{ padding: 12 }}
-                
+              <div
+                className="absolute right-[6%] top-6 z-20 w-[44%] max-w-[200px] rounded-xl bg-white p-3 shadow-md md:right-[10%] md:top-4"
+                data-aos="fade-down-left"
               >
                 <Image
                   src="/images/banner2.png"
                   width={190}
                   height={190}
-                  alt="Makeup artist"
-                  className="rounded-lg h-52 object-cover"
+                  alt="Creator"
+                  className="h-44 w-full rounded-lg object-cover md:h-52"
                 />
-              </Card>
               </div>
 
-              {/* Pink outfit card */}
-              <div data-aos="">
-
-              <Card
-                className="absolute -md:bottom-0 -bottom-10 left-5  md:left-[21%]"
-                style={{ width: 180, padding: 0 }}
-                bodyStyle={{ padding: 12 }}
-              >
+              <div className="absolute bottom-2 left-[6%] z-10 w-[40%] max-w-[180px] rounded-xl bg-white p-3 shadow-md md:left-[14%] md:bottom-4">
                 <Image
                   src="/images/banner3.png"
                   width={180}
-                  height={190}
-                  alt="Content Creator with phone"
-                  className="rounded-b-lg object-cover h-48"
+                  height={180}
+                  alt="Content creator with phone"
+                  className="h-40 w-full rounded-lg object-cover md:h-44"
                 />
-              </Card>
               </div>
 
-              {/* Popular influence card */}
-              <Card
-                className="absolute -bottom-10 md:-bottom-5 right-6 md:right-[24%] rounded-xl"
-                style={{ width: 200, padding: 0 }}
-                bodyStyle={{ padding: 12 }}
-              >
-                <div className="bg-yellow-100 rounded-lg p-3">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Image
-                      src="/images/banner4.png"
-                      width={140}
-                      height={140}
-                      alt="Profile"
-                      className="h-40"
-                    />
-                  </div>
+              <div className="absolute bottom-0 right-[4%] z-20 w-[44%] max-w-[200px] rounded-xl bg-white p-3 shadow-md md:bottom-2 md:right-[12%]">
+                <div className="mb-2 rounded-lg bg-yellow-100 p-2">
+                  <Image
+                    src="/images/banner4.png"
+                    width={160}
+                    height={140}
+                    alt="Creator profile"
+                    className="h-32 w-full object-cover md:h-36"
+                  />
                 </div>
-                <div className="flex relative items-center gap-2 mb-2">
-                  <div className="bg-blue-100 p-1 rounded-full">
+                <div className="flex items-center gap-2">
+                  <div className="rounded-full bg-blue-100 p-1">
                     <UserOutlined style={{ color: "#3b82f6" }} />
                   </div>
-                  <div className="text-sm font-semibold text-blue-900">
-                    1000+ <br />
-                    Content Creator
-                  </div>
+                  <p className="text-sm font-semibold leading-tight text-blue-900">
+                    1000+
+                    <br />
+                    Content Creators
+                  </p>
                 </div>
-              </Card>
-            </div>
-
-            {/* Mobile-friendly image grid (visible only on small screens) */}
-            <div className="block sm:hidden">
-              <div className="grid grid-cols-2 gap-3">
-                {/* First row */}
-                <Card
-                  className="rounded-lg shadow-md"
-                  bodyStyle={{ padding: 8 }}
-                >
-                  <div className="flex items-center rounded-lg gap-1">
-                    <div className="bg-blue-50 p-1 rounded-full">
-                      <HeartFilled style={{ color: "#3b82f6", fontSize: "12px" }} />
-                    </div>
-                    <div className="text-xs font-semibold text-blue-900">
-                      99.99% <br />
-                      Satisfied user's
-                    </div>
-                  </div>
-                  <div className="mt-1">
-                    <Image
-                      src="/images/banner1.png"
-                      width={120}
-                      height={100}
-                      alt="Satisfied user"
-                      className="rounded-lg object-cover w-full h-24"
-                    />
-                  </div>
-                </Card>
-                
-                <Card
-                  className="rounded-lg shadow-md"
-                  bodyStyle={{ padding: 8 }}
-                >
-                  <Image
-                    src="/images/banner2.png"
-                    width={120}
-                    height={120}
-                    alt="Makeup artist"
-                    className="rounded-lg object-cover w-full h-32"
-                  />
-                </Card>
-
-                {/* Second row */}
-                <Card
-                  className="rounded-lg shadow-md"
-                  bodyStyle={{ padding: 8 }}
-                >
-                  <Image
-                    src="/images/banner3.png"
-                    width={120}
-                    height={120}
-                    alt="Content Creator with phone"
-                    className="rounded-lg object-cover w-full h-32"
-                  />
-                </Card>
-
-                <Card
-                  className="rounded-lg shadow-md"
-                  bodyStyle={{ padding: 8 }}
-                >
-                  <div className="bg-yellow-100 rounded-lg p-2">
-                    <Image
-                      src="/images/banner4.png"
-                      width={100}
-                      height={100}
-                      alt="Profile"
-                      className="w-full h-20 object-cover"
-                    />
-                  </div>
-                  <div className="flex items-center gap-1 mt-1">
-                    <div className="bg-blue-100 p-1 rounded-full">
-                      <UserOutlined style={{ color: "#3b82f6", fontSize: "12px" }} />
-                    </div>
-                    <div className="text-xs font-semibold text-blue-900">
-                      1000+ Popular influence
-                    </div>
-                  </div>
-                </Card>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

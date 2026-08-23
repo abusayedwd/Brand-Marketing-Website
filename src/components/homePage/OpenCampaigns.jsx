@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useGetOpenCampaignsQuery } from "@/redux/fetures/campaign/openCampaigns";
 import useAuthUser from "@/hooks/useAuthUser";
-import url from "@/redux/api/baseUrl";
+import getMediaUrl from "@/utils/getMediaUrl";
 
 const formatDate = (dateString) => {
   if (!dateString) return "—";
@@ -70,9 +70,7 @@ export default function OpenCampaigns() {
               );
             }
 
-            const imageSrc = campaign?.image
-              ? `${url}${campaign.image}`
-              : "/images/banner1.png";
+            const imageSrc = getMediaUrl(campaign?.image, "/images/banner1.png");
             const brandName =
               campaign?.brandId?.fullName ||
               campaign?.brandId?.name ||

@@ -763,7 +763,7 @@ import { useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
 import { useUpdateCampaignMutation } from '@/redux/fetures/campaign/updateCampaign';
 import { useGetSingleCampaignQuery } from '@/redux/fetures/campaign/getSingleCampaign';
-import url from '@/redux/api/baseUrl';
+import getMediaUrl from '@/utils/getMediaUrl';
 import BackButton from '@/components/customComponent/BackButton';
 
 const { TextArea } = Input;
@@ -853,7 +853,7 @@ const EditCampaign = () => {
         endDate: campaignData.endDate ? dayjs(campaignData.endDate) : null,
         selectedPlatforms: campaignData.selectedPlatforms || [],
         influencerCount: campaignData.influencerCount || 1,
-        image: url + campaignData.image || null,
+        image: getMediaUrl(campaignData.image) || null,
         uploadedImageName: campaignData.imageName || null,
         uploadedImagePreview: campaignData.imageUrl || null,
         uploadedImageFile: null
@@ -877,7 +877,7 @@ const EditCampaign = () => {
           uid: '-1',
           name: campaignData.imageName || 'campaign-image',
           status: 'done',
-          url: url + campaignData.image,
+          url: getMediaUrl(campaignData.image),
         }]);
       }
     }

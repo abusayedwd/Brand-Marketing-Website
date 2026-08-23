@@ -1,489 +1,57 @@
-// "use client";
-
-// import url from "@/redux/api/baseUrl";
-// import { useChangPasswordMutation } from "@/redux/fetures/auth/changePassword";
-// import { useLogedUserQuery } from "@/redux/fetures/user/logedUser";
-// import {
-//   DownOutlined,
-//   EyeInvisibleOutlined,
-//   EyeTwoTone,
-//   LockOutlined,
-// } from "@ant-design/icons";
-// import { Avatar, Button, Dropdown, Form, Input, Modal } from "antd";
-// import Link from "next/link";
-// import { useRouter, usePathname } from "next/navigation";
-
-// import React, { useState } from "react";
-// import toast, { Toaster } from "react-hot-toast";
-// import ThemeToggle from "./ThemeToggle";
-
-// const Navbar = () => {
-//   const [error, setError] = useState("");
-//   const [isModalOpen, setIsModalOpen] = useState(false); // For Change Password Modal
-//   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false); // For Logout Confirmation Modal
-//   const [isModalVisible, setIsModalVisible] = useState(false);
-  
-//   // Open and close modals
-//   const openPasswordModal = () => setIsModalOpen(true);
-//   const closePasswordModal = () => setIsModalOpen(false);
-//   const openLogoutModal = () => setIsLogoutModalOpen(true);
-//   const closeLogoutModal = () => setIsLogoutModalOpen(false);
- 
-//   const router = useRouter();
-//   const pathname = usePathname(); // Get current pathname to determine active route
-//   // const {data: user} = useLogedUserQuery();
-  
-//   // const role = user?.data?.attributes?.user?.role;
-//   // const [changePasswordd, {isLoading}] = useChangPasswordMutation();
-
-//   // Menu items array for navigation
-//   const menuItems = [
-//     { title: "Home", path: "/" },
-//     { title: "Influencer", path: "/influencer" },
-//     { title: "Service", path: "/service" },
-//     { title: "Pricing", path: "/pricing" },
-//   ];
-
-//   const handleLogout = () => {
-//     console.log("Logging out...");
-  
-//     // Remove user session data
-//     localStorage.removeItem("token");
-//     localStorage.removeItem("user");
-  
-//     closeLogoutModal();  
-//     setTimeout(() => {
-//       window.location.href = "/";
-//     }, 500);
-//   };
-
-//   const changePassword = async (values) => {
-//     const { confirmPassword, ...ChangePassword } = values;
-//     console.log("Form Values: ", ChangePassword);
-//     try{
-//       const res = await changePasswordd(ChangePassword).unwrap();
-//       console.log(res);
-//       if(res?.code == 200){
-//         toast.success(res?.message)
-//         closePasswordModal(true)
-//         router.push('/')
-//       }
-//     } catch(error) {
-//       console.log(error)
-//       setError(error?.data?.message)
-//     }
-//   };
-
-//   const user = true;
-
-//   const showModal = () => {
-//     setIsModalVisible(true);
-//   };
-
-//   const handleOk = () => {
-//     setIsModalVisible(false);
-//   };
-
-//   const handleCancel = () => {
-//     setIsModalVisible(false);
-//   };
-
-//   return (
-//     <div>
-//       <nav className="bg-[#222F55] text-white py-4">
-//         <Toaster />
-//         <div className="md:container mx-auto flex items-center justify-between px-4">
-//           {/* Logo */}
-//           <div className="text-2xl font-bold text-green-400">
-//             <Link href="/"><img className="md:w-full w-48" src="/images/logo.png" alt="Logo"/></Link>
-//           </div>
-          
-//           {/* Centered Navigation Menu */}
-//           <div className="hidden md:flex items-center space-x-8">
-//             {menuItems.map((item) => (
-//               <Link 
-//                 key={item.path} 
-//                 href={item.path}
-//                 className={`text-lg font-medium hover:text-green-400 transition-colors ${
-//                   pathname === item.path ? "text-green-400 border-b-2 border-green-400 pb-1" : ""
-//                 }`}
-//               >
-//                 {item.title}
-//               </Link>
-//             ))}
-//           </div>
-
-//           {/* Mobile Menu */}
-//           <div className="md:hidden flex flex-grow justify-center space-x-4">
-//             {menuItems.map((item) => (
-//               <Link 
-//                 key={item.path} 
-//                 href={item.path}
-//                 className={`text-sm hover:text-green-400 transition-colors ${
-//                   pathname === item.path ? "text-green-400 border-b border-green-400" : ""
-//                 }`}
-//               >
-//                 {item.title}
-//               </Link>
-//             ))}
-//           </div>
-
-//           {/* Buttons */}
-//           <div className="flex items-center md:gap-3 gap-1">
-//             {user ? (
-//               <div>
-//                 <Dropdown
-//                   className="px-2"
-//                   menu={{
-//                     items: [
-//                       {
-//                         key: "1",
-//                         label: (
-//                           <Link href="/profile" className="hover:!text-white">
-//                             Profile
-//                           </Link>
-//                         ),
-//                         className: "hover:!bg-[#101625]",
-//                       },
-//                       ...(user?.data?.attributes?.user?.role === "landlord"
-//                         ? [
-//                             {
-//                               key: "2",
-//                               label: (
-//                                 <Link href="/myproperty" className="hover:!text-white">
-//                                   My Property
-//                                 </Link>
-//                               ),
-//                               className: "hover:!bg-[#101625]",
-//                             },
-//                           ]
-//                         : []),
-//                       {
-//                         key: "3",
-//                         label: (
-//                           <Link href="/messages" className="hover:!text-white">
-//                             Message
-//                           </Link>
-//                         ),
-//                         className: "hover:!bg-[#101625]",
-//                       },
-//                       {
-//                         key: "4",
-//                         label: (
-//                           <span
-//                             onClick={openPasswordModal}
-//                             className="hover:!text-white cursor-pointer"
-//                           >
-//                             Change Password
-//                           </span>
-//                         ),
-//                         className: "hover:!bg-[#101625]",
-//                       },
-//                       {
-//                         key: "5",
-//                         label: (
-//                           <span
-//                             onClick={openLogoutModal}
-//                             className="hover:!text-white cursor-pointer"
-//                           >
-//                             Logout
-//                           </span>
-//                         ),
-//                         className: "hover:!bg-[#101625]",
-//                       },
-//                     ],
-//                   }}
-//                   trigger={["click"]}
-//                 >
-//                   <a className="flex items-center text-white cursor-pointer">
-//                     <Avatar
-//                       src={url + user?.data?.attributes?.user?.image?.url}
-//                       className="mr-2 h-[52px] w-[52px]"
-//                     />
-//                     {user?.data?.attributes?.user?.fullName} <DownOutlined className="ml-1" />
-//                   </a>
-//                 </Dropdown>
-//               </div>
-//             ) : (
-//               <div>
-//                 <Link href="/auth/login">
-//                   <Button className="bg-transparent text-white border-white hover:bg-white hover:text-blue-900">
-//                     Log In
-//                   </Button>
-//                 </Link>
-//               </div>
-//             )}
-//           </div>
-//         </div>
-
-//         {/* Change Password Modal */}
-//         <Modal
-//           open={isModalOpen}
-//           onOk={closePasswordModal}
-//           onCancel={closePasswordModal}
-//           footer={null}
-//         >
-//           <div className="flex flex-col w-[80%] mx-auto ">
-//             <h2 className="text-[28px] text-left font-semibold mb-4">
-//               Change Password
-//             </h2>
-//             <p className="mb-8 text-gray-600">
-//               Your password must be 8-10 characters long.
-//             </p>
-//             <Form
-//               name="changePassword"
-//               layout="vertical"
-//               onFinish={changePassword}
-//             >
-//               <Form.Item
-//                 name="oldPassword"
-//                 label="Old Password"
-//                 rules={[
-//                   {
-//                     required: true,
-//                     message: "Please enter your old password!",
-//                   },
-//                 ]}
-//               >
-//                 <Input.Password
-//                   style={{
-//                     height: "40px",
-//                     background: "#E6F9EF",
-//                     border: "1px solid green",
-//                   }}
-//                   placeholder="Old Password"
-//                   prefix={<LockOutlined />}
-//                   iconRender={(visible) =>
-//                     visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-//                   }
-//                 />
-//               </Form.Item>
-
-//               <Form.Item
-//                 name="newPassword"
-//                 label="New Password"
-//                 rules={[
-//                   {
-//                     required: true,
-//                     message: "Please enter your new password!",
-//                   },
-//                 ]}
-//               >
-//                 <Input.Password
-//                   style={{
-//                     height: "40px",
-//                     background: "#E6F9EF",
-//                     border: "1px solid green",
-//                   }}
-//                   placeholder="New Password"
-//                   prefix={<LockOutlined />}
-//                   iconRender={(visible) =>
-//                     visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-//                   }
-//                 />
-//               </Form.Item>
-
-//               <Form.Item
-//                 name="confirmPassword"
-//                 label="Confirm Password"
-//                 dependencies={["newPassword"]}
-//                 hasFeedback
-//                 rules={[
-//                   {
-//                     required: true,
-//                     message: "Please confirm your new password!",
-//                   },
-//                   ({ getFieldValue }) => ({
-//                     validator(_, value) {
-//                       if (!value || getFieldValue("newPassword") === value) {
-//                         return Promise.resolve();
-//                       }
-//                       return Promise.reject(
-//                         new Error(
-//                           "The two passwords that you entered do not match!"
-//                         )
-//                       );
-//                     },
-//                   }),
-//                 ]}
-//               >
-//                 <Input.Password
-//                   style={{
-//                     height: "40px",
-//                     background: "#E6F9EF",
-//                     border: "1px solid green",
-//                   }}
-//                   placeholder="Confirm Password"
-//                   prefix={<LockOutlined />}
-//                   iconRender={(visible) =>
-//                     visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-//                   }
-//                 />
-//               </Form.Item>
-//               <p className="text-red-500 font-medium">{error}</p>
-//               <Form.Item>
-//                 <Button
-//                   type="primary"
-//                   htmlType="submit"
-//                   className="w-full h-10 py-3 !bg-[#69C0BE] !text-black text-[16px] rounded-md"
-//                 >
-//                   Change Password
-//                 </Button>
-//               </Form.Item>
-//             </Form>
-//           </div>
-//         </Modal>
-
-//         {/* Logout Confirmation Modal */}
-//         <Modal
-//           open={isLogoutModalOpen}
-//           onCancel={closeLogoutModal}
-//           footer={null}
-//           centered
-//         >
-//           <div className="text-center">
-//             <h2 className="text-lg font-semibold text-gray-800 mb-4">
-//               Are you sure you want to logout?
-//             </h2>
-//             <div className="flex justify-center gap-4">
-//               <Button
-//                 type="primary"
-//                 className="bg-green-600 hover:bg-green-500 text-white"
-//                 onClick={handleLogout}
-//               >
-//                 Yes
-//               </Button>
-//               <Button
-//                 className="bg-gray-200 hover:bg-gray-300 text-gray-700"
-//                 onClick={closeLogoutModal}
-//               >
-//                 No
-//               </Button>
-//             </div>
-//           </div>
-//         </Modal>
-//       </nav>
-//     </div>
-//   );
-// };
-
-// export default Navbar;
-
-
-
 "use client";
 
-import url from "@/redux/api/baseUrl";
-import { useChangPasswordMutation } from "@/redux/fetures/auth/changePassword";
- 
-import {
-  DownOutlined,
-  EyeInvisibleOutlined,
-  EyeTwoTone,
-  LockOutlined,
-  MenuOutlined,
-} from "@ant-design/icons";
-import { Avatar, Button, Dropdown, Form, Input, Modal } from "antd";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-
-import React, { useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
-import ThemeToggle from "./ThemeToggle";
+import { Button } from "antd";
+import { MenuOutlined, CloseOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
+import { Toaster } from "react-hot-toast";
 import { useLogedUserQuery } from "@/redux/fetures/user/logedUser";
 
+const menuItems = [
+  { title: "Home", path: "/" },
+  { title: "Creators", path: "/influencer" },
+  { title: "Pricing", path: "/pricing" },
+  { title: "Support", path: "/support" },
+];
+
 const Navbar = () => {
-  const [error, setError] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false); // For Change Password Modal
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false); // For Logout Confirmation Modal
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
-  // Open and close modals
-  const openPasswordModal = () => setIsModalOpen(true);
-  const closePasswordModal = () => setIsModalOpen(false);
-  const openLogoutModal = () => setIsLogoutModalOpen(true);
-  const closeLogoutModal = () => setIsLogoutModalOpen(false);
-  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
- 
   const router = useRouter();
-  const pathname = usePathname(); // Get current pathname to determine active route
-  const {data: user} = useLogedUserQuery();
-  console.log(user?.data?.attributes)
-  // const role = user?.data?.attributes?.user?.role;
-  // const [changePasswordd, {isLoading}] = useChangPasswordMutation();
+  const pathname = usePathname();
+  const { data: user } = useLogedUserQuery();
 
-  // Menu items array for navigation
-  const menuItems = [
-    { title: "Home", path: "/" },
-    { title: "Content Creator", path: "/influencer" },
-    { title: "Service", path: "/service" },
-    { title: "Pricing", path: "/pricing" },
-  ];
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
-  const handleLogout = () => {
-    console.log("Logging out...");
-  
-    // Remove user session data
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-  
-    closeLogoutModal();  
-    setTimeout(() => {
-      window.location.href = "/";
-    }, 500);
-  };
-
-  const handleDashboardClick = () => {
-    router.push('/dashboard');
-  };
-
- 
-
-   // Simulating a logged-in user
-
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
+  useEffect(() => {
+    document.body.style.overflow = mobileMenuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen]);
 
   return (
-    <div>
-      <nav className="">
-        <Toaster />
-        <div className="md:container mx-auto flex items-center justify-between px-4">
-          {/* Logo */}
-          <div className="text-2xl font-bold text-green-400">
-            <Link href="/"><img className="md:w-full w-48" src="/images/logo.png" alt="Logo"/></Link>
-          </div>
-          
-          {/* Hamburger Menu for Mobile */}
-          <div className="md:hidden flex items-center">
-            <button 
-              onClick={toggleMobileMenu}
-              className="  focus:outline-none"
-            >
-              <MenuOutlined style={{ fontSize: '24px' }} />
-             
-            </button>
-            
-          </div>
+    <header className="sticky top-0 z-50">
+      <Toaster position="top-center" />
+      <nav className="border-b border-emerald-900/10 bg-[#0b1f17] text-white">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+          <Link href="/" className="min-w-0 shrink-0" onClick={() => setMobileMenuOpen(false)}>
+            <img
+              className="h-9 w-auto max-w-[140px] object-contain sm:h-10 md:h-12 md:max-w-none"
+              src="/images/logo.png"
+              alt="Brivio"
+            />
+          </Link>
 
-          {/* Desktop Navigation Menu */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden items-center gap-8 md:flex">
             {menuItems.map((item) => (
-              <Link 
-                key={item.path} 
+              <Link
+                key={item.path}
                 href={item.path}
-                className={`text-lg font-medium hover:text-green-400 transition-colors ${
-                  pathname === item.path ? "text-green-400 border-b-2 border-green-400 pb-1" : ""
+                className={`text-sm font-medium transition-colors hover:text-emerald-300 ${
+                  pathname === item.path ? "text-emerald-300" : "text-emerald-50/85"
                 }`}
               >
                 {item.title}
@@ -491,82 +59,93 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Buttons */}
-          <div className="hidden md:flex items-center md:gap-3 gap-1">
+          <div className="hidden items-center gap-3 md:flex">
             {user ? (
-              <Button 
-                onClick={handleDashboardClick}
-                style={{
-                  background: 'linear-gradient(to right, #3b82f6, #22c55e)',
-                  border: '1px solid white',
-                  color: 'white',
-                }}
+              <Button
+                onClick={() => router.push("/dashboard")}
+                className="!h-10 !rounded-xl !border-0 !bg-emerald-500 !font-semibold !text-[#0b1f17] hover:!bg-emerald-400"
               >
                 Dashboard
               </Button>
             ) : (
-              <div>
+              <div className="flex items-center gap-2">
                 <Link href="/auth/login">
-                <Button
-  style={{
-    background: 'linear-gradient(to right, #3b82f6, #22c55e)',
-    border: '1px solid white',
-    color: 'white',
-  }}
->
-  Log In
-</Button>
+                  <Button className="!h-10 !rounded-xl !border-white/20 !bg-transparent !text-white hover:!border-emerald-300 hover:!text-emerald-200">
+                    Log in
+                  </Button>
+                </Link>
+                <Link href="/auth/singup">
+                  <Button className="!h-10 !rounded-xl !border-0 !bg-emerald-500 !font-semibold !text-[#0b1f17] hover:!bg-emerald-400">
+                    Get started
+                  </Button>
                 </Link>
               </div>
             )}
           </div>
 
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen((v) => !v)}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-white hover:bg-white/10 md:hidden"
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileMenuOpen}
+          >
+            {mobileMenuOpen ? (
+              <CloseOutlined style={{ fontSize: 20 }} />
+            ) : (
+              <MenuOutlined style={{ fontSize: 22 }} />
+            )}
+          </button>
         </div>
 
-        {/* Mobile Menu - Shows when hamburger is clicked */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white text-black font-medium py-4 px-4 mt-2">
-            {/* Mobile Navigation Links */}
-            <div className="flex flex-col space-y-3">
+          <div className="max-h-[calc(100dvh-64px)] overflow-y-auto border-t border-white/10 bg-[#0b1f17] px-4 py-4 md:hidden">
+            <div className="flex flex-col gap-1">
               {menuItems.map((item) => (
-                <Link 
-                  key={item.path} 
+                <Link
+                  key={item.path}
                   href={item.path}
-                  className={`text-lg hover:text-green-400 transition-colors ${
-                    pathname === item.path ? "text-green-800 border-l-4 border-green-800 pl-2" : "pl-2"
+                  className={`rounded-lg px-3 py-3 text-base transition-colors hover:bg-white/5 ${
+                    pathname === item.path ? "bg-white/5 text-emerald-300" : "text-emerald-50/90"
                   }`}
+                  onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.title}
                 </Link>
               ))}
-              
-              {/* Add dashboard link in mobile menu when user is logged in */}
+
               {user && (
-                <Link 
+                <Link
                   href="/dashboard"
-                  className="text-lg hover:text-green-400 transition-colors pl-2 mt-2 border-t border-gray-700 pt-3"
+                  className="mt-2 rounded-lg border-t border-white/10 px-3 pt-4 text-base text-emerald-200"
+                  onClick={() => setMobileMenuOpen(false)}
                 >
                   Dashboard
                 </Link>
               )}
             </div>
-            
-            {/* Login button for non-logged in users */}
+
             {!user && (
-              <div className="mt-4 border-t border-gray-700 pt-4">
-                <Link href="/auth/login">
-                  <Button className="w-full bg-transparent text-white border-white hover:bg-white hover:text-blue-900">
-                    Log In
+              <div className="mt-4 flex flex-col gap-2 border-t border-white/10 pt-4 sm:flex-row">
+                <Link href="/auth/login" className="flex-1" onClick={() => setMobileMenuOpen(false)}>
+                  <Button block className="!h-11 !rounded-xl !border-white/20 !bg-transparent !text-white">
+                    Log in
+                  </Button>
+                </Link>
+                <Link href="/auth/singup" className="flex-1" onClick={() => setMobileMenuOpen(false)}>
+                  <Button
+                    block
+                    className="!h-11 !rounded-xl !border-0 !bg-emerald-500 !font-semibold !text-[#0b1f17]"
+                  >
+                    Sign up
                   </Button>
                 </Link>
               </div>
             )}
           </div>
         )}
-
-     
       </nav>
-    </div>
+    </header>
   );
 };
 

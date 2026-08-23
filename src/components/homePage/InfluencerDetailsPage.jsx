@@ -18,9 +18,9 @@ import {
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import { useSigleInfluencerQuery } from "@/redux/fetures/user/signleInfluencer";
-import url from "@/redux/api/baseUrl";
 import CreatorRatings from "@/components/homePage/CreatorRatings";
 import useAuthUser from "@/hooks/useAuthUser";
+import getMediaUrl from "@/utils/getMediaUrl";
 
 const socialIcons = {
   Facebook: <FacebookOutlined />,
@@ -90,7 +90,7 @@ const InfluencerSinglePage = ({ id }) => {
   const user = influencer.data.attributes.user;
   const completed =
     influencer.data.attributes.completedCampaignsCount ?? 0;
-  const avatarSrc = user.image?.url ? `${url}${user.image.url}` : undefined;
+  const avatarSrc = getMediaUrl(user.image) || undefined;
   const totalFollowers = (user.socialMedia || []).reduce(
     (sum, s) => sum + (Number(s.followers) || 0),
     0

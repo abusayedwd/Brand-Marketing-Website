@@ -17,6 +17,11 @@ const nextConfig = {
         hostname: apiHost.split(":")[0] || "localhost",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
+      },
     ],
   },
 };

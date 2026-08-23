@@ -48,7 +48,6 @@
 //      const { data: influencersResponse, isLoading, error } = useGetInfluencersQuery({ 
 //          interests : activeCategory || "",
 //      })
-//   console.log(influencersResponse)
 
 
  
@@ -397,7 +396,7 @@ import { ArrowRightOutlined, FacebookOutlined, InstagramOutlined, YoutubeOutline
 import { Button, Card, Typography, Row, Col, Avatar, Spin, Empty, Modal } from "antd"
 import { motion, useInView, useAnimation } from "framer-motion"
 import { useGetInfluencersQuery } from "@/redux/fetures/user/influencers"
-import url from "@/redux/api/baseUrl"
+import getMediaUrl from "@/utils/getMediaUrl"
 import { useLogedUserQuery } from "@/redux/fetures/user/logedUser"
 import { CustomButton } from "../customComponent/Button"
 import { LoginModal } from "../customComponent/LoginModal"
@@ -462,7 +461,6 @@ export default function InfluencersPage() {
   const handleLogin = () => {
     // Implement your login logic here
     // This could redirect to login page or handle login in modal
-    console.log('Redirect to login or handle login');
     setIsLoginModalVisible(false);
   };
 
@@ -480,7 +478,6 @@ export default function InfluencersPage() {
     interests: activeCategory || "",
   })
 
-  console.log(influencersResponse)
 
   useEffect(() => {
     setLoaded(true)
@@ -525,7 +522,7 @@ export default function InfluencersPage() {
     tag: influencer.interests.length > 0 ? `#${influencer.interests[0]}` : "#Lifestyle",
     category: influencer.interests[0] || "General",
     bio: influencer.bio || "Content creator sharing authentic experiences and inspiring others through engaging content.",
-    image: influencer.image?.url ? `${process.env.NEXT_PUBLIC_API_BASE_URL || ''}${url + influencer.image.url}` : "/images/default-avatar.png",
+    image: getMediaUrl(influencer.image, "/images/default-avatar.png"),
     interests: influencer.interests,
     socialMedia: influencer.socialMedia,
     followers: {
@@ -588,67 +585,67 @@ export default function InfluencersPage() {
 
   if (error) {
     return (
-      <div className="md:container mx-auto py-12 px-4 text-center">
+      <div className="mx-auto max-w-6xl px-4 py-12 text-center sm:px-6">
         <Empty description="Failed to load influencers" />
       </div>
     )
   }
 
   return (
-    <div className={`md:container mx-auto py-12 px-4 ${loaded ? "fade-in" : ""}`}>
+    <div className={`mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12 ${loaded ? "fade-in" : ""}`}>
       <ScrollReveal>
-        <Row gutter={[32, 32]} className="mb-12">
+        <Row gutter={[24, 24]} className="mb-8 sm:mb-12">
           <Col xs={24} md={12}>
-            <Title level={2} style={{ color: "#003366" }}>
-              Find the best Content Creator to help your business
+            <Title level={2} style={{ color: "#003366" }} className="!text-2xl sm:!text-3xl">
+              Find the best creators for your brand
             </Title>
           </Col>
           <Col xs={24} md={12}>
-            <Paragraph>
-              An Content Creator marketing website connects brands with Content Creator to promote products. Content Creator create
-              profiles, receive campaign invitations, and share promotional content, while brands approve and track
-              Content Creator performance.
+            <Paragraph className="!mb-0 text-slate-600">
+              Browse creator profiles, filter by niche, and connect for campaigns —
+              brands review drafts and track performance in one place.
             </Paragraph>
           </Col>
         </Row>
       </ScrollReveal>
 
       <ScrollReveal>
-        <div className="flex flex-wrap gap-2 mb-8 items-center">
-          {categories.map((category, index) => (
-            <motion.div
-              key={category}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.05 * index, duration: 0.8 }}
-            >
-              <Button
-                type={activeCategory === category ? "primary" : "default"}
-                shape="round"
-                onClick={() => setActiveCategory(activeCategory === category ? null : category)}
-                style={{
-                  marginBottom: 8,
-                  backgroundColor: activeCategory === category ? "#1890ff" : "#333",
-                  color: "white",
-                  borderColor: activeCategory === category ? "#1890ff" : "#333",
-                }}
-                className="category-button"
+        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 scrollbar-none">
+            {categories.map((category, index) => (
+              <motion.div
+                key={category}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.03 * index, duration: 0.4 }}
+                className="shrink-0"
               >
-                {category}
-              </Button>
-            </motion.div>
-          ))}
-          <motion.div
-            className="ml-auto"
-            whileHover={{ x: 5 }}
-            transition={{ duration: 0.2 }}
+                <Button
+                  type={activeCategory === category ? "primary" : "default"}
+                  shape="round"
+                  onClick={() =>
+                    setActiveCategory(activeCategory === category ? null : category)
+                  }
+                  style={{
+                    backgroundColor: activeCategory === category ? "#1890ff" : "#333",
+                    color: "white",
+                    borderColor: activeCategory === category ? "#1890ff" : "#333",
+                  }}
+                  className="category-button"
+                >
+                  {category}
+                </Button>
+              </motion.div>
+            ))}
+          </div>
+          <Link
+            href="/influencer"
+            className="inline-flex shrink-0 items-center text-sm font-medium text-blue-600 sm:text-base"
           >
-            <Link href="/influencer" className="flex items-center text-blue-600 font-medium hover-link">
-              See all <ArrowRightOutlined style={{ marginLeft: 4 }} />
-            </Link>
-          </motion.div>
+            See all <ArrowRightOutlined style={{ marginLeft: 4 }} />
+          </Link>
         </div>
       </ScrollReveal>
 

@@ -48,7 +48,6 @@
 //      const { data: influencersResponse, isLoading, error } = useGetInfluencersQuery({ 
 //          interests : activeCategory || "",
 //      })
-//   console.log(influencersResponse)
 
 
  
@@ -397,7 +396,7 @@ import { ArrowRightOutlined, FacebookOutlined, InstagramOutlined, YoutubeOutline
 import { Button, Card, Typography, Row, Col, Avatar, Spin, Empty } from "antd"
 import { motion, useInView, useAnimation } from "framer-motion"
 import { useGetInfluencersQuery } from "@/redux/fetures/user/influencers"
-import url from "@/redux/api/baseUrl"
+import getMediaUrl from "@/utils/getMediaUrl"
 import { LoginModal } from "../customComponent/LoginModal"
 import { CustomButton } from "../customComponent/Button"
 import { useLogedUserQuery } from "@/redux/fetures/user/logedUser"
@@ -442,11 +441,9 @@ export default function SeeAllInfluencerList() {
     interests: activeCategory || "",
   })
 
-  // console.log(influencersResponse)
 
   const { data: loggedUser} = useLogedUserQuery()
   const isSubscribed = loggedUser?.data?.attributes?.isSubscribe;
-  console.log("Logged User Data:", loggedUser)
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
 
  const handleViewDetails = () => {
@@ -467,7 +464,6 @@ export default function SeeAllInfluencerList() {
   const handleLogin = () => {
     // Implement your login logic here
     // This could redirect to login page or handle login in modal
-    console.log('Redirect to login or handle login');
     setIsLoginModalVisible(false);
   };
 
@@ -517,7 +513,7 @@ export default function SeeAllInfluencerList() {
     tag: influencer.interests.length > 0 ? `#${influencer.interests[0]}` : "#Lifestyle",
     category: influencer.interests[0] || "General",
     bio: influencer.bio || "Content creator sharing authentic experiences and inspiring others through engaging content.",
-    image: influencer.image?.url ? `${process.env.NEXT_PUBLIC_API_BASE_URL || ''}${url + influencer.image.url}` : "/images/default-avatar.png",
+    image: getMediaUrl(influencer.image, "/images/default-avatar.png"),
     interests: influencer.interests,
     socialMedia: influencer.socialMedia,
     followers: {

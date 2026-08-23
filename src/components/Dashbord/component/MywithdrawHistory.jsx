@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Tag, Card, Select, Row, Col, Statistic, Button } from 'antd';
 import { CheckCircleOutlined, ClockCircleOutlined, FilterOutlined, ReloadOutlined } from '@ant-design/icons';
-import url from '../../../redux/api/baseUrl';
+import getMediaUrl from '@/utils/getMediaUrl';
 import { useGetMyWithdrawQuery } from '@/redux/fetures/wallet/getMywithdraw';
 
 const { Option } = Select;
@@ -164,7 +164,7 @@ const WithdrawRequestPage = () => {
       render: (_, withdraw) => (
         withdraw.image?.url ? (
           <img
-            src={url + withdraw.image.url}
+            src={getMediaUrl(withdraw.image)}
             alt="Signature"
             className="w-16 h-12 object-cover border rounded shadow-sm"
           />
