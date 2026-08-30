@@ -646,12 +646,14 @@ import {
   PictureOutlined,
   DeleteOutlined,
   StarOutlined,
-  CheckCircleOutlined
+  CheckCircleOutlined,
+  LockOutlined
 } from '@ant-design/icons';
 import { useCreateCampaignMutation } from '@/redux/fetures/campaign/createCampaign';
 import { savePendingCampaignSession } from '@/utils/campaignPayment';
 import toast, { Toaster } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { useLogedUserQuery } from '@/redux/fetures/user/logedUser';
 
 const { TextArea } = Input;
 const { Title, Text } = Typography;
@@ -659,6 +661,8 @@ const { Option } = Select;
 
 const CampaignCreator = () => {
   const router = useRouter()
+  const { data: user, isLoading: isUserLoading } = useLogedUserQuery();
+  const isSubscribed = Boolean(user?.data?.attributes?.isSubscribe);
   const [form] = Form.useForm();
   const [formData, setFormData] = useState({
     campaignName: '',
@@ -849,8 +853,14 @@ const CampaignCreator = () => {
   
     } catch(error){
       console.log(error.data)
+      if (error?.data?.code === 402) {
+        toast.error(error?.data?.message || 'An active subscription is required to create a campaign.');
+        router.push('/pricing');
+        return;
+      }
+      toast.error(error?.data?.message || 'Could not create campaign. Please try again.');
     }
-   
+
   };
 
 
@@ -886,6 +896,41 @@ const CampaignCreator = () => {
     const platform = socialPlatforms.find(p => p.id === platformId);
     return platform ? platform.icon : '📱';
   };
+
+  if (isUserLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Text type="secondary">Loading...</Text>
+      </div>
+    );
+  }
+
+  if (!isSubscribed) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-4 md:p-6 flex items-center justify-center">
+        <Card className="max-w-md w-full text-center shadow-md">
+          <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-secondary flex items-center justify-center">
+            <LockOutlined className="text-2xl text-primary" />
+          </div>
+          <Title level={4} className="!mb-2">
+            Subscription Required
+          </Title>
+          <Text type="secondary">
+            You need an active plan before you can create a campaign. Choose a plan to unlock
+            campaign creation and start working with influencers.
+          </Text>
+          <div className="mt-6 flex items-center justify-center gap-3">
+            <Button onClick={() => router.push('/dashboard/campaigns')}>
+              Back to Campaigns
+            </Button>
+            <Button type="primary" onClick={() => router.push('/pricing')}>
+              View Plans
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-6">

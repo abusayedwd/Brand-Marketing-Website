@@ -5,14 +5,15 @@
 
 import React, { useState } from 'react';
 import { Button, Card, Tabs } from 'antd';
-import { FileTextOutlined, CheckCircleOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { FileTextOutlined, CheckCircleOutlined, ClockCircleOutlined, LockOutlined, CrownOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
- 
+
 import getMediaUrl from '@/utils/getMediaUrl';
 import { useGetMyCampaignQuery } from '@/redux/fetures/campaign/getMyCampaign';
 import { useResumeCampaignPaymentMutation, redirectToCampaignPayment } from '@/redux/fetures/campaign/resumeCampaignPayment';
 import { useVerifyCampaignPaymentMutation } from '@/redux/fetures/campaign/verifyCampaignPayment';
+import { useLogedUserQuery } from '@/redux/fetures/user/logedUser';
 import { useRouter } from 'next/navigation';
 import { LoginModal } from '@/components/customComponent/LoginModal';
 import { CustomButton } from '@/components/customComponent/Button';
@@ -26,11 +27,15 @@ const Campaigns = () => {
 
 
  
+  const router = useRouter();
   const { data: myCampaign, isLoading, error, refetch } = useGetMyCampaignQuery();
+  const { data: user } = useLogedUserQuery();
   const [verifyCampaignPayment, { isLoading: isVerifying }] = useVerifyCampaignPaymentMutation();
   const [resumeCampaignPayment, { isLoading: isResumingPayment }] = useResumeCampaignPaymentMutation();
   // console.log(myCampaign);
-  
+
+  const isSubscribed = Boolean(user?.data?.attributes?.isSubscribe);
+
   // Get campaigns from API data
   const campaigns = myCampaign?.data?.attributes?.results || [];
 
@@ -74,6 +79,33 @@ const Campaigns = () => {
       return `/api/images/${campaign.image}` || image;
     }
     return image;
+  };
+
+  const handleCreateCampaignClick = (e) => {
+    if (!isSubscribed) {
+      e.preventDefault();
+      toast(
+        (t) => (
+          <div className="flex flex-col gap-2">
+            <span className="font-medium">Subscribe to create campaigns</span>
+            <span className="text-sm text-gray-500">
+              An active plan is required before you can launch a campaign.
+            </span>
+            <Button
+              type="primary"
+              size="small"
+              onClick={() => {
+                toast.dismiss(t.id);
+                router.push('/pricing');
+              }}
+            >
+              View Plans
+            </Button>
+          </div>
+        ),
+        { duration: 6000 }
+      );
+    }
   };
 
   const handlePayNow = async (campaignId) => {
@@ -232,14 +264,29 @@ const Campaigns = () => {
     <div className="container mx-auto p-4">
       <div>
         <h2 className="text-xl text-sky-500 font-semibold mb-4">Campaigns</h2>
-        <div className="flex justify-end mb-4">
 
-          <Link className="text-blue-500 hover:text-blue-700 flex items-center p-0 group" href="/dashboard/campaigns/create-campaign">
-            <Button type="primary" className="ml-2">
-              Create Campaign
+        {!isSubscribed && (
+          <div className="flex items-center justify-between gap-3 mb-4 px-4 py-3 rounded-lg bg-secondary border border-primary/20">
+            <div className="flex items-center gap-2 text-sm text-textGray">
+              <CrownOutlined className="text-primary" />
+              <span>Subscribe to a plan to start creating campaigns.</span>
+            </div>
+            <Button type="primary" size="small" onClick={() => router.push('/pricing')}>
+              View Plans
+            </Button>
+          </div>
+        )}
+
+        <div className="flex justify-end mb-4">
+          <Link
+            className="text-blue-500 hover:text-blue-700 flex items-center p-0 group"
+            href="/dashboard/campaigns/create-campaign"
+            onClick={handleCreateCampaignClick}
+          >
+            <Button type="primary" className="ml-2" icon={!isSubscribed ? <LockOutlined /> : null}>
+              {isSubscribed ? 'Create Campaign' : 'Subscribe to Create Campaign'}
             </Button>
           </Link>
-
         </div>
       </div>
       <div className="flex justify-between items-center mb-4">
