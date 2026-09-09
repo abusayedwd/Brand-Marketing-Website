@@ -675,22 +675,48 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
   )}
 
 
-{/* Show Submit Draft button if the user is in the acceptedInfluencers list */}
-{(campaign.acceptedInfluencers.some((influencer) => influencer.id === user?.data?.attributes?.id) &&
-  (campaign?.status === "upComming" || campaign?.status === "active") &&
-  campaign?.status !== "completed") && (
-  <div className="p-8">
-    <div className="text-right font-semibold my-2">
-      <Link href={`/dashboard/campaigns/details/sumbit-draft?id=${campaign.id}`} >
-        <button 
-          className="bg-blue-400 py-1 px-10 rounded hover:bg-blue-500 transition-colors"
-        >
-          Submit Draft
-        </button>
-      </Link>
+{/* Show Submit Draft button if the user is accepted and hasn't already submitted a (non-rejected) draft */}
+{(() => {
+  const myUserId = user?.data?.attributes?.id;
+  const isAccepted = campaign.acceptedInfluencers.some((influencer) => influencer.id === myUserId);
+  const isRecruitingOrActive = campaign?.status === "upComming" || campaign?.status === "active";
+  const myDraft = campaign.drafts?.find((draft) => draft.influencerId === myUserId);
+
+  if (!isAccepted || !isRecruitingOrActive) return null;
+
+  // Already submitted and still pending review or approved — nothing to do, no button.
+  if (myDraft && !myDraft.isRejected) {
+    return (
+      <div className="p-8">
+        <div className="text-center font-semibold my-2">
+          <span className={`py-1 px-6 rounded text-white ${myDraft.isApproved ? "bg-green-500" : "bg-yellow-400"}`}>
+            {myDraft.isApproved
+              ? "Your draft has been approved"
+              : "Your draft has been submitted and is awaiting review"}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  // No draft yet, or the previous one was rejected — allow (re)submission.
+  return (
+    <div className="p-8">
+      {myDraft?.isRejected && (
+        <div className="text-center text-sm text-red-500 mb-2">
+          Your previous draft was rejected{myDraft.rejectionReason ? `: ${myDraft.rejectionReason}` : ""}. Please revise and resubmit.
+        </div>
+      )}
+      <div className="text-right font-semibold my-2">
+        <Link href={`/dashboard/campaigns/details/sumbit-draft?id=${campaign.id}`}>
+          <button className="bg-blue-400 py-1 px-10 rounded hover:bg-blue-500 transition-colors">
+            {myDraft?.isRejected ? "Resubmit Draft" : "Submit Draft"}
+          </button>
+        </Link>
+      </div>
     </div>
-  </div>
-)}
+  );
+})()}
 
 
 
