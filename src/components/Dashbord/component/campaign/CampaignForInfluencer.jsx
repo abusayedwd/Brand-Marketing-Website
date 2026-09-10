@@ -184,8 +184,12 @@ const Campaigns = () => {
 const acceptedCampaignn = acceptedCampaigns?.data?.attributes?.results || [];
 const interesteCampaing = interesteCampaings?.data?.attributes?.results || [];
 const completedCampaigns = completedCampaignsData?.data?.attributes?.results || [];
-  // Filter campaigns by status
-  const upcomingCampaigns = campaigns.filter(campaign => campaign.status === 'upComming');
+  // The backend (getUpcomingCampaignsForInfluecer) already returns only
+  // still-recruiting campaigns (upComming or active with open slots), so don't
+  // re-filter 'active' ones out here.
+  const upcomingCampaigns = campaigns.filter(
+    (campaign) => campaign.status === 'upComming' || campaign.status === 'active'
+  );
   const activeCampaigns = acceptedCampaignn.filter(campaign => campaign.status === 'active');
   const acceptedCampaign = acceptedCampaignn.filter(
     (campaign) => campaign.status !== 'completed' && campaign.status !== 'pending'
