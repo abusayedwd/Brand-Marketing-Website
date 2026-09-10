@@ -616,14 +616,51 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
 
                 {/* intereted modal */}
                 
-{campaign.status === "upComming" && 
-  user?.data?.attributes?.role === "influencer" && 
-  !campaign.acceptedInfluencers.some((influencer) => influencer.id === user?.data?.attributes?.id) && 
-  !campaign.interestedInfluencers.some((influencer) => influencer.id === user?.data?.attributes?.id) ? (
-    // If status is "upComming" and user ID is not in either acceptedInfluencers or interestedInfluencers, show Interest button
+{(() => {
+  // Interest UI is only ever for influencers — a brand viewing its own campaign
+  // should never see "show interest" / "you expressed interest".
+  const myId = user?.data?.attributes?.id;
+  if (user?.data?.attributes?.role !== "influencer") return null;
+
+  const isAccepted = campaign.acceptedInfluencers.some((inf) => inf.id === myId);
+  const isInterested = campaign.interestedInfluencers.some((inf) => inf.id === myId);
+  const acceptedCount = campaign.acceptedInfluencers?.length || 0;
+  const slotsOpen = acceptedCount < (campaign.influencerCount || 0);
+  // Recruiting stays open through 'active' too, as long as slots remain.
+  const isRecruiting =
+    (campaign.status === "upComming" || campaign.status === "active") && slotsOpen;
+
+  // Accepted influencers are handled by the Submit Draft block below.
+  if (isAccepted) return null;
+
+  if (isInterested) {
+    return (
+      <div className="p-8">
+        <div className="text-center font-semibold my-2">
+          <span className="bg-green-400 py-1 px-6 rounded text-white">
+            You&apos;ve expressed interest — waiting for the brand to accept
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isRecruiting) {
+    return (
+      <div className="p-8">
+        <div className="text-center font-semibold my-2">
+          <span className="bg-gray-300 py-1 px-6 rounded text-gray-700">
+            This campaign is no longer accepting new creators
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
     <div className="p-8">
       <div className="text-right font-semibold my-2">
-        <button 
+        <button
           className="bg-sky-400 py-1 px-10 rounded hover:bg-sky-500 transition-colors"
           onClick={openModal}
         >
@@ -631,7 +668,6 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
         </button>
       </div>
 
-      {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
@@ -661,18 +697,8 @@ const [interested, {}] = useInterestedCampaignInfluMutation()
         </div>
       )}
     </div>
-  ) : (campaign.status !== "upComming" || 
-        campaign.acceptedInfluencers.some((influencer) => influencer.id === user?.data?.attributes?.id) || 
-        campaign.interestedInfluencers.some((influencer) => influencer.id === user?.data?.attributes?.id)) && (
-    // If the status is not "upComming" or user has already expressed interest, show the badge
-    <div className="p-8">
-      <div className="text-center font-semibold my-2">
-        <span className="bg-green-400 py-1 px-6 rounded text-white">
-          You already expressed interest in this campaign
-        </span>
-      </div>
-    </div>
-  )}
+  );
+})()}
 
 
 {/* Show Submit Draft button if the user is accepted and hasn't already submitted a (non-rejected) draft */}
