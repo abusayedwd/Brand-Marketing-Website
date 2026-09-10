@@ -12,10 +12,14 @@ import {
 import { useCampaignPaymentQuery } from "@/redux/fetures/payment/campaignPayment";
 import getMediaUrl from "@/utils/getMediaUrl";
 
+const PAID_STATUSES = ["paid", "succeeded", "success", "completed"];
+
 const statusMeta = {
   paid: { color: "success", icon: <CheckCircleOutlined />, label: "Paid" },
   succeeded: { color: "success", icon: <CheckCircleOutlined />, label: "Paid" },
   success: { color: "success", icon: <CheckCircleOutlined />, label: "Paid" },
+  // Backend's Transaction model stores paymentStatus as "completed".
+  completed: { color: "success", icon: <CheckCircleOutlined />, label: "Paid" },
   pending: { color: "warning", icon: <ClockCircleOutlined />, label: "Pending" },
   failed: { color: "error", icon: <CloseCircleOutlined />, label: "Failed" },
   cancelled: { color: "default", icon: <CloseCircleOutlined />, label: "Cancelled" },
@@ -39,7 +43,7 @@ const PaymentRequestList = () => {
   }, [transactionData]);
 
   const totalPaid = rows
-    .filter((r) => ["paid", "succeeded", "success"].includes(r.status))
+    .filter((r) => PAID_STATUSES.includes(r.status))
     .reduce((s, r) => s + r.amount, 0);
 
   const columns = [
