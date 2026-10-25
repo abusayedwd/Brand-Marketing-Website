@@ -10,6 +10,8 @@ import useAuthUser from "@/hooks/useAuthUser";
 const CHAT_TAGS = ["Chat", "Notification"];
 const ACTIVITY_TAGS = ["Campaign", "CompletedCampaign", "Wallet", "Profile", "Notification"];
 const ALL_TAGS = [...new Set([...ACTIVITY_TAGS, ...CHAT_TAGS])];
+// Polling skips "Profile": it also backs the public creator lists.
+const POLL_TAGS = ALL_TAGS.filter((tag) => tag !== "Profile");
 
 // When the socket can't connect (e.g. https site → http backend), poll instead.
 const FALLBACK_POLL_MS = 8000;
@@ -54,7 +56,7 @@ export default function RealtimeSync() {
 
     const poll = setInterval(() => {
       if (socket.connected || document.visibilityState !== "visible") return;
-      refresh(ALL_TAGS);
+      refresh(POLL_TAGS);
     }, FALLBACK_POLL_MS);
 
     return () => {

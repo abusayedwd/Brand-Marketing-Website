@@ -2,11 +2,11 @@
   "name": "brivio-website",
   "version": "1.0.0",
   "private": true,
-  "description": "Brivio — brand and creator campaign marketplace (Next.js)",
+  "description": "Brivio \u2014 brand and creator campaign marketplace (Next.js)",
   "scripts": {
-    "dev": "next dev -p 3000",
-    "build": "next build",
-    "start": "next start",
+    "dev": "node init && next dev -p 3000",
+    "build": "node init && next build",
+    "start": "node init && next start",
     "lint": "next lint"
   },
   "dependencies": {
