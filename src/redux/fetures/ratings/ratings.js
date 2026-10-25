@@ -6,6 +6,10 @@ const ratingsApi = apiSlice.injectEndpoints({
       query: (userId) => `/ratings/user/${userId}`,
       providesTags: (result, error, userId) => [{ type: "Ratings", id: userId }],
     }),
+    getFeaturedRatings: builder.query({
+      query: (limit = 6) => `/ratings/featured?limit=${limit}`,
+      providesTags: [{ type: "Ratings", id: "FEATURED" }],
+    }),
     createRating: builder.mutation({
       query: (data) => ({
         url: `/ratings`,
@@ -14,9 +18,14 @@ const ratingsApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, arg) => [
         { type: "Ratings", id: arg?.toUserId },
+        { type: "Ratings", id: "FEATURED" },
       ],
     }),
   }),
 });
 
-export const { useGetUserRatingsQuery, useCreateRatingMutation } = ratingsApi;
+export const {
+  useGetUserRatingsQuery,
+  useGetFeaturedRatingsQuery,
+  useCreateRatingMutation,
+} = ratingsApi;
