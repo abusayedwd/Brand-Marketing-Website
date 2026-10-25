@@ -30,7 +30,7 @@ export default function CaseStudies() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">
-            Case studies
+            Example campaigns
           </p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
             How teams use Brivio in practice

@@ -39,7 +39,7 @@ const Navbar = () => {
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <Link href="/" className="min-w-0 shrink-0" onClick={() => setMobileMenuOpen(false)}>
             <img
-              className="h-9 w-auto max-w-[140px] object-contain sm:h-10 md:h-12 md:max-w-none"
+               className=" rounded-xl object-cover h-16"
               src="/images/logo.png"
               alt="Brivio"
             />
