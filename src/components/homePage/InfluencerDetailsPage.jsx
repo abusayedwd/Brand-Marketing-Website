@@ -23,6 +23,7 @@ import StartChatButton from "@/components/shared/StartChatButton";
 import FavoriteButton from "@/components/shared/FavoriteButton";
 import useAuthUser from "@/hooks/useAuthUser";
 import getMediaUrl from "@/utils/getMediaUrl";
+import SubscriptionBadge from "@/components/shared/SubscriptionBadge";
 
 const socialIcons = {
   Facebook: <FacebookOutlined />,
@@ -124,9 +125,12 @@ const InfluencerSinglePage = ({ id }) => {
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-300">
                 Content creator
               </p>
-              <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
-                {user.fullName}
-              </h1>
+              <div className="mt-2 flex flex-wrap items-center gap-3">
+                <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                  {user.fullName}
+                </h1>
+                <SubscriptionBadge user={user} variant="dark" />
+              </div>
               {user.userName && (
                 <p className="mt-1 text-emerald-100/70">@{user.userName}</p>
               )}

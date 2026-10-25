@@ -517,6 +517,8 @@ export default function InfluencersPage() {
   // Map API data to component structure
   const influencers = influencersResponse?.data?.attributes?.results?.slice(0,3)?.map(influencer => ({
     id: influencer.id,
+    isSubscribe: influencer.isSubscribe,
+    planName: influencer.planName,
     name: influencer.fullName,
     userName: influencer.userName,
     email: influencer.email,

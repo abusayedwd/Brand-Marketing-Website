@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useLogedUserQuery } from "@/redux/fetures/user/logedUser";
 import { useGetMyCompletedCampaignsQuery } from "@/redux/fetures/campaign/getMyCompletedCampaigns";
 import getMediaUrl from "@/utils/getMediaUrl";
+import SubscriptionBadge from "@/components/shared/SubscriptionBadge";
 
 const Field = ({ label, children }) => (
   <div>
@@ -78,6 +79,7 @@ const Profile = () => {
                   {isInfluencer ? <VideoCameraOutlined /> : <ShopOutlined />}
                   {user.role}
                 </span>
+                <SubscriptionBadge user={user} variant="dark" />
                 {user.userName && (
                   <span className="text-sm text-emerald-100/70">@{user.userName}</span>
                 )}

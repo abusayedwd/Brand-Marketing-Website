@@ -508,6 +508,8 @@ export default function SeeAllInfluencerList() {
   // Map API data to component structure
   const influencers = influencersResponse?.data?.attributes?.results?.map(influencer => ({
     id: influencer.id,
+    isSubscribe: influencer.isSubscribe,
+    planName: influencer.planName,
     name: influencer.fullName,
     userName: influencer.userName,
     email: influencer.email,

@@ -689,6 +689,8 @@ export default function AllInfluencer({ searchCriteria }) {
   const transformedInfluencers = useMemo(() => {
     return apiInfluencers.map(influencer => ({
       id: influencer.id,
+      isSubscribe: influencer.isSubscribe,
+      planName: influencer.planName,
       name: influencer.fullName || "Unknown",
       tag: influencer.interests?.[0] ? `#${influencer.interests[0]}` : "#Influencer",
       category: influencer.interests?.[0] || "General",

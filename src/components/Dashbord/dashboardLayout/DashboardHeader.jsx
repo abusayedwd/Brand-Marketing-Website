@@ -174,6 +174,7 @@ import { useChangPasswordMutation } from '@/redux/fetures/auth/changePassword';
 import toast, { Toaster } from 'react-hot-toast';
 import getMediaUrl from '@/utils/getMediaUrl';
 import NotificationBell from './NotificationBell';
+import SubscriptionBadge from '@/components/shared/SubscriptionBadge';
 
 export default function DashboardHeader({ collapsed}) {
   // State for modals and mobile menu
@@ -304,6 +305,7 @@ export default function DashboardHeader({ collapsed}) {
     <div className="flex items-center cursor-pointer rounded-full border border-slate-200 px-2 py-1 hover:border-emerald-300">
       <Avatar src={getMediaUrl(user?.data?.attributes?.image)} className='h-12 w-12' />
       <span className="ml-2 hidden sm:inline">{user?.data?.attributes?.fullName}</span>
+      <SubscriptionBadge user={user?.data?.attributes} variant="icon" className="ml-1.5" />
     </div>
   </Dropdown>
 </div>

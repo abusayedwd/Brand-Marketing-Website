@@ -7,6 +7,7 @@ import {
   YoutubeOutlined,
   TwitterOutlined,
 } from "@ant-design/icons";
+import SubscriptionBadge from "@/components/shared/SubscriptionBadge";
 
 const TikTokIcon = () => (
   <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 24 24">
@@ -72,8 +73,9 @@ export default function InfluencerCard({
           alt={influencer.name}
           className="h-24 w-24 rounded-full object-cover ring-2 ring-emerald-100"
         />
-        <h3 className="mt-3 line-clamp-1 text-base font-semibold text-slate-800">
-          {influencer.name}
+        <h3 className="mt-3 flex max-w-full items-center justify-center gap-1.5 text-base font-semibold text-slate-800">
+          <span className="truncate">{influencer.name}</span>
+          <SubscriptionBadge user={influencer} variant="icon" />
         </h3>
         {influencer.userName ? (
           <p className="line-clamp-1 text-xs text-slate-400">

@@ -69,19 +69,22 @@ export default function MessagesPage() {
     }
   }, [activeChatId, threads]);
 
-  useEffect(() => {
-    if (!userId) return;
-    if (!socket.connected) socket.connect();
-    socket.emit("join-user", userId);
-    socket.emit("user_connected", userId);
-  }, [userId]);
-
+  // Socket connection + user room are handled globally by RealtimeSync.
+  // `message:new` reaches our user room for every chat; `messages::<chatId>`
+  // covers the open chat (incl. our own messages from other tabs).
   useEffect(() => {
     if (!activeChatId) return;
-    socket.emit("join_chat", activeChatId);
 
-    const eventName = `messages::${activeChatId}`;
+    const joinChat = () => socket.emit("join_chat", activeChatId);
+    joinChat();
+
+    const activeEvent = `messages::${activeChatId}`;
     const onIncoming = (message) => {
+      const chatId = String(message?.chatId || activeChatId);
+      if (chatId !== String(activeChatId)) {
+        setUnread((prev) => ({ ...prev, [chatId]: (prev[chatId] || 0) + 1 }));
+        return;
+      }
       const id = messageIdOf(message);
       if (id && processedRef.current.has(id)) return;
       if (id) processedRef.current.add(id);
@@ -91,25 +94,15 @@ export default function MessagesPage() {
       });
     };
 
-    socket.on(eventName, onIncoming);
-    return () => socket.off(eventName, onIncoming);
-  }, [activeChatId]);
-
-  useEffect(() => {
-    if (!threads.length) return;
-    const handlers = threads
-      .filter((t) => t.chatId !== activeChatId)
-      .map((t) => {
-        const eventName = `messages::${t.chatId}`;
-        const handler = () =>
-          setUnread((prev) => ({ ...prev, [t.chatId]: (prev[t.chatId] || 0) + 1 }));
-        socket.on(eventName, handler);
-        return { eventName, handler };
-      });
+    socket.on("connect", joinChat);
+    socket.on(activeEvent, onIncoming);
+    socket.on("message:new", onIncoming);
     return () => {
-      handlers.forEach(({ eventName, handler }) => socket.off(eventName, handler));
+      socket.off("connect", joinChat);
+      socket.off(activeEvent, onIncoming);
+      socket.off("message:new", onIncoming);
     };
-  }, [threads, activeChatId]);
+  }, [activeChatId]);
 
   useEffect(() => {
     const list = messagesData?.data?.attributes;
@@ -169,11 +162,14 @@ export default function MessagesPage() {
   };
 
   const selectThread = (thread) => {
+    if (window.innerWidth < 768) setShowSidebar(false);
+    // Re-clicking the open chat must not clear it: its query data hasn't
+    // changed, so nothing would reload the messages.
+    if (thread.chatId === activeChatId) return;
     processedRef.current.clear();
     setActiveChatId(thread.chatId);
     setMessages([]);
     setUnread((prev) => ({ ...prev, [thread.chatId]: 0 }));
-    if (window.innerWidth < 768) setShowSidebar(false);
   };
 
   const formatTime = (timestamp) => {
